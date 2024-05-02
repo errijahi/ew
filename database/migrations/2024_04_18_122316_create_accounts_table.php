@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained();
             $table->foreignId('category_id')->nullable()->constrained();
             $table->foreignId('transaction_id')->nullable()->constrained();
+            $table->foreignId('team_id')->nullable()->constrained();
             // $table->foreignId('accountType_id')->constrained();
             $table->timestamps();
         });

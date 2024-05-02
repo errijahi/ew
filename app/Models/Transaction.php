@@ -19,4 +19,9 @@ class Transaction extends Model
         'transaction_source',
         'payee',
     ];
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
 }

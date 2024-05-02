@@ -21,4 +21,9 @@ class Account extends Model
     {
         return $this->hasOne(Category::class, 'id', 'category_id');
     }
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
 }

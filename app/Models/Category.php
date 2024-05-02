@@ -28,4 +28,9 @@ class Category extends Model
     {
         return $this->hasOne(Category::class, 'id', 'sub_category_group_id');
     }
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
 }

@@ -16,7 +16,12 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable implements FilamentUser
+use Illuminate\Support\Collection;
+use Filament\Models\Contracts\HasTenants;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
+class User extends Authenticatable implements FilamentUser, HasTenants
 {
     use HasApiTokens;
     use HasConnectedAccounts;
@@ -84,4 +89,24 @@ class User extends Authenticatable implements FilamentUser
     {
         return true;
     }
+
+    public function teams(): BelongsToMany
+    {
+        return $this->belongsToMany(Team::class);
+    }
+
+    public function getTenants(Panel $panel): Collection
+    {
+        return $this->teams;
+    }
+
+    public function canAccessTenant(Model $tenant): bool
+    {
+        return $this->teams()->whereKey($tenant)->exists();
+    }
+
+    // public function team()
+    // {
+    //     return $this->belongsTo(Team::class);
+    // }
 }

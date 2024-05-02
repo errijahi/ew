@@ -52,4 +52,10 @@ class ConnectedAccount extends SocialstreamConnectedAccount
         'updated' => ConnectedAccountUpdated::class,
         'deleted' => ConnectedAccountDeleted::class,
     ];
+
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
 }

@@ -25,13 +25,15 @@ class CategoryResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $teamId = auth()->user()->teams[0]->id;
+
         return $form
             ->schema([
                 TextInput::make('name'),
                 TextInput::make('description'),
                 TextInput::make('budget'),
                 Select::make('sub_category_group_id')
-                    ->options(Category::pluck('name', 'id')->toArray())
+                    ->options(Category::where('team_id',$teamId)->pluck('name', 'id')->toArray())
                     ->native(false),
                 Toggle::make('treat_as_income'),
                 Toggle::make('exclude_from_budget'),

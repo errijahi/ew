@@ -18,6 +18,10 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
+use App\Models\Team;
+use App\Filament\Pages\Tenancy\RegisterTeam;
+use App\Filament\Pages\Tenancy\EditTeamProfile;
+use App\Filament\Pages\Auth\Register;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -29,8 +33,11 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->profile()
+            ->tenant(Team::class)
+            ->tenantRegistration(RegisterTeam::class)
+            // ->tenantProfile(EditTeamProfile::class)
             ->passwordReset()
-            ->registration()
+            ->registration(Register::class)
             ->plugin(
                 BreezyCore::make()
                     ->myProfile(

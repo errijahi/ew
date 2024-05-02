@@ -5,18 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Tag extends Model
+class TeamUser extends Model
 {
     use HasFactory;
 
+    protected $table = 'team_user';
+
     protected $fillable = [
-        'name',
-        'description',
-        'color',
+        'team_id',
+        'user_id',
     ];
 
-    public function team()
+    public function members()
     {
-        return $this->belongsTo(Team::class);
+        return $this->belongsToMany(User::class);
     }
+
 }
