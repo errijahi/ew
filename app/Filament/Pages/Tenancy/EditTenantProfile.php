@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Filament\Pages\Tenancy;
 
 use Filament\Forms\Components\TextInput;

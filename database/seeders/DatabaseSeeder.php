@@ -5,9 +5,11 @@ namespace Database\Seeders;
 use App\Models\Account;
 use App\Models\Category;
 use App\Models\Tag;
+use App\Models\Team;
+use App\Models\TeamUser;
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Transaction;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -18,13 +20,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->withPersonalTeam()->create();
-
-        User::factory()->withPersonalTeam()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-
         Category::create([
             'name' => 'transport',
             'description' => 'every day transport',
@@ -63,6 +58,18 @@ class DatabaseSeeder extends Seeder
             'remember_token' => Str::random(10),
             'current_team_id' => null,
             'profile_photo_path' => null,
+        ]);
+
+        Team::create([
+            'user_id' => '1',
+            'name' => 'boris team',
+            'personal_team' => 1,
+        ]);
+
+        TeamUser::create([
+            'team_id' => 1,
+            'user_id' => 1,
+            'role' => 'super_admin',
         ]);
     }
 }

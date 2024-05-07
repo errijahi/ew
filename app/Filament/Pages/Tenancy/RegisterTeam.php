@@ -23,7 +23,7 @@ class RegisterTeam extends RegisterTenant
     {
         $team = Team::create([
             'user_id' => auth()->user()->id,
-            'name' => auth()->user()->name . '\'s Team',
+            'name' => auth()->user()->name.'\'s Team',
             'personal_team' => 1,
         ]);
 

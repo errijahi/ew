@@ -33,7 +33,7 @@ class CategoryResource extends Resource
                 TextInput::make('description'),
                 TextInput::make('budget'),
                 Select::make('sub_category_group_id')
-                    ->options(Category::where('team_id',$teamId)->pluck('name', 'id')->toArray())
+                    ->options(Category::where('team_id', $teamId)->pluck('name', 'id')->toArray())
                     ->native(false),
                 Toggle::make('treat_as_income'),
                 Toggle::make('exclude_from_budget'),

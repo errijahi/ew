@@ -23,6 +23,7 @@ class AccountResource extends Resource
 
     public static function form(Form $form): Form
     {
+
         $teamId = auth()->user()->teams[0]->id;
 
         return $form
@@ -31,7 +32,7 @@ class AccountResource extends Resource
                 TextInput::make('balance')->required()->maxLength(255),
                 TextInput::make('status')->required()->maxLength(255),
                 Select::make('category_id')
-                    ->options(Category::where('team_id',$teamId)->pluck('name', 'id')->toArray())
+                    ->options(Category::where('team_id', $teamId)->pluck('name', 'id')->toArray())
                     ->native(false),
             ]);
     }
