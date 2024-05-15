@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\AccountType;
+use App\Enums\NumberComparisonType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,6 +15,9 @@ return new class extends Migration
     {
         Schema::create('amounts', function (Blueprint $table) {
             $table->id();
+            $table->float('amount');
+            $table->enum('type', AccountType::values());
+            $table->enum('filter', NumberComparisonType::values());
             $table->timestamps();
         });
     }

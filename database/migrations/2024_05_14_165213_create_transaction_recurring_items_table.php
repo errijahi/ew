@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('transaction_recurring_items', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('transaction_id');
+            $table->foreignId('recurring_item_id');
             $table->timestamps();
         });
     }

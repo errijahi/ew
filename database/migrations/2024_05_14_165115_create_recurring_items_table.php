@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Cadence;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,6 +14,12 @@ return new class extends Migration
     {
         Schema::create('recurring_items', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('billing_date');
+            $table->enum('repeating_cadence', Cadence::values());
+            $table->string('description');
+            $table->string('start_date');
+            $table->string('end_date');
             $table->timestamps();
         });
     }

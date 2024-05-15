@@ -2,8 +2,11 @@
 
 namespace App\Enums;
 
+use App\Traits\EnumToArray;
+
 enum AccountType: string
 {
+    use EnumToArray;
     case INCOME_CREDITS = 'income/credits';
     case EXPENSES_DEBITS = 'expenses/debits';
 
