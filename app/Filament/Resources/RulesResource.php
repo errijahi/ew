@@ -8,6 +8,9 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\Select;
 
 class RulesResource extends Resource
 {
@@ -21,7 +24,36 @@ class RulesResource extends Resource
     {
         return $form
             ->schema([
-                //
+                // TextInput::make('priority')->required()->default(10),
+                Toggle::make('stop_processing_other_rules'),
+                Toggle::make('delete_this_rule_after_use'),
+                Toggle::make('rule_on_transaction_update'),
+                Select::make('if_actions')
+                    ->options(
+                        [
+                            'Matches payee name',
+                            'Matches category',
+                            'Matches notes',
+                            'Matches amount',
+                            'Matches day',
+                            'In account'
+                        ])
+                    ->native(false),
+                    TextInput::make('priority')
+                    ->label('Payee Name')
+                    ->required()
+                    ->when('if_actions', fn($value) => $value === 'Matches payee name'),
+                    Select::make('then_actions')
+                    ->options(
+                        [
+                            'Set payee',
+                            'Matches category',
+                            'Matches notes',
+                            'Matches amount',
+                            'Matches day',
+                            'In account'
+                        ])
+                    ->native(false),
             ]);
     }
 
