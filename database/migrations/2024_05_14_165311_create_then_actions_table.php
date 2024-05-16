@@ -13,7 +13,20 @@ return new class extends Migration
     {
         Schema::create('then', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('set_payee');
+            $table->string('set_notes');
+            $table->foreignId('set_category')->nullable();
+            $table->boolean('set_uncategorized');
+            $table->foreignId('add_tag')->nullable();
+            $table->boolean('delete_transaction');
+            $table->foreignId('link_to_recurring_item')->nullable();
+            $table->boolean('do_not_link_to_recurring_item');
+            $table->boolean('do_not_create_rule');
+            $table->foreignId('split_transaction')->nullable();
+            $table->bool('mark_as_reviewed');
+            $table->bool('mark_as_unreviewed');
+            $table->bool('send_me_email');
+            $table->foreignId('rule_id');
         });
     }
 

@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('if_actions', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('rule_id');
+            $table->foreignId('matches_payee_name')->nullable();
+            $table->foreignId('matches_category')->nullable();
+            $table->foreignId('matches_notes')->nullable();
+            $table->foreignId('matches_amount')->nullable();
+            $table->foreignId('matches_day')->nullable();
+            $table->foreignId('in_account')->nullable();
             $table->timestamps();
         });
     }
