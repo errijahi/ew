@@ -23,9 +23,9 @@ return new class extends Migration
             $table->boolean('do_not_link_to_recurring_item');
             $table->boolean('do_not_create_rule');
             $table->foreignId('split_transaction')->nullable();
-            $table->bool('mark_as_reviewed');
-            $table->bool('mark_as_unreviewed');
-            $table->bool('send_me_email');
+            $table->boolean('mark_as_reviewed');
+            $table->boolean('mark_as_unreviewed');
+            $table->boolean('send_me_email');
             $table->foreignId('rule_id');
         });
     }

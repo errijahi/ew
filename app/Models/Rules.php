@@ -9,6 +9,13 @@ class Rules extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'priority',
+       'stop_processing_other_rules',
+        'delete_this_rule_after_use',
+        'rule_on_transaction_update'
+    ];
+
     public function team()
     {
         return $this->belongsTo(Team::class);

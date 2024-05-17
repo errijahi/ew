@@ -75,4 +75,9 @@ class Team extends JetstreamTeam
     {
         return $this->hasMany(Transaction::class);
     }
+
+    public function rules()
+    {
+        return $this->hasMany(Rules::class);
+    }
 }

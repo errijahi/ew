@@ -11,6 +11,8 @@ use Filament\Tables\Table;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Get;
+use App\Models\IfAction;
 
 class RulesResource extends Resource
 {
@@ -38,22 +40,17 @@ class RulesResource extends Resource
                             'Matches day',
                             'In account'
                         ])
+                    ->live()
                     ->native(false),
-                    TextInput::make('priority')
-                    ->label('Payee Name')
-                    ->required()
-                    ->when('if_actions', fn($value) => $value === 'Matches payee name'),
-                    Select::make('then_actions')
-                    ->options(
-                        [
-                            'Set payee',
-                            'Matches category',
-                            'Matches notes',
-                            'Matches amount',
-                            'Matches day',
-                            'In account'
-                        ])
-                    ->native(false),
+                TextInput::make('priority')
+                    // ->hidden(fn (Get $get): bool => ! $get('is_company'))
+                    ->visible(
+                        fn($record, $get) => IfAction::query()
+                            ->where([
+                                'id' => $get('if_actions'),
+                                'matches_payee_name' => 1
+                            ])->exists()
+                    ),
             ]);
     }
 
