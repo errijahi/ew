@@ -10,9 +10,9 @@ class IfAction extends Model
     use HasFactory;
 
     protected $fillable = [
-       'matches_payee_name',
-       'matches_category',
-       'matches_notes',
-       'matches_amount',
+        'matches_payee_name',
+        'matches_category',
+        'matches_notes',
+        'matches_amount',
     ];
 }

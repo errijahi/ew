@@ -11,9 +11,9 @@ class Rules extends Model
 
     protected $fillable = [
         'priority',
-       'stop_processing_other_rules',
+        'stop_processing_other_rules',
         'delete_this_rule_after_use',
-        'rule_on_transaction_update'
+        'rule_on_transaction_update',
     ];
 
     public function team()

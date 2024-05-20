@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Enums;
+
 use App\Traits\EnumToArray;
+
 enum IfActions: string
 {
     use EnumToArray;
