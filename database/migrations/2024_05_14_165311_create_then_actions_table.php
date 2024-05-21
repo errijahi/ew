@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('then', function (Blueprint $table) {
+        Schema::create('then_actions', function (Blueprint $table) {
             $table->id();
             $table->string('set_payee');
             $table->string('set_notes');

@@ -16,6 +16,15 @@ class Rules extends Model
         'rule_on_transaction_update',
     ];
 
+    public function ifAction()
+    {
+        return $this->hasMany(IfAction::class);
+    }
+
+    //    public function if($data)
+    //    {
+    //            dd($data);
+    //    }
     public function team()
     {
         return $this->belongsTo(Team::class);

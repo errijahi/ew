@@ -3,9 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Enums\AccountType;
-use App\Enums\Cadence;
 use App\Enums\Days;
 use App\Enums\NumberComparisonType;
+use App\Enums\Priority;
 use App\Enums\TextMatchType;
 use App\Filament\Resources\RulesResource\Pages;
 use App\Models\Category;
@@ -36,7 +36,8 @@ class RulesResource extends Resource
         return $form
             ->schema([
                 Select::make('priority')
-                    ->options(Cadence::values())
+                    ->options(Priority::values())
+                    ->default(Priority::P10)
                     ->native(false),
                 Toggle::make('stop_processing_other_rules'),
                 Toggle::make('delete_this_rule_after_use'),
@@ -66,7 +67,7 @@ class RulesResource extends Resource
                                         ->native(false),
                                 ],
                                 'matches_category' => [
-                                    Select::make('matches_category')
+                                    Select::make('ifAction.matches_category')
                                         ->options(Category::where('team_id', $teamId)->pluck('name', 'id')->toArray())
                                         ->native(false),
                                 ],
@@ -127,7 +128,7 @@ class RulesResource extends Resource
                         Grid::make(2)
                             ->schema(fn (Get $get): array => match ($get('then')) {
                                 'set_payee' => [
-                                    TextInput::make('set_payee'),
+                                    TextInput::make('set_payee')->default('Enter the payee name')->disabled(),
                                 ],
                                 'set_notes' => [
                                     TextInput::make('set_notes'),

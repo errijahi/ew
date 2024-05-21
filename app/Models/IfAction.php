@@ -14,5 +14,6 @@ class IfAction extends Model
         'matches_category',
         'matches_notes',
         'matches_amount',
+        'rule_id',
     ];
 }

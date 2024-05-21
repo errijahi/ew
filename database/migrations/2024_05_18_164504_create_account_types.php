@@ -12,9 +12,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('accounts_type', function (Blueprint $table) {
+        Schema::create('account_types', function (Blueprint $table) {
             $table->id();
-            $table->type('transaction_id', AccountType::values());
+            $table->enum('type', AccountType::values());
             $table->timestamps();
         });
     }
