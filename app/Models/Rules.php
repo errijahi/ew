@@ -14,19 +14,16 @@ class Rules extends Model
         'stop_processing_other_rules',
         'delete_this_rule_after_use',
         'rule_on_transaction_update',
+        'team_id',
     ];
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
 
     public function ifAction()
     {
         return $this->hasMany(IfAction::class);
-    }
-
-    //    public function if($data)
-    //    {
-    //            dd($data);
-    //    }
-    public function team()
-    {
-        return $this->belongsTo(Team::class);
     }
 }

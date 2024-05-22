@@ -43,7 +43,7 @@ class RulesResource extends Resource
                 Toggle::make('delete_this_rule_after_use'),
                 Toggle::make('rule_on_transaction_update'),
 
-                Repeater::make('conditions')
+                Repeater::make('if_actions')
                     ->schema([
                         Select::make('if')
                             ->disableOptionsWhenSelectedInSiblingRepeaterItems()
@@ -61,47 +61,47 @@ class RulesResource extends Resource
                         Grid::make(2)
                             ->schema(fn (Get $get): array => match ($get('if')) {
                                 'matches_payee_name' => [
-                                    TextInput::make('matches_payee_name'),
+                                    TextInput::make('payee_name'),
                                     Select::make('filter')
                                         ->options(TextMatchType::values())
-                                        ->native(false),
+                                        ->reactive(),
                                 ],
                                 'matches_category' => [
-                                    Select::make('ifAction.matches_category')
+                                    Select::make('ifAction.category')
                                         ->options(Category::where('team_id', $teamId)->pluck('name', 'id')->toArray())
-                                        ->native(false),
+                                        ->reactive(),
                                 ],
                                 'matches_notes' => [
-                                    TextInput::make('matches_notes'),
+                                    TextInput::make('note'),
                                     Select::make('filter')
                                         ->options(TextMatchType::values())
-                                        ->native(false),
+                                        ->reactive(),
                                 ],
                                 'matches_amount' => [
-                                    TextInput::make('matches_amount'),
+                                    TextInput::make('amount'),
                                     Select::make('type')
                                         ->options(AccountType::values())
-                                        ->native(false),
+                                        ->reactive(),
                                     Select::make('filter')
                                         ->options(NumberComparisonType::values())
-                                        ->native(false),
+                                        ->reactive(),
                                 ],
                                 'matches_day' => [
-                                    Select::make('matches_days')
+                                    Select::make('day')
                                         ->options(Days::values())
-                                        ->native(false),
+                                        ->reactive(),
                                     Select::make('filter')
                                         ->options(NumberComparisonType::values())
-                                        ->native(false),
+                                        ->reactive(),
                                 ],
                                 'in_account' => [
-                                    Select::make('in_account')
+                                    Select::make('type')
                                         ->options(AccountType::values())
-                                        ->native(false),
+                                        ->reactive(),
                                 ],
                                 default => [],
                             }),
-                    ]),
+                    ])->reorderable(false),
 
                 Repeater::make('Then')
                     ->schema([
@@ -136,7 +136,7 @@ class RulesResource extends Resource
                                 'set_category' => [
                                     Select::make('set_category')
                                         ->options(Category::where('team_id', $teamId)->pluck('name', 'id')->toArray())
-                                        ->native(false),
+                                        ->reactive(),
                                 ],
                                 'set_uncategorized' => [
                                     TextInput::make('name')
@@ -145,58 +145,58 @@ class RulesResource extends Resource
                                 'add_tags' => [
                                     Select::make('add_tags')
                                         ->options(Days::values())
-                                        ->native(false),
+                                        ->reactive(),
                                     Select::make('filter')
                                         ->options(NumberComparisonType::values())
-                                        ->native(false),
+                                        ->reactive(),
                                 ],
                                 'delete_transaction' => [
                                     Select::make('delete_transaction')
                                         ->options(AccountType::values())
-                                        ->native(false),
+                                        ->reactive(),
                                 ],
                                 'link_to_recurring_item' => [
                                     Select::make('link_to_recurring_item')
                                         ->options(AccountType::values())
-                                        ->native(false),
+                                        ->reactive(),
                                 ],
                                 'do_not_link_to_recurring_item' => [
                                     Select::make('do_not_link_to_recurring_item')
                                         ->options(AccountType::values())
-                                        ->native(false),
+                                        ->reactive(),
                                 ],
                                 'do_not_create_a_rule' => [
                                     Select::make('do_not_create_a_rule')
                                         ->options(AccountType::values())
-                                        ->native(false),
+                                        ->reactive(),
                                 ],
                                 'split_transaction' => [
                                     Select::make('split_transaction')
                                         ->options(AccountType::values())
-                                        ->native(false),
+                                        ->reactive(),
                                 ],
                                 'mark_as_reviewed' => [
                                     Select::make('mark_as_reviewed')
                                         ->options(AccountType::values())
-                                        ->native(false),
+                                        ->reactive(),
                                 ],
                                 'mark_as_unreviewed' => [
                                     Select::make('mark_as_unreviewed')
                                         ->options(AccountType::values())
-                                        ->native(false),
+                                        ->reactive(),
                                 ],
                                 'send_me_an_email' => [
                                     Select::make('send_me_an_email')
                                         ->options(AccountType::values())
-                                        ->native(false),
+                                        ->reactive(),
                                 ],'' => [
                                     Select::make('')
                                         ->options(AccountType::values())
-                                        ->native(false),
+                                        ->reactive(),
                                 ],
                                 default => [],
                             }),
-                    ]),
+                    ])->reorderable(false),
             ]);
 
     }

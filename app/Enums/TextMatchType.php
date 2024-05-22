@@ -8,11 +8,11 @@ enum TextMatchType: string
 {
     use EnumToArray;
     case CONTAIN = 'contain';
-    case MATCH_EXACTLY = 'match exactly';
-    case START_WITH = 'start with';
+    case MATCH_EXACTLY = 'match_exactly';
+    case START_WITH = 'start_with';
 
     public static function values(): array
     {
-        return array_column(self::cases(), 'value');
+        return array_column(self::cases(), 'value', 'value');
     }
 }

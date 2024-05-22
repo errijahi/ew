@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Amount extends Model
 {
     use HasFactory;
+
+    protected $fillable =[
+        'amount',
+        'type',
+        'filter',
+    ];
 }

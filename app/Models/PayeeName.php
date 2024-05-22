@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class PayeeName extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+      'payee_name',
+      'filter',
+    ];
 }
