@@ -15,5 +15,6 @@ class IfAction extends Model
         'matches_notes',
         'matches_amount',
         'rules_id',
+        'matches_day',
     ];
 }

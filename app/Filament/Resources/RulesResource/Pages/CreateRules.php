@@ -18,26 +18,55 @@ class CreateRules extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
-//        dd($data);
+//       dd($data['if_actions']);
+
         $transformedData = [];
         foreach ($data['if_actions'] as $index => $item) {
             $key = $item['if'];
             $transformedData[$key] = $item;
         }
 
+//     dd($transformedData);
+
         $data['team_id'] = auth()->user()->teams[0]->id;
 
-        array_key_exists('matches_payee_name', $transformedData) ? PayeeName::create($transformedData['matches_payee_name']) : null;
-        array_key_exists('matches_notes', $transformedData) ? Note::create($transformedData['matches_notes']) : null;
-        array_key_exists('matches_amount', $transformedData) ? Amount::create($transformedData['matches_amount']) : null;
-        array_key_exists('matches_day', $transformedData) ? Day::create($transformedData['matches_day']) : null;
+        $payeeNameId = null;
+        $noteId = null;
+        $amountId = null;
+        $dayId = null;
+        $categoryId = $transformedData['matches_category']['category'] ?? null;
+//        $inAccount = $transformedData['in_account']['type'] ?? null;
 
-        dd(PayeeName::class);
+        if (array_key_exists('matches_payee_name', $transformedData)) {
+            $payeeName = PayeeName::create($transformedData['matches_payee_name']);
+            $payeeNameId = $payeeName->id;
+        }
+
+        if (array_key_exists('matches_notes', $transformedData)) {
+            $note = Note::create($transformedData['matches_notes']);
+            $noteId = $note->id;
+        }
+
+        if (array_key_exists('matches_amount', $transformedData)) {
+            $amount = Amount::create($transformedData['matches_amount']);
+            $amountId = $amount->id;
+        }
+
+        if (array_key_exists('matches_day', $transformedData)) {
+            $day = Day::create($transformedData['matches_day']);
+            $dayId = $day->id;
+        }
+
+//        dd($dayId);
 
         $record = $this->getModel()::create($data);
         $record->ifAction()->create([
-            'matches_payee_name' => 1,
-            'matches_category' => 2,
+            'matches_payee_name' => $payeeNameId,
+            'matches_notes' => $noteId,
+            'matches_amount' => $amountId,
+            'matches_day' => $dayId,
+            'matches_category' => $categoryId,
+//            'in_account' => $inAccount
         ]);
 
         return $record;

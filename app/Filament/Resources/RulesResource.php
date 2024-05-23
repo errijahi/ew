@@ -67,7 +67,7 @@ class RulesResource extends Resource
                                         ->reactive(),
                                 ],
                                 'matches_category' => [
-                                    Select::make('ifAction.category')
+                                    Select::make('category')
                                         ->options(Category::where('team_id', $teamId)->pluck('name', 'id')->toArray())
                                         ->reactive(),
                                 ],
