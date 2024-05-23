@@ -9,7 +9,7 @@ class Amount extends Model
 {
     use HasFactory;
 
-    protected $fillable =[
+    protected $fillable = [
         'amount',
         'type',
         'filter',

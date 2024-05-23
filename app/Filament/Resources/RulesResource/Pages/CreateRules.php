@@ -3,14 +3,12 @@
 namespace App\Filament\Resources\RulesResource\Pages;
 
 use App\Filament\Resources\RulesResource;
-use Filament\Resources\Pages\CreateRecord;
-use Illuminate\Database\Eloquent\Model;
-use App\Models\PayeeName;
-use App\Models\Category;
-use App\Models\Note;
 use App\Models\Amount;
 use App\Models\Day;
-use App\Models\AccountType;
+use App\Models\Note;
+use App\Models\PayeeName;
+use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Database\Eloquent\Model;
 
 class CreateRules extends CreateRecord
 {
@@ -18,7 +16,6 @@ class CreateRules extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
-//       dd($data['if_actions']);
 
         $transformedData = [];
         foreach ($data['if_actions'] as $index => $item) {
@@ -26,16 +23,13 @@ class CreateRules extends CreateRecord
             $transformedData[$key] = $item;
         }
 
-//     dd($transformedData);
-
         $data['team_id'] = auth()->user()->teams[0]->id;
-
         $payeeNameId = null;
         $noteId = null;
         $amountId = null;
         $dayId = null;
         $categoryId = $transformedData['matches_category']['category'] ?? null;
-//        $inAccount = $transformedData['in_account']['type'] ?? null;
+        //        $inAccount = $transformedData['in_account']['type'] ?? null;
 
         if (array_key_exists('matches_payee_name', $transformedData)) {
             $payeeName = PayeeName::create($transformedData['matches_payee_name']);
@@ -57,8 +51,6 @@ class CreateRules extends CreateRecord
             $dayId = $day->id;
         }
 
-//        dd($dayId);
-
         $record = $this->getModel()::create($data);
         $record->ifAction()->create([
             'matches_payee_name' => $payeeNameId,
@@ -66,8 +58,12 @@ class CreateRules extends CreateRecord
             'matches_amount' => $amountId,
             'matches_day' => $dayId,
             'matches_category' => $categoryId,
-//            'in_account' => $inAccount
+            //            'in_account' => $inAccount
         ]);
+
+        //        $record->thenAction()->create([
+        //
+        //        ]);
 
         return $record;
     }

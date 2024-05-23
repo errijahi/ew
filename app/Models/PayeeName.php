@@ -10,7 +10,7 @@ class PayeeName extends Model
     use HasFactory;
 
     protected $fillable = [
-      'payee_name',
-      'filter',
+        'payee_name',
+        'filter',
     ];
 }

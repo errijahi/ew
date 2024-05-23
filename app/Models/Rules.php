@@ -26,4 +26,9 @@ class Rules extends Model
     {
         return $this->hasMany(IfAction::class);
     }
+
+    public function thenAction()
+    {
+        return $this->hasMany(ThenAction::class);
+    }
 }

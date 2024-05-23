@@ -128,7 +128,7 @@ class RulesResource extends Resource
                         Grid::make(2)
                             ->schema(fn (Get $get): array => match ($get('then')) {
                                 'set_payee' => [
-                                    TextInput::make('set_payee')->default('Enter the payee name')->disabled(),
+                                    TextInput::make('set_payee')->label('')->placeholder('Enter the payee name')->disabled(),
                                 ],
                                 'set_notes' => [
                                     TextInput::make('set_notes'),
@@ -198,7 +198,6 @@ class RulesResource extends Resource
                             }),
                     ])->reorderable(false),
             ]);
-
     }
 
     public static function table(Table $table): Table
