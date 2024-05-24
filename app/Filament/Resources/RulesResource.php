@@ -119,11 +119,11 @@ class RulesResource extends Resource
                                     'delete_transaction' => 'delete transaction',
                                     'link_to_recurring_item' => 'link to recurring item',
                                     'do_not_link_to_recurring_item' => 'do not link to recurring item',
-                                    'do_not_create_a_rule' => 'do not create a rule',
+                                    'do_not_create_rule' => 'do not create a rule',
                                     'split_transaction' => 'split transaction',
                                     'mark_as_reviewed' => 'mark as reviewed',
                                     'mark_as_unreviewed' => 'mark as unreviewed',
-                                    'send_me_an_email' => 'send me an email',
+                                    'send_me_email' => 'send me an email',
                                 ]
                             )
                             ->reactive(),
@@ -142,7 +142,10 @@ class RulesResource extends Resource
                                         ->reactive(),
                                 ],
                                 'set_uncategorized' => [
-                                    TextInput::make('set_uncategorized')->label('')->placeholder('Set uncategorized')->disabled(),
+                                    TextInput::make('set_uncategorized')
+                                        ->label('')
+                                        ->placeholder('Set uncategorized')
+                                        ->disabled(),
                                 ],
                                 'add_tags' => [
                                     Select::make('add_tags')
@@ -150,9 +153,10 @@ class RulesResource extends Resource
                                         ->reactive(),
                                 ],
                                 'delete_transaction' => [
-                                    Select::make('delete_transaction')
-                                        ->options(AccountType::values())
-                                        ->reactive(),
+                                    TextInput::make('delete_transaction')
+                                        ->label('')
+                                        ->placeholder('Delete transaction')
+                                        ->disabled(),
                                 ],
                                 'link_to_recurring_item' => [
                                     Select::make('link_to_recurring_item')
@@ -160,14 +164,16 @@ class RulesResource extends Resource
                                         ->reactive(),
                                 ],
                                 'do_not_link_to_recurring_item' => [
-                                    Select::make('do_not_link_to_recurring_item')
-                                        ->options(AccountType::values())
-                                        ->reactive(),
+                                    TextInput::make('do_not_link_to_recurring_item')
+                                        ->label('')
+                                        ->placeholder('Do not link to recurring item')
+                                        ->disabled(),
                                 ],
-                                'do_not_create_a_rule' => [
-                                    Select::make('do_not_create_a_rule')
-                                        ->options(AccountType::values())
-                                        ->reactive(),
+                                'do_not_create_rule' => [
+                                    TextInput::make('do_not_create_rule')
+                                        ->label('')
+                                        ->placeholder('Do not create a rule')
+                                        ->disabled(),
                                 ],
                                 'split_transaction' => [
                                     Select::make('split_transaction')
@@ -175,23 +181,22 @@ class RulesResource extends Resource
                                         ->reactive(),
                                 ],
                                 'mark_as_reviewed' => [
-                                    Select::make('mark_as_reviewed')
-                                        ->options(AccountType::values())
-                                        ->reactive(),
+                                    TextInput::make('mark_as_reviewed')
+                                        ->label('')
+                                        ->placeholder('Mark as reviewed')
+                                        ->disabled(),
                                 ],
                                 'mark_as_unreviewed' => [
-                                    Select::make('mark_as_unreviewed')
-                                        ->options(AccountType::values())
-                                        ->reactive(),
+                                    TextInput::make('mark_as_unreviewed')
+                                        ->label('')
+                                        ->placeholder('Mark as unreviewed')
+                                        ->disabled(),
                                 ],
-                                'send_me_an_email' => [
-                                    Select::make('send_me_an_email')
-                                        ->options(AccountType::values())
-                                        ->reactive(),
-                                ],'' => [
-                                    Select::make('')
-                                        ->options(AccountType::values())
-                                        ->reactive(),
+                                'send_me_email' => [
+                                    TextInput::make('send_me_email')
+                                        ->label('')
+                                        ->placeholder('Send me an email')
+                                        ->disabled(),
                                 ],
                                 default => [],
                             }),

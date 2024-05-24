@@ -20,6 +20,7 @@ class ThenAction extends Model
         'do_not_link_to_recurring_item',
         'do_not_create_rule',
         'split_transaction',
+        'mark_as_reviewed',
         'mark_as_unreviewed',
         'send_me_email',
         'rule_id',

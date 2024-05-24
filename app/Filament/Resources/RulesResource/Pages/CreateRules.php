@@ -17,6 +17,8 @@ class CreateRules extends CreateRecord
     protected function handleRecordCreation(array $data): Model
     {
 
+        $data['team_id'] = auth()->user()->teams[0]->id;
+
         $transformedData = [];
         foreach ($data['if_actions'] as $index => $item) {
             $key = $item['if'];
@@ -31,7 +33,6 @@ class CreateRules extends CreateRecord
 
         $categoryId = $transformedData['matches_category']['category'] ?? null;
         $inAccount = $transformedData['in_account']['type'] ?? null;
-        $data['team_id'] = auth()->user()->teams[0]->id;
         $payeeNameId = null;
         $noteId = null;
         $amountId = null;
@@ -67,23 +68,20 @@ class CreateRules extends CreateRecord
             'in_account' => $inAccount,
         ]);
 
-        $thenTest = null;
-        $addTag = $transformedDataThen['add_tags']['add_tags'] ?? null;
-
         $record->thenAction()->create([
             'set_payee' => $transformedDataThen['set_payee']['set_payee'] ?? null,
             'set_notes' => $transformedDataThen['set_notes']['set_notes'] ?? null,
             'set_category' => $transformedDataThen['set_category']['set_category'] ?? null,
             'set_uncategorized' => array_key_exists('set_uncategorized', $transformedDataThen),
-            'add_tag' => $addTag,
-            'delete_transaction' => $thenTest,
-            'link_to_recurring_item' => $thenTest,
-            'link_not_link_to_recurring_item' => $thenTest,
-            'do_not_create_rule' => $thenTest,
-            'split_transaction' => $thenTest,
-            'mark_as_reviewed' => $thenTest,
-            'mark_as_unreviewed' => $thenTest,
-            'send_me_email' => $thenTest,
+            'add_tag' => $transformedDataThen['add_tags']['add_tags'] ?? null,
+            'delete_transaction' => array_key_exists('delete_transaction', $transformedDataThen),
+            'link_to_recurring_item' => null, //TODO: first need to create a recurring table and it's curd.
+            'do_not_link_to_recurring_item' => array_key_exists('do_not_link_to_recurring_item', $transformedDataThen),
+            'do_not_create_rule' => array_key_exists('do_not_create_rule', $transformedDataThen),
+            'split_transaction' => null, //TODO: later maybe I need to create a new table or something,right now too complex
+            'mark_as_reviewed' => array_key_exists('mark_as_reviewed', $transformedDataThen),
+            'mark_as_unreviewed' => array_key_exists('mark_as_unreviewed', $transformedDataThen),
+            'send_me_email' => array_key_exists('send_me_email', $transformedDataThen),
         ]);
 
         return $record;
