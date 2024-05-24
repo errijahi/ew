@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Status;
 use App\Models\Account;
 use App\Models\Category;
 use App\Models\Tag;
@@ -40,8 +41,10 @@ class DatabaseSeeder extends Seeder
 
         Account::create([
             'account_name' => 'transaction one',
-            'status' => false,
+            'status' => Status::TRUE,
             'balance' => '50',
+            'user_id' => 1,
+            'team_id' => 1,
         ]);
 
         Tag::create([
