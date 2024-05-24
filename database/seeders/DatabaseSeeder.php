@@ -21,38 +21,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Category::create([
-            'name' => 'transport',
-            'description' => 'every day transport',
-            'budget' => '50',
-            'treat_as_income' => false,
-            'exclude_from_budget' => false,
-            'exclude_from_total' => true,
-        ]);
-
-        Transaction::create([
-            'amount' => '50',
-            'payee' => 'boris',
-            'date' => now(),
-            'notes' => Str::random(10),
-            'transaction_source' => 'CSV import',
-            'status' => true,
-        ]);
-
-        Account::create([
-            'account_name' => 'transaction one',
-            'status' => Status::TRUE,
-            'balance' => '50',
-            'user_id' => 1,
-            'team_id' => 1,
-        ]);
-
-        Tag::create([
-            'name' => 'job',
-            'description' => 'job expenses',
-            'color' => '#457821',
-        ]);
-
         User::create([
             'name' => 'boris',
             'email' => 'boris@gmail.com',
@@ -73,6 +41,41 @@ class DatabaseSeeder extends Seeder
             'team_id' => 1,
             'user_id' => 1,
             'role' => 'super_admin',
+        ]);
+
+        Category::create([
+            'name' => 'transport',
+            'description' => 'every day transport',
+            'budget' => '50',
+            'treat_as_income' => false,
+            'exclude_from_budget' => false,
+            'exclude_from_total' => true,
+            'team_id' => 1,
+        ]);
+
+        Tag::create([
+            'name' => 'job',
+            'description' => 'job expenses',
+            'color' => '#457821',
+            'team_id' => 1,
+        ]);
+
+        Transaction::create([
+            'amount' => '50',
+            'payee' => 'boris',
+            'date' => now(),
+            'notes' => Str::random(10),
+            'transaction_source' => 'CSV import',
+            'status' => true,
+            'team_id' => 1,
+        ]);
+
+        Account::create([
+            'account_name' => 'transaction one',
+            'status' => Status::TRUE,
+            'balance' => '50',
+            'user_id' => 1,
+            'team_id' => 1,
         ]);
     }
 }

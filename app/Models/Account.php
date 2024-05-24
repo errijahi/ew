@@ -16,7 +16,7 @@ class Account extends Model
         'last_updated',
         'category_id',
         'user_id',
-        'team_id'
+        'team_id',
     ];
 
     public function category()

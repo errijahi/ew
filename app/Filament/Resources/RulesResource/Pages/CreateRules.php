@@ -23,13 +23,19 @@ class CreateRules extends CreateRecord
             $transformedData[$key] = $item;
         }
 
+        $transformedDataThen = [];
+        foreach ($data['then_actions'] as $index => $item) {
+            $key = $item['then'];
+            $transformedDataThen[$key] = $item;
+        }
+
+        $categoryId = $transformedData['matches_category']['category'] ?? null;
+        $inAccount = $transformedData['in_account']['type'] ?? null;
         $data['team_id'] = auth()->user()->teams[0]->id;
         $payeeNameId = null;
         $noteId = null;
         $amountId = null;
         $dayId = null;
-        $categoryId = $transformedData['matches_category']['category'] ?? null;
-        //        $inAccount = $transformedData['in_account']['type'] ?? null;
 
         if (array_key_exists('matches_payee_name', $transformedData)) {
             $payeeName = PayeeName::create($transformedData['matches_payee_name']);
@@ -58,12 +64,27 @@ class CreateRules extends CreateRecord
             'matches_amount' => $amountId,
             'matches_day' => $dayId,
             'matches_category' => $categoryId,
-            //            'in_account' => $inAccount
+            'in_account' => $inAccount,
         ]);
 
-        //        $record->thenAction()->create([
-        //
-        //        ]);
+        $thenTest = null;
+        $addTag = $transformedDataThen['add_tags']['add_tags'] ?? null;
+
+        $record->thenAction()->create([
+            'set_payee' => $transformedDataThen['set_payee']['set_payee'] ?? null,
+            'set_notes' => $transformedDataThen['set_notes']['set_notes'] ?? null,
+            'set_category' => $transformedDataThen['set_category']['set_category'] ?? null,
+            'set_uncategorized' => array_key_exists('set_uncategorized', $transformedDataThen),
+            'add_tag' => $addTag,
+            'delete_transaction' => $thenTest,
+            'link_to_recurring_item' => $thenTest,
+            'link_not_link_to_recurring_item' => $thenTest,
+            'do_not_create_rule' => $thenTest,
+            'split_transaction' => $thenTest,
+            'mark_as_reviewed' => $thenTest,
+            'mark_as_unreviewed' => $thenTest,
+            'send_me_email' => $thenTest,
+        ]);
 
         return $record;
     }

@@ -14,7 +14,7 @@ class CreateAccount extends CreateRecord
     {
         $data['user_id'] = auth()->user()->id;
         $data['team_id'] = auth()->user()->teams[0]->id;
+
         return $this->getModel()::create($data);
     }
-
 }

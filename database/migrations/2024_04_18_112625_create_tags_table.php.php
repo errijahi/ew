@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('description');
             $table->string('color');
-            $table->foreignId('team_id')->nullable()->constrained();
+            $table->foreignId('team_id')->constrained();
             $table->timestamps();
         });
     }

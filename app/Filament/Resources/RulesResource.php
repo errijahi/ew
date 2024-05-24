@@ -8,8 +8,10 @@ use App\Enums\NumberComparisonType;
 use App\Enums\Priority;
 use App\Enums\TextMatchType;
 use App\Filament\Resources\RulesResource\Pages;
+use App\Models\Account;
 use App\Models\Category;
 use App\Models\Rules;
+use App\Models\Tag;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -96,14 +98,14 @@ class RulesResource extends Resource
                                 ],
                                 'in_account' => [
                                     Select::make('type')
-                                        ->options(AccountType::values())
+                                        ->options(Account::where('team_id', $teamId)->pluck('account_name', 'id')->toArray())
                                         ->reactive(),
                                 ],
                                 default => [],
                             }),
                     ])->reorderable(false),
 
-                Repeater::make('Then')
+                Repeater::make('then_actions')
                     ->schema([
                         Select::make('then')
                             ->disableOptionsWhenSelectedInSiblingRepeaterItems()
@@ -128,7 +130,8 @@ class RulesResource extends Resource
                         Grid::make(2)
                             ->schema(fn (Get $get): array => match ($get('then')) {
                                 'set_payee' => [
-                                    TextInput::make('set_payee')->label('')->placeholder('Enter the payee name')->disabled(),
+                                    //                                    TextInput::make('set_payee')->label('')->placeholder('Enter the payee name')->disabled(),
+                                    TextInput::make('set_payee'),
                                 ],
                                 'set_notes' => [
                                     TextInput::make('set_notes'),
@@ -139,15 +142,11 @@ class RulesResource extends Resource
                                         ->reactive(),
                                 ],
                                 'set_uncategorized' => [
-                                    TextInput::make('name')
-                                        ->default('John'),
+                                    TextInput::make('set_uncategorized')->label('')->placeholder('Set uncategorized')->disabled(),
                                 ],
                                 'add_tags' => [
                                     Select::make('add_tags')
-                                        ->options(Days::values())
-                                        ->reactive(),
-                                    Select::make('filter')
-                                        ->options(NumberComparisonType::values())
+                                        ->options(Tag::where('team_id', $teamId)->pluck('name', 'id')->toArray())
                                         ->reactive(),
                                 ],
                                 'delete_transaction' => [

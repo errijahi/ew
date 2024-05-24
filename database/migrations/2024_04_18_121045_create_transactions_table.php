@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('payee');
             $table->string('notes');
             $table->date('date');
-            $table->foreignId('team_id')->nullable()->constrained();
+            $table->foreignId('team_id')->constrained();
             $table->string('transaction_source');
             $table->boolean('status');
             $table->foreignId('category_id')->nullable()->constrained();

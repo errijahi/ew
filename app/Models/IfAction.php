@@ -16,5 +16,6 @@ class IfAction extends Model
         'matches_amount',
         'rules_id',
         'matches_day',
+        'in_account',
     ];
 }

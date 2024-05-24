@@ -25,9 +25,9 @@ return new class extends Migration
             //check how transaction exists in this table, shouldn't transaction table have accountId
             $table->foreignId('team_id');
             $table->enum('account_type', AccountType::values());
-            $table->boolean('set_as_a_default_account')->default('false');
-            $table->boolean('do_not_track_transactions')->default('false');
-            $table->boolean('mark_as_closed')->default('false');
+            $table->boolean('set_as_a_default_account')->default(false);
+            $table->boolean('do_not_track_transactions')->default(false);
+            $table->boolean('mark_as_closed')->default(false);
             $table->timestamps();
         });
     }
