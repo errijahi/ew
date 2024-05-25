@@ -75,7 +75,7 @@ class CreateRules extends CreateRecord
             'set_uncategorized' => array_key_exists('set_uncategorized', $transformedDataThen),
             'add_tag' => $transformedDataThen['add_tags']['add_tags'] ?? null,
             'delete_transaction' => array_key_exists('delete_transaction', $transformedDataThen),
-            'link_to_recurring_item' => null, //TODO: first need to create a recurring table and it's curd.
+            'link_to_recurring_item' => $transformedDataThen['link_to_recurring_item']['link_to_recurring_item'] ?? null,
             'do_not_link_to_recurring_item' => array_key_exists('do_not_link_to_recurring_item', $transformedDataThen),
             'do_not_create_rule' => array_key_exists('do_not_create_rule', $transformedDataThen),
             'split_transaction' => null, //TODO: later maybe I need to create a new table or something,right now too complex

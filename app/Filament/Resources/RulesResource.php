@@ -10,6 +10,7 @@ use App\Enums\TextMatchType;
 use App\Filament\Resources\RulesResource\Pages;
 use App\Models\Account;
 use App\Models\Category;
+use App\Models\RecurringItem;
 use App\Models\Rules;
 use App\Models\Tag;
 use Filament\Forms\Components\Grid;
@@ -160,7 +161,7 @@ class RulesResource extends Resource
                                 ],
                                 'link_to_recurring_item' => [
                                     Select::make('link_to_recurring_item')
-                                        ->options(AccountType::values())
+                                        ->options(RecurringItem::where('team_id', $teamId)->pluck('name', 'id')->toArray())
                                         ->reactive(),
                                 ],
                                 'do_not_link_to_recurring_item' => [

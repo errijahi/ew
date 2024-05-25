@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Enums\Status;
 use App\Models\Account;
 use App\Models\Category;
+use App\Models\RecurringItem;
 use App\Models\Tag;
 use App\Models\Team;
 use App\Models\TeamUser;
@@ -50,6 +51,16 @@ class DatabaseSeeder extends Seeder
             'treat_as_income' => false,
             'exclude_from_budget' => false,
             'exclude_from_total' => true,
+            'team_id' => 1,
+        ]);
+
+        RecurringItem::create([
+            'name' => 'recurring item 1',
+            'billing_date' => 'every day',
+            'repeating_cadence' => 'Once_a_week',
+            'description' => Str::random(10),
+            'start_date' => 'now',
+            'end_date' => 'before day of judgment',
             'team_id' => 1,
         ]);
 
