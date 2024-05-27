@@ -7,6 +7,8 @@ use App\Models\Amount;
 use App\Models\Day;
 use App\Models\Note;
 use App\Models\PayeeName;
+use App\Models\SplitTransaction;
+use App\Models\SplitTransactionRule;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,7 +19,9 @@ class CreateRules extends CreateRecord
     protected function handleRecordCreation(array $data): Model
     {
 
-        $data['team_id'] = auth()->user()->teams[0]->id;
+        //TODO: add DB::beginTransaction(); DB::commit(); I probably need it?
+        $teamId = auth()->user()->teams[0]->id;
+        $data['team_id'] = $teamId;
 
         $transformedData = [];
         foreach ($data['if_actions'] as $index => $item) {
@@ -83,6 +87,31 @@ class CreateRules extends CreateRecord
             'mark_as_unreviewed' => array_key_exists('mark_as_unreviewed', $transformedDataThen),
             'send_me_email' => array_key_exists('send_me_email', $transformedDataThen),
         ]);
+
+        $splitTransactions = [];
+        foreach ($transformedDataThen['split_transaction']['split_transaction_repeater'] as $splitTransaction) {
+            $splitTransactions[] = [
+                'amount' => $splitTransaction['amount_percentages'],
+                'payee' => $splitTransaction['set_payee_split_transaction'] ?? null,
+                'notes' => $splitTransaction['set_note_split_transaction'] ?? null,
+                'team_id' => $teamId,
+                'category_id' => $splitTransaction['set_category_split_transaction'] ?? null,
+                'tag_id' => $splitTransaction['set_tag_split_transaction'] ?? null,
+            ];
+        }
+
+        SplitTransaction::insert($splitTransactions);
+        $insertedIds = SplitTransaction::orderBy('id', 'desc')->take(count($splitTransactions))->pluck('id')->toArray();
+
+        $pivotData = [];
+        foreach ($insertedIds as $id) {
+            $pivotData[] = [
+                'split_transaction_id' => $id,
+                'rule_id' => $record->id,
+            ];
+        }
+
+        SplitTransactionRule::insert($pivotData);
 
         return $record;
     }

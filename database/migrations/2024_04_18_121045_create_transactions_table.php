@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('date');
             $table->foreignId('team_id')->constrained();
             $table->string('transaction_source');
-            $table->boolean('status');
+            $table->boolean('status'); // TODO: change boolean to enum.
             $table->foreignId('category_id')->nullable()->constrained();
             $table->foreignId('tag_id')->nullable()->constrained();
             $table->timestamps();
