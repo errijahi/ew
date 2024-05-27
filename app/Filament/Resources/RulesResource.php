@@ -18,6 +18,7 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
@@ -104,7 +105,7 @@ class RulesResource extends Resource
                                 ],
                                 default => [],
                             }),
-                    ])->reorderable(false),
+                    ])->reorderable(false)->maxItems(6),
 
                 Repeater::make('then_actions')
                     ->schema([
@@ -177,9 +178,87 @@ class RulesResource extends Resource
                                         ->disabled(),
                                 ],
                                 'split_transaction' => [
-                                    Select::make('split_transaction')
-                                        ->options(AccountType::values())
-                                        ->reactive(),
+                                    Repeater::make('split_transaction_repeater')
+                                        ->schema([
+                                            Grid::make(1)
+                                                ->schema(fn (Get $get): array => [
+                                                    TextInput::make('amount_percentages')
+                                                        ->label('amount')
+                                                        ->placeholder('Enter value in percentages'),
+                                                    Toggle::make('mark_as_reviewed')
+                                                        ->reactive(),
+                                                    Toggle::make('run_split_transaction_trough_rules'),
+
+                                                    Grid::make(4)
+                                                        ->schema(function (Get $get) use ($teamId): array {
+                                                            return [
+                                                                ToggleButtons::make('category_button')
+                                                                    ->multiple()
+                                                                    ->label('')
+                                                                    ->options([
+                                                                        'category' => 'Category',
+                                                                    ])
+                                                                    ->reactive(),
+
+                                                                ToggleButtons::make('payee_button')
+                                                                    ->multiple()
+                                                                    ->label('')
+                                                                    ->options([
+                                                                        'payee' => 'Payee',
+                                                                    ])
+                                                                    ->reactive(),
+
+                                                                ToggleButtons::make('note_button')
+                                                                    ->multiple()
+                                                                    ->label('')
+                                                                    ->options([
+                                                                        'notes' => 'Notes',
+                                                                    ])
+                                                                    ->reactive(),
+
+                                                                ToggleButtons::make('tag_button')
+                                                                    ->multiple()
+                                                                    ->label('')
+                                                                    ->options([
+                                                                        'tags' => 'Tags',
+                                                                    ])
+                                                                    ->reactive(),
+
+                                                                Grid::make(2)
+                                                                    ->schema(function (Get $get) use ($teamId): array {
+                                                                        return [
+
+                                                                            ...($get('category_button') === ['category'] ? [
+                                                                                Select::make('set_category_split_transaction')
+                                                                                    ->options(Category::where('team_id', $teamId)
+                                                                                        ->pluck('name', 'id')
+                                                                                        ->toArray())
+                                                                                    ->reactive(),
+                                                                            ] : []),
+
+                                                                            ...($get('payee_button') === ['payee'] ? [
+                                                                                TextInput::make('set_payee_split_transaction')
+                                                                                    ->label('payee'),
+                                                                            ] : []),
+
+                                                                            ...($get('note_button') === ['notes'] ? [
+                                                                                TextInput::make('set_note_split_transaction')
+                                                                                    ->label('notes'),
+                                                                            ] : []),
+
+                                                                            ...($get('tag_button') === ['tags'] ? [
+                                                                                Select::make('set_tag_split_transaction')
+                                                                                    ->options(Tag::where('team_id', $teamId)
+                                                                                        ->pluck('name', 'id')
+                                                                                        ->toArray())
+                                                                                    ->reactive(),
+                                                                            ] : []),
+                                                                        ];
+                                                                    }),
+                                                            ];
+                                                        }),
+                                                ]),
+                                        ])->reorderable(false)->columnSpan(2),
                                 ],
                                 'mark_as_reviewed' => [
                                     TextInput::make('mark_as_reviewed')
@@ -201,7 +280,8 @@ class RulesResource extends Resource
                                 ],
                                 default => [],
                             }),
-                    ])->reorderable(false),
+                    ])->reorderable(false)->maxItems(13),
+
             ]);
     }
 
