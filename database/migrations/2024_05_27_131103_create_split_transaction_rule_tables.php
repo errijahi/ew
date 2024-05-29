@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('split_transaction_rules', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('split_transaction_id');
+            $table->foreignId('transaction_id');
             $table->foreignId('rule_id');
             $table->timestamps();
         });

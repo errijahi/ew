@@ -23,6 +23,7 @@ use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class RulesResource extends Resource
@@ -132,7 +133,6 @@ class RulesResource extends Resource
                         Grid::make(2)
                             ->schema(fn (Get $get): array => match ($get('then')) {
                                 'set_payee' => [
-                                    //                                    TextInput::make('set_payee')->label('')->placeholder('Enter the payee name')->disabled(),
                                     TextInput::make('set_payee'),
                                 ],
                                 'set_notes' => [
@@ -281,15 +281,105 @@ class RulesResource extends Resource
                                 default => [],
                             }),
                     ])->reorderable(false)->maxItems(13),
-
             ]);
     }
 
+    //    TODO: Make something to show split_transaction like split1 20% and split%80
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('priority'),
+                TextColumn::make('rule_trigger')
+                    ->getStateUsing(function ($record) {
+                        $getIfAction = $record->ifAction[0];
+                        $response = '';
+
+                        if ($getIfAction['matches_payee_name']) {
+                            $response .= ' '.'payee name = '.' '.$getIfAction->paye?->payee_name.'<br>';
+                        }
+
+                        if ($getIfAction['matches_category']) {
+                            $response .= ' '.'matches category = '.' '.$getIfAction->category?->name.'<br>';
+                        }
+
+                        if ($getIfAction['matches_notes']) {
+                            $response .= ' '.'matches notes = '.' '.$getIfAction->note?->note.'<br>';
+                        }
+
+                        if ($getIfAction['matches_day']) {
+                            $response .= ' '.'matches day = '.' '.$getIfAction->day?->day.'<br>';
+                        }
+
+                        if ($getIfAction['in_account']) {
+                            $response .= ' '.'in account = '.' '.$getIfAction->account?->account_name.'<br>';
+                        }
+
+                        if ($getIfAction['matches_amount']) {
+                            $response .= ' '.'amount = '.' '.$getIfAction->amount?->amount.'<br>';
+                        }
+
+                        return $response;
+                    })->html(),
+                TextColumn::make('rule_effect')
+                    ->getStateUsing(function ($record) {
+                        $getThenAction = $record->thenAction[0];
+                        $response = '';
+
+                        if ($getThenAction['set_payee']) {
+                            $response .= ' '.'set payee = '.' '.$getThenAction['set_payee'].'<br>';
+                        }
+
+                        if ($getThenAction['set_notes']) {
+                            $response .= ' '.'set notes = '.' '.$getThenAction['set_notes'].'<br>';
+                        }
+
+                        if ($getThenAction['set_category']) {
+                            $response .= ' '.'set_category = '.' '.$getThenAction?->category->name.'<br>';
+                        }
+
+                        if ($getThenAction['set_uncategorized']) {
+                            $response .= ' '.'set_uncategorized = '.' '.$getThenAction['set_uncategorized'].'<br>';
+                        }
+
+                        if ($getThenAction['add_tag']) {
+                            $response .= ' '.'add_tag = '.' '.$getThenAction->tag?->name.'<br>';
+                        }
+
+                        if ($getThenAction['delete_transaction']) {
+                            $response .= ' '.'delete_transaction = '.' '.$getThenAction['delete_transaction'].'<br>';
+                        }
+
+                        if ($getThenAction['link_to_recurring_item']) {
+                            $response .= ' '.'link_to_recurring_item = '.' '.$getThenAction->recurringItem?->name.'<br>';
+                        }
+
+                        if ($getThenAction['do_not_link_to_recurring_item']) {
+                            $response .= ' '.'do_not_link_to_recurring_item = '.' '.$getThenAction['do_not_link_to_recurring_item'].'<br>';
+                        }
+
+                        if ($getThenAction['do_not_create_rule']) {
+                            $response .= ' '.'do_not_create_rule = '.' '.$getThenAction['do_not_create_rule'].'<br>';
+                        }
+
+                        if ($getThenAction['split_transaction']) {
+                            $response .= ' '.'split_transaction = '.' '.$getThenAction->splitTransaction?->day.'<br>';
+                        }
+
+                        if ($getThenAction['mark_as_reviewed']) {
+                            $response .= ' '.'mark_as_reviewed = '.' '.$getThenAction['mark_as_reviewed'].'<br>';
+                        }
+
+                        if ($getThenAction['mark_as_unreviewed']) {
+                            $response .= ' '.'mark_as_unreviewed = '.' '.$getThenAction['mark_as_unreviewed'].'<br>';
+                        }
+
+                        if ($getThenAction['send_me_email']) {
+                            $response .= ' '.'send_me_email = '.' '.$getThenAction['send_me_email'].'<br>';
+                        }
+
+                        return $response;
+                    })->html(),
             ])
             ->filters([
                 //

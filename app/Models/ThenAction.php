@@ -25,4 +25,24 @@ class ThenAction extends Model
         'send_me_email',
         'rule_id',
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'set_category');
+    }
+
+    public function tag()
+    {
+        return $this->belongsTo(Tag::class, 'add_tag');
+    }
+
+    public function recurringItem()
+    {
+        return $this->belongsTo(RecurringItem::class, 'link_to_recurring_item');
+    }
+
+    public function splitTransaction()
+    {
+        return $this->belongsTo(SplitTransaction::class, 'split_transaction');
+    }
 }

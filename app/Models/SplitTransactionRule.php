@@ -10,7 +10,12 @@ class SplitTransactionRule extends Model
     use HasFactory;
 
     protected $fillable = [
-        'split_transaction_id',
+        'transaction_id',
         'rule_id',
     ];
+
+    public function transaction()
+    {
+        return $this->belongsTo(Transaction::class, 'transaction_id');
+    }
 }

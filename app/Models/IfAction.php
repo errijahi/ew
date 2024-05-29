@@ -18,4 +18,34 @@ class IfAction extends Model
         'matches_day',
         'in_account',
     ];
+
+    public function note()
+    {
+        return $this->belongsTo(Note::class, 'matches_notes');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'matches_category');
+    }
+
+    public function day()
+    {
+        return $this->belongsTo(Day::class, 'matches_day');
+    }
+
+    public function amount()
+    {
+        return $this->belongsTo(Amount::class, 'matches_amount');
+    }
+
+    public function paye()
+    {
+        return $this->belongsTo(PayeeName::class, 'matches_payee_name');
+    }
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class, 'in_account');
+    }
 }

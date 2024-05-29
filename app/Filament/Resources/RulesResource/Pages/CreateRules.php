@@ -89,29 +89,32 @@ class CreateRules extends CreateRecord
         ]);
 
         $splitTransactions = [];
-        foreach ($transformedDataThen['split_transaction']['split_transaction_repeater'] as $splitTransaction) {
-            $splitTransactions[] = [
-                'amount' => $splitTransaction['amount_percentages'],
-                'payee' => $splitTransaction['set_payee_split_transaction'] ?? null,
-                'notes' => $splitTransaction['set_note_split_transaction'] ?? null,
-                'team_id' => $teamId,
-                'category_id' => $splitTransaction['set_category_split_transaction'] ?? null,
-                'tag_id' => $splitTransaction['set_tag_split_transaction'] ?? null,
-            ];
+
+        if (array_key_exists('split_transaction', $transformedDataThen)) {
+            foreach ($transformedDataThen['split_transaction']['split_transaction_repeater'] as $splitTransaction) {
+                $splitTransactions[] = [
+                    'amount' => $splitTransaction['amount_percentages'],
+                    'payee' => $splitTransaction['set_payee_split_transaction'] ?? null,
+                    'notes' => $splitTransaction['set_note_split_transaction'] ?? null,
+                    'team_id' => $teamId,
+                    'category_id' => $splitTransaction['set_category_split_transaction'] ?? null,
+                    'tag_id' => $splitTransaction['set_tag_split_transaction'] ?? null,
+                ];
+            }
+
+            SplitTransaction::insert($splitTransactions);
+            $insertedIds = SplitTransaction::orderBy('id', 'desc')->take(count($splitTransactions))->pluck('id')->toArray();
+
+            $pivotData = [];
+            foreach ($insertedIds as $id) {
+                $pivotData[] = [
+                    'split_transaction_id' => $id,
+                    'rule_id' => $record->id,
+                ];
+            }
+
+            SplitTransactionRule::insert($pivotData);
         }
-
-        SplitTransaction::insert($splitTransactions);
-        $insertedIds = SplitTransaction::orderBy('id', 'desc')->take(count($splitTransactions))->pluck('id')->toArray();
-
-        $pivotData = [];
-        foreach ($insertedIds as $id) {
-            $pivotData[] = [
-                'split_transaction_id' => $id,
-                'rule_id' => $record->id,
-            ];
-        }
-
-        SplitTransactionRule::insert($pivotData);
 
         return $record;
     }
