@@ -6,7 +6,7 @@ use App\Filament\Resources\AnalyzeResource\Pages;
 use App\Models\Analyze;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class AnalyzeResource extends Resource
@@ -29,19 +29,22 @@ class AnalyzeResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('name')
+                    ->getStateUsing(function ($record) {
+                        return $record->name ?? ($record->account_name ?? $record->payee);
+                    }),
             ])
             ->filters([
                 //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
+        //            ->actions([
+        //                Tables\Actions\EditAction::make(),
+        //            ])
+        //            ->bulkActions([
+        //                Tables\Actions\BulkActionGroup::make([
+        //                    Tables\Actions\DeleteBulkAction::make(),
+        //                ]),
+        //            ]);
     }
 
     public static function getRelations(): array
@@ -55,8 +58,8 @@ class AnalyzeResource extends Resource
     {
         return [
             'index' => Pages\ListAnalyzes::route('/'),
-            'create' => Pages\CreateAnalyze::route('/create'),
-            'edit' => Pages\EditAnalyze::route('/{record}/edit'),
+            //            'create' => Pages\CreateAnalyze::route('/create'),
+            //            'edit' => Pages\EditAnalyze::route('/{record}/edit'),
         ];
     }
 }
