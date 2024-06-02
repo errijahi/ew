@@ -4,11 +4,11 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\AnalyzeResource\Pages;
 use App\Models\Analyze;
+use Carbon\Carbon;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Carbon\Carbon;
 
 class AnalyzeResource extends Resource
 {
@@ -35,11 +35,11 @@ class AnalyzeResource extends Resource
                 }),
         ];
 
-        // Add dynamic columns for each month
         $currentYear = Carbon::now()->year;
         for ($month = 1; $month <= 12; $month++) {
-            $monthName = Carbon::create()->month($month)->format('F'); // Get full month name
-            $columns[] = TextColumn::make('month_' . $month)
+            $monthName = Carbon::create()->month($month)->format('F');
+
+            $columns[] = TextColumn::make('month_'.$month)
                 ->label($monthName)
                 ->getStateUsing(function ($record) use ($month, $currentYear) {
                     $values = $record->getMonthlyData($month, $currentYear);

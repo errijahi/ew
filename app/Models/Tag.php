@@ -22,8 +22,7 @@ class Tag extends Model
 
     public function getMonthlyData($month, $year)
     {
-//        TODO: I will need to add by months and yeard and stuff because this will get all the data might be too much
-        return  Transaction::get();
+        //        TODO: I will need to add by months and yeard and stuff because this will get all the data might be too much
+        return Transaction::get();
     }
-
 }
