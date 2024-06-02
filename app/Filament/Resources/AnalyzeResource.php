@@ -46,16 +46,19 @@ class AnalyzeResource extends Resource
 
                     $transactionData = [];
                     foreach ($values as $value) {
-                        if ($value->created_at->month === $month){
-                            $transactionData[$value->id] = [
+                        $tagId = $value->tag_id;
+                        $monthKey = $value->created_at->month;
+
+                        if (isset($transactionData[$tagId][$monthKey])) {
+                            $transactionData[$tagId][$monthKey]['amount'] += $value->amount;
+                        } else {
+                            $transactionData[$tagId][$monthKey] = [
                                 'amount' => $value->amount,
-                                'data' => $value->created_at->format('Y-m-d'),
                             ];
                         }
-
                     }
 
-                   return $transactionData[$record->id]['amount'] ?? null;
+                    return $transactionData[$record->id][$month] ?? null;
                 });
         }
 

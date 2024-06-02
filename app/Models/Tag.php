@@ -22,15 +22,8 @@ class Tag extends Model
 
     public function getMonthlyData($month, $year)
     {
-        $tagIds = $this->get()->pluck('id');
-        $transactionAmounts = collect();
-
-//        TODO: you need to use bulk read maybe to remove where query from loop
-        foreach ($tagIds as $tagId) {
-            $transactions = Transaction::where('tag_id', $tagId)->get();
-            $transactionAmounts = $transactionAmounts->merge($transactions);
-        }
-
-        return $transactionAmounts;
+//        TODO: I will need to add by months and yeard and stuff because this will get all the data might be too much
+        return  Transaction::get();
     }
+
 }
