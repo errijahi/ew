@@ -5,12 +5,10 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\AnalyzeResource\Pages;
 use App\Models\Analyze;
 use Carbon\Carbon;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
-use Filament\Forms\Components\Select;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
 
 class AnalyzeResource extends Resource
 {
@@ -20,8 +18,14 @@ class AnalyzeResource extends Resource
 
     protected static ?string $navigationGroup = 'Finances';
 
-//    You can pass in type value month or year
-    public static function table(Table $table, $type = 'week'): Table
+    public static function getWidgets(): array
+    {
+        return [
+            AnalyzeResource\Widgets\CreateAnalyzeWidget::class,
+        ];
+    }
+
+    public static function table(Table $table): Table
     {
         $columns = [
             TextColumn::make('name')
@@ -30,36 +34,15 @@ class AnalyzeResource extends Resource
                 }),
         ];
 
-        // Adding a dynamic filter
-        $filters = [
-            SelectFilter::make('period')
-                ->options([
-                    'year' => 'Year',
-                    'month' => 'Month',
-                    'week' => 'Week',
-                    'day' => 'Day',
-                ])
-                ->query(function ($query) {
-                    // Prevent the filter from affecting the SQL query
-//                    dd($query);
-
-                    return $query;
-                })
-        ];
-
-        // Determine the selected period
-//        $livewire->getTableFilterState('period')['value']
-        $selectedPeriod = request('tableFilters')['period']['value'] ?? 'year';
-
-
+        $selectedPeriod = session('status') ?? 'year';
         $currentYear = Carbon::now()->year;
         $startYear = $currentYear - 5; // Start from 6 years ago, It shows last 6 years, should be dynamic.
         $lastMonth = Carbon::now()->subMonth();
         $daysInLastMonth = $lastMonth->daysInMonth;
 
-        if ($type === 'month') {
+        if ($selectedPeriod === 'month') {
             for ($month = 1; $month <= 12; $month++) {
-                $monthName = Carbon::create()->month($month)->format('F');
+                $monthName = Carbon::create()?->month($month)->format('F');
 
                 $columns[] = TextColumn::make('month_'.$month)
                     ->label($monthName)
@@ -83,10 +66,10 @@ class AnalyzeResource extends Resource
                         return $transactionData[$record->id][$month] ?? null;
                     });
             }
-        } elseif ($type === 'year') {
+        } elseif ($selectedPeriod === 'year') {
             for ($year = $startYear; $year <= $currentYear; $year++) {
                 $columns[] = TextColumn::make('year_'.$year)
-                    ->label((string)$year)
+                    ->label((string) $year)
                     ->getStateUsing(function ($record) use ($year) {
                         $values = $record->getMonthlyData(null, $year);
 
@@ -107,7 +90,7 @@ class AnalyzeResource extends Resource
                         return $transactionData[$record->id][$year] ?? null;
                     });
             }
-        } elseif ($type === 'week') {
+        } elseif ($selectedPeriod === 'week') {
             $firstDayOfMonth = $lastMonth->copy()->startOfMonth();
             $lastDayOfMonth = $lastMonth->copy()->endOfMonth();
 
@@ -117,18 +100,18 @@ class AnalyzeResource extends Resource
                 $endOfWeek = $startOfWeek->copy()->endOfWeek();
                 $weeks[] = [
                     'start' => $startOfWeek->copy(),
-                    'end' =>  $endOfWeek,
+                    'end' => $endOfWeek,
                 ];
                 $startOfWeek->addWeek();
             }
 
             foreach ($weeks as $index => $week) {
-                $weekLabel = $week['start']->format('d M') . ' - ' . $week['end']->format('d M');
+                $weekLabel = $week['start']->format('d M').' - '.$week['end']->format('d M');
 
-                $columns[] = TextColumn::make('week_' . $index)
+                $columns[] = TextColumn::make('week_'.$index)
                     ->label($weekLabel)
                     ->getStateUsing(function ($record) use ($week) {
-                       $values = $record->getMonthlyData($week['start'], $week['end']);
+                        $values = $record->getMonthlyData($week['start'], $week['end']);
 
                         $transactionData = [];
                         foreach ($values as $value) {
@@ -147,7 +130,7 @@ class AnalyzeResource extends Resource
                         return $transactionData[$record->id][$week['start']->weekOfYear] ?? null;
                     });
             }
-            } elseif ($type=== 'day') {
+        } elseif ($selectedPeriod === 'day') {
             for ($day = 1; $day <= $daysInLastMonth; $day++) {
                 $dayLabel = $lastMonth->copy()->day($day)->format('d M');
 
@@ -155,14 +138,13 @@ class AnalyzeResource extends Resource
                     ->label($dayLabel)
                     ->getStateUsing(function ($record) use ($lastMonth, $day) {
                         $dayDate = $lastMonth->copy()->day($day);
-                        $values = $record->getMonthlyData($dayDate,null);
+                        $values = $record->getMonthlyData($dayDate, null);
 
                         $transactionData = [];
                         foreach ($values as $value) {
                             $tagId = $value->tag_id;
                             $monthKey = $value->created_at->month;
                             $dayKey = $value->created_at->day;
-
 
                             if (isset($transactionData[$tagId][$monthKey][$dayKey])) {
                                 $transactionData[$tagId][$monthKey][$dayKey]['amount'] += $value->amount;
@@ -178,23 +160,13 @@ class AnalyzeResource extends Resource
             }
         }
 
-        return $table->columns($columns)->filters($filters);
-//        return $table->columns($columns);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
+        return $table->columns($columns);
     }
 
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListAnalyzes::route('/'),
-            //            'create' => Pages\CreateAnalyze::route('/create'),
-            //            'edit' => Pages\EditAnalyze::route('/{record}/edit'),
         ];
     }
 }
