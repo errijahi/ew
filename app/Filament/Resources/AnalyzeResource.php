@@ -4,11 +4,16 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\AnalyzeResource\Pages;
 use App\Models\Analyze;
+use App\Models\Transaction;
 use Carbon\Carbon;
 use Filament\Resources\Resource;
+use Filament\Tables\Columns\Summarizers\Summarizer;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use stdClass;
+use Filament\Tables\Columns\Summarizers\Sum;
+use Illuminate\Database\Query\Builder;
 
 class AnalyzeResource extends Resource
 {
@@ -42,12 +47,31 @@ class AnalyzeResource extends Resource
 
         if ($selectedPeriod === 'month') {
             for ($month = 1; $month <= 12; $month++) {
+//                $transactionMonthCount = Transaction::whereMonth('created_at', $month)->count();
                 $monthName = Carbon::create()?->month($month)->format('F');
 
                 $columns[] = TextColumn::make('month_'.$month)
+//                    ->numeric()
+                    ->summarize(
+                        Summarizer::make()
+                            ->using(function (Builder $query) use ($month): int {
+                                return Transaction::whereMonth('created_at', $month)
+                                    ->sum('amount');
+                            })
+                    )
+                    ->summarize(
+                        Summarizer::make()
+                            ->using(function (Builder $query) use ($month): int {
+//                                dd(Transaction::whereMonth('created_at', $month)->count());
+//                                dd(Transaction::whereMonth('created_at', $month)
+//                                    ->avg('amount',1));
+                                return Transaction::whereMonth('created_at', $month)
+                                    ->avg('id',1);
+                            })
+                    )
                     ->label($monthName)
-                    ->getStateUsing(function ($record) use ($month, $currentYear) {
-                        $values = $record->getMonthlyData($month, $currentYear);
+                    ->getStateUsing(function ($record) use ($month) {
+                        $values = $record->getMonthlyData(null, null);
 
                         $transactionData = [];
                         foreach ($values as $value) {
@@ -159,6 +183,8 @@ class AnalyzeResource extends Resource
                     });
             }
         }
+
+
 
         return $table->columns($columns);
     }

@@ -20,9 +20,12 @@ class Tag extends Model
         return $this->belongsTo(Team::class);
     }
 
-    public function getMonthlyData($month, $year)
+    public static function getMonthlyData($start = null, $end = null)
     {
         //        TODO: I will need to add by months and yeard and stuff because this will get all the data might be too much
+
         return Transaction::get();
+
+
     }
 }

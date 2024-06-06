@@ -33,4 +33,15 @@ class Category extends Model
     {
         return $this->belongsTo(Team::class);
     }
+
+    public static function getMonthlyData($month, $year)
+    {
+        //        TODO: I will need to add by months and yeard and stuff because this will get all the data might be too much
+        return Transaction::get();
+    }
+
+    public static function getTableValues()
+    {
+        return self::get()->keyBy('id')->toArray();
+    }
 }
