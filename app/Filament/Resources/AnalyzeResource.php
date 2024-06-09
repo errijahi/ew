@@ -7,6 +7,7 @@ use App\Models\Analyze;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Filament\Resources\Resource;
+use Filament\Tables\Actions\SelectAction;
 use Filament\Tables\Columns\Summarizers\Summarizer;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -20,15 +21,13 @@ class AnalyzeResource extends Resource
 
     protected static ?string $navigationGroup = 'Finances';
 
-    public static function getWidgets(): array
-    {
-        return [
-            AnalyzeResource\Widgets\CreateAnalyzeWidget::class,
-        ];
-    }
-
     public static function table(Table $table): Table
     {
+        $table->headerActions([
+            SelectAction::make('make custom table header filters')
+                ->view('livewire.table-filter'),
+        ]);
+
         $columns = [
             TextColumn::make('name')
                 ->getStateUsing(function ($record) {
@@ -37,18 +36,24 @@ class AnalyzeResource extends Resource
         ];
 
         $selectedPeriod = session('status') ?? 'year';
+        $timeRange = session('timeRange') ?? 'last 7 days';
+
         $currentYear = Carbon::now()->year;
-        $startYear = $currentYear - 5; // Start from 6 years ago, It shows last 6 years, should be dynamic.
-        $lastMonth = Carbon::now()->subMonth();
-        $daysInLastMonth = $lastMonth->daysInMonth;
+        $startYear = $currentYear - 5;
 
         if ($selectedPeriod === 'month') {
-            for ($month = 1; $month <= 12; $month++) {
-                //                $transactionMonthCount = Transaction::whereMonth('created_at', $month)->count();
-                $monthName = Carbon::create()?->month($month)->format('F');
+            $startMonth = Carbon::now()->month - 5;
+            $endMonth = Carbon::now()->month;
 
+            if ($timeRange === 'last 3 months') {
+                $startMonth = Carbon::now()->month - 2;
+                $endMonth = Carbon::now()->month;
+            }
+
+            for ($month = $startMonth; $month <= $endMonth; $month++) {
+
+                $monthName = Carbon::create()?->month($month)->format('F');
                 $columns[] = TextColumn::make('month_'.$month)
-//                    ->numeric()
                     ->summarize(
                         Summarizer::make()
                             ->using(function (Builder $query) use ($month): int {
@@ -59,11 +64,11 @@ class AnalyzeResource extends Resource
                     ->summarize(
                         Summarizer::make()
                             ->using(function (Builder $query) use ($month): int {
-                                //                                dd(Transaction::whereMonth('created_at', $month)->count());
-                                //                                dd(Transaction::whereMonth('created_at', $month)
-                                //                                    ->avg('amount',1));
-                                return Transaction::whereMonth('created_at', $month)
-                                    ->avg('id', 1);
+                                $sum = Transaction::whereMonth('created_at', $month)->sum('amount');
+                                $count = Transaction::whereMonth('created_at', $month)->count();
+
+                                //TODO: there is a bag if one row is empty,second is full, and third is empty it returns avg divided by 2;
+                                return ($count - 1) > 0 ? ($sum / ($count - 1) === $sum ? $sum / $count : $sum / ($count - 1)) : $sum / 1;
                             })
                     )
                     ->label($monthName)
@@ -88,6 +93,11 @@ class AnalyzeResource extends Resource
                     });
             }
         } elseif ($selectedPeriod === 'year') {
+
+            if ($timeRange === 'last 3 years') {
+                $startYear = Carbon::now()->year - 2;
+            }
+
             for ($year = $startYear; $year <= $currentYear; $year++) {
                 $columns[] = TextColumn::make('year_'.$year)
                     ->label((string) $year)
@@ -112,16 +122,22 @@ class AnalyzeResource extends Resource
                     });
             }
         } elseif ($selectedPeriod === 'week') {
-            $firstDayOfMonth = $lastMonth->copy()->startOfMonth();
-            $lastDayOfMonth = $lastMonth->copy()->endOfMonth();
+            $numberOfWeeks = 3;
+
+            if ($timeRange === 'last 6 weeks') {
+                $numberOfWeeks = 6;
+            }
+
+            $startOfWeek = Carbon::now()->subWeeks($numberOfWeeks)->startOfWeek();
+            $endOfWeek = Carbon::now()->endOfWeek();
 
             $weeks = [];
-            $startOfWeek = $firstDayOfMonth->copy()->startOfWeek();
-            while ($startOfWeek->lte($lastDayOfMonth)) {
-                $endOfWeek = $startOfWeek->copy()->endOfWeek();
+
+            while ($startOfWeek->lte($endOfWeek)) {
+                $weekEnd = $startOfWeek->copy()->endOfWeek();
                 $weeks[] = [
                     'start' => $startOfWeek->copy(),
-                    'end' => $endOfWeek,
+                    'end' => $weekEnd,
                 ];
                 $startOfWeek->addWeek();
             }
@@ -152,31 +168,38 @@ class AnalyzeResource extends Resource
                     });
             }
         } elseif ($selectedPeriod === 'day') {
-            for ($day = 1; $day <= $daysInLastMonth; $day++) {
-                $dayLabel = $lastMonth->copy()->day($day)->format('d M');
+            $numberOfDays = 6;
 
-                $columns[] = TextColumn::make('day_'.$day)
+            if ($timeRange === 'last 30 days') {
+                $numberOfDays = 30;
+            }
+
+            $startDate = Carbon::now()->subDays($numberOfDays)->startOfDay();
+            $endDate = Carbon::now()->endOfDay();
+
+            for ($day = $startDate; $day <= $endDate; $day->addDay()) {
+                $dayLabel = $day->format('d M');
+
+                $columns[] = TextColumn::make('day_'.$day->day)
                     ->label($dayLabel)
-                    ->getStateUsing(function ($record) use ($lastMonth, $day) {
-                        $dayDate = $lastMonth->copy()->day($day);
-                        $values = $record->getMonthlyData($dayDate, null);
+                    ->getStateUsing(function ($record) use ($day) {
+                        $values = $record->getMonthlyData($day, null);
 
                         $transactionData = [];
                         foreach ($values as $value) {
                             $tagId = $value->tag_id;
-                            $monthKey = $value->created_at->month;
                             $dayKey = $value->created_at->day;
 
-                            if (isset($transactionData[$tagId][$monthKey][$dayKey])) {
-                                $transactionData[$tagId][$monthKey][$dayKey]['amount'] += $value->amount;
+                            if (isset($transactionData[$tagId][$dayKey])) {
+                                $transactionData[$tagId][$dayKey]['amount'] += $value->amount;
                             } else {
-                                $transactionData[$tagId][$monthKey][$dayKey] = [
+                                $transactionData[$tagId][$dayKey] = [
                                     'amount' => $value->amount,
                                 ];
                             }
                         }
 
-                        return $transactionData[$record->id][$lastMonth->month][$day] ?? null;
+                        return $transactionData[$record->id][$day->day] ?? null;
                     });
             }
         }
