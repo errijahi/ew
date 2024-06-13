@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\AnalyzeResource\Pages;
 use App\Models\Analyze;
+use App\Models\Tag;
 use App\Models\Transaction;
 use Carbon\Carbon;
 use Filament\Resources\Resource;
@@ -69,6 +70,7 @@ class AnalyzeResource extends Resource
 
                                 //TODO: there is a bag if one row is empty,second is full, and third is empty it returns avg divided by 2;
                                 return ($count - 1) > 0 ? ($sum / ($count - 1) === $sum ? $sum / $count : $sum / ($count - 1)) : $sum / 1;
+
                             })
                     )
                     ->label($monthName)
@@ -203,6 +205,42 @@ class AnalyzeResource extends Resource
                     });
             }
         }
+
+        $columns[] = TextColumn::make('total')->getStateUsing(function ($record) {
+            $tags = Tag::get();
+            $transactionsByTag = [];
+
+            foreach ($tags as $tag) {
+                $transactions = Transaction::where('tag_id', $tag->id)->get();
+                $transactionsByTag[$tag->id] = $transactions->sum('amount');
+            }
+
+            return $transactionsByTag[$record->id];
+        });
+
+        $columns[] = TextColumn::make('sum avg')->getStateUsing(function ($record) {
+            $tags = Tag::get();
+            $transactionsByTag = [];
+
+            foreach ($tags as $tag) {
+                $transactions = Transaction::where('tag_id', $tag->id)->get();
+                $transactionsByTag[$tag->id] = $transactions->avg('amount');
+            }
+
+            return $transactionsByTag[$record->id];
+        });
+
+        $columns[] = TextColumn::make('count')->getStateUsing(function ($record) {
+            $tags = Tag::get();
+            $transactionsByTag = [];
+
+            foreach ($tags as $tag) {
+                $transactions = Transaction::where('tag_id', $tag->id)->count();
+                $transactionsByTag[$tag->id] = $transactions;
+            }
+
+            return $transactionsByTag[$record->id];
+        });
 
         return $table->columns($columns);
     }
