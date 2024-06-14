@@ -1,0 +1,14 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - app/
+        - bootstrap/app.php
+        - bootstrap/providers.php
+        - routes/
+
+    level: max
+
+    ignoreErrors:
+        - '#.* no value type specified in iterable type array#'
