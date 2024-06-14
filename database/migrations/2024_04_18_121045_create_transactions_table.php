@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->string('amount');
-            $table->string('payee');
+            //           TODO: Must payee save to the table payee
+            $table->string('payee')->unique();
             $table->string('notes');
             $table->date('date');
             $table->foreignId('team_id')->constrained();

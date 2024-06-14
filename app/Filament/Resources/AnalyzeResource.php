@@ -4,8 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\AnalyzeResource\Pages;
 use App\Models\Analyze;
-use App\Models\Tag;
 use App\Models\Transaction;
+use App\Models\TransactionRecurringItem;
 use Carbon\Carbon;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\SelectAction;
@@ -207,7 +207,7 @@ class AnalyzeResource extends Resource
         }
 
         $columns[] = TextColumn::make('total')->getStateUsing(function ($record) {
-            $tags = Tag::get();
+            $tags = $record->getMonthlyData(null, null);
             $transactionsByTag = [];
 
             foreach ($tags as $tag) {
@@ -218,25 +218,67 @@ class AnalyzeResource extends Resource
             return $transactionsByTag[$record->id];
         });
 
-        $columns[] = TextColumn::make('sum avg')->getStateUsing(function ($record) {
-            $tags = Tag::get();
-            $transactionsByTag = [];
+        $columns[] = TextColumn::make('count')->getStateUsing(function ($record) {
+            $values = $record->getMonthlyData(null, null);
 
-            foreach ($tags as $tag) {
-                $transactions = Transaction::where('tag_id', $tag->id)->get();
-                $transactionsByTag[$tag->id] = $transactions->avg('amount');
+            $transactionsByTag = [];
+            $columnNames = '';
+
+            if ($record->getTable() === 'tags') {
+                $columnNames = 'tag_id';
+            }
+
+            if ($record->getTable() === 'categories') {
+                $columnNames = 'category_id';
+            }
+
+            if ($record->getTable() === 'accounts') {
+                $columnNames = 'accounts';
+            }
+
+            if ($record->getTable() === 'recurring_items') {
+                $columnNames = 'recurring_items';
+            }
+
+            if ($record->getTable() === 'transactions') {
+                $columnNames = 'recurring_items';
+            }
+
+            foreach ($values as $value) {
+                $test = $value->id;
+
+                if ($columnNames === 'accounts') {
+                    $transactionsByTag[$value->id] = Transaction::count();
+
+                    return $transactionsByTag[$record->id];
+                }
+
+                if ($columnNames === 'recurring_items') {
+                    //                    dd($record);
+                    //                    dd($record->transactions);
+                    //                    dd($record);
+                    $transactionsByTag[$value->id] = TransactionRecurringItem::where('recurring_item_id', $test)->count();
+
+                    return $transactionsByTag[$value->id];
+                }
+
+                if ($columnNames === 'payee') {
+                    $test = $value->payee;
+                }
+
+                $transactionsByTag[$value->id] = Transaction::where($columnNames, $test)->count();
             }
 
             return $transactionsByTag[$record->id];
         });
 
-        $columns[] = TextColumn::make('count')->getStateUsing(function ($record) {
-            $tags = Tag::get();
+        $columns[] = TextColumn::make('sum avg')->getStateUsing(function ($record) {
+            $tags = $record->getMonthlyData(null, null);
             $transactionsByTag = [];
 
             foreach ($tags as $tag) {
-                $transactions = Transaction::where('tag_id', $tag->id)->count();
-                $transactionsByTag[$tag->id] = $transactions;
+                $transactions = Transaction::where('tag_id', $tag->id)->get();
+                $transactionsByTag[$tag->id] = $transactions->avg('amount');
             }
 
             return $transactionsByTag[$record->id];
