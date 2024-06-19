@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\TextMatchType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('payee_names', function (Blueprint $table) {
+        Schema::create('transaction_payees', function (Blueprint $table) {
             $table->id();
-            $table->string('payee_name', length: 300)->unique();
-            $table->enum('filter', TextMatchType::values());
+            $table->foreignId('transaction_id');
+            $table->foreignId('payee_id');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('payee_names');
+        Schema::dropIfExists('transactions_payee');
     }
 };

@@ -73,7 +73,7 @@ class DatabaseSeeder extends Seeder
 
         Transaction::create([
             'amount' => '50',
-            'payee' => 'boris',
+            //            'payee' => 'boris',
             'date' => now(),
             'notes' => Str::random(10),
             'transaction_source' => 'CSV import',

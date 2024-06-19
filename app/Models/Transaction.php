@@ -17,8 +17,10 @@ class Transaction extends Model
         'date',
         'status',
         'transaction_source',
-        'payee',
+        'team_id',
     ];
+
+    protected $with = ['payee'];
 
     public function team()
     {
@@ -36,4 +38,15 @@ class Transaction extends Model
     {
         return Transaction::get();
     }
+
+    public function payee()
+    {
+        return $this->belongsToMany(Payee::class, 'transaction_payees');
+    }
+
+    //    public static function test()
+    //    {
+    //        $test = Payee::where('id', 1)->get();
+    //        return $test;
+    //    }
 }

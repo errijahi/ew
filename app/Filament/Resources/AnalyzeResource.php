@@ -32,7 +32,7 @@ class AnalyzeResource extends Resource
         $columns = [
             TextColumn::make('name')
                 ->getStateUsing(function ($record) {
-                    return $record->name ?? ($record->account_name ?? $record->payee);
+                    return $record->name ?? ($record->account_name ?? $record->payee->pluck('name')->implode(', '));
                 }),
         ];
 

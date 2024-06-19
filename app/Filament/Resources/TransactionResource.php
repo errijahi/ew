@@ -24,7 +24,7 @@ class TransactionResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('amount'),
+                TextInput::make('amount')->numeric(),
                 TextInput::make('payee'),
                 TextInput::make('notes'),
                 DateTimePicker::make('date'),
@@ -38,7 +38,7 @@ class TransactionResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('amount'),
-                TextColumn::make('payee'),
+                TextColumn::make('payee.name'),
                 TextColumn::make('notes'),
                 TextColumn::make('date'),
                 TextColumn::make('transaction_source'),

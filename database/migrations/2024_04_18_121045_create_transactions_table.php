@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('amount');
             //           TODO: Must payee save to the table payee
-            $table->string('payee')->unique();
+            //            $table->string('payee')->unique();
             $table->string('notes');
             $table->date('date');
             $table->foreignId('team_id')->constrained();
