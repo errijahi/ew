@@ -28,33 +28,7 @@
 {{--                            <option value="custom">Custom Date Range</option>--}}
                         </x-filament::input.select>
                     </x-filament::input.wrapper>
-
-                    <!-- Custom date range input fields -->
-{{--                    <div id="customDateRange" style="display: none;">--}}
-{{--                        <x-filament::input.wrapper>--}}
-{{--                            <x-filament::input id="startDate" wire:model="startDate" type="date" />--}}
-{{--                        </x-filament::input.wrapper>--}}
-
-{{--                        <x-filament::input.wrapper>--}}
-{{--                            <x-filament::input id="endDate" wire:model="endDate" type="date" />--}}
-{{--                        </x-filament::input.wrapper>--}}
-{{--                    </div>--}}
                 </form>
             </div>
-
-{{--            <script>--}}
-{{--                document.addEventListener('DOMContentLoaded', function () {--}}
-{{--                    const timeRangeSelect = document.getElementById('timeRangeSelect');--}}
-{{--                    const customDateRange = document.getElementById('customDateRange');--}}
-
-{{--                    timeRangeSelect.addEventListener('change', function () {--}}
-{{--                        if (this.value === 'custom') {--}}
-{{--                            customDateRange.style.display = 'block';--}}
-{{--                        } else {--}}
-{{--                            customDateRange.style.display = 'none';--}}
-{{--                        }--}}
-{{--                    });--}}
-{{--                });--}}
-{{--            </script>--}}
         </div>
 </div>

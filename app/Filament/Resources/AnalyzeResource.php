@@ -3,7 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\AnalyzeResource\Pages;
+use App\Models\Account;
 use App\Models\Analyze;
+use App\Models\Category;
+use App\Models\Payee;
+use App\Models\RecurringItem;
+use App\Models\Tag;
 use App\Models\Transaction;
 use App\Models\TransactionRecurringItem;
 use Carbon\Carbon;
@@ -13,6 +18,7 @@ use Filament\Tables\Columns\Summarizers\Summarizer;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\Session;
 
 class AnalyzeResource extends Resource
 {
@@ -29,12 +35,34 @@ class AnalyzeResource extends Resource
                 ->view('livewire.table-filter'),
         ]);
 
-        $columns = [
-            TextColumn::make('name')
-                ->getStateUsing(function ($record) {
-                    return $record->name ?? ($record->account_name ?? $record->payee->pluck('name')->implode(', '));
-                }),
-        ];
+
+
+       $tagName = Tag::get()->pluck('name');
+       $value = session('key');
+
+        if($value === 'tag'){
+            $tagName = Tag::get()->pluck('name');
+        }
+        if($value === 'categories'){
+            $tagName = Category::get()->pluck('name');
+        }
+        if($value === 'account'){
+            $tagName = Account::get()->pluck('account_name');
+        }
+        if($value === 'recurring'){
+            $tagName = RecurringItem::get()->pluck('name');
+        }
+        if($value === 'payee'){
+            $tagName = Payee::get()->pluck('name');
+        }
+
+       $test = 'test';
+       $table->content(
+            view('livewire.your-table-view',['table' => $test, 'tagName' => $tagName])
+       );
+
+
+
 
         $selectedPeriod = session('status') ?? 'year';
         $timeRange = session('timeRange') ?? 'last 7 days';
@@ -55,24 +83,6 @@ class AnalyzeResource extends Resource
 
                 $monthName = Carbon::create()?->month($month)->format('F');
                 $columns[] = TextColumn::make('month_'.$month)
-                    ->summarize(
-                        Summarizer::make()
-                            ->using(function (Builder $query) use ($month): int {
-                                return Transaction::whereMonth('created_at', $month)
-                                    ->sum('amount');
-                            })
-                    )
-                    ->summarize(
-                        Summarizer::make()
-                            ->using(function (Builder $query) use ($month): int {
-                                $sum = Transaction::whereMonth('created_at', $month)->sum('amount');
-                                $count = Transaction::whereMonth('created_at', $month)->count();
-
-                                //TODO: there is a bag if one row is empty,second is full, and third is empty it returns avg divided by 2;
-                                return ($count - 1) > 0 ? ($sum / ($count - 1) === $sum ? $sum / $count : $sum / ($count - 1)) : $sum / 1;
-
-                            })
-                    )
                     ->label($monthName)
                     ->getStateUsing(function ($record) use ($month) {
                         $values = $record->getMonthlyData(null, null);
@@ -254,9 +264,6 @@ class AnalyzeResource extends Resource
                 }
 
                 if ($columnNames === 'recurring_items') {
-                    //                    dd($record);
-                    //                    dd($record->transactions);
-                    //                    dd($record);
                     $transactionsByTag[$value->id] = TransactionRecurringItem::where('recurring_item_id', $test)->count();
 
                     return $transactionsByTag[$value->id];

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\AnalyzeResource\Pages;
 
+use AllowDynamicProperties;
 use App\Filament\Resources\AnalyzeResource;
 use App\Models\Account;
 use App\Models\Category;
@@ -10,6 +11,7 @@ use App\Models\Tag;
 use App\Models\Transaction;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\Session;
 use JetBrains\PhpStorm\NoReturn;
 use Livewire\Attributes\On;
 
@@ -20,6 +22,9 @@ class ListAnalyzes extends ListRecords
     public string $status;
 
     public string $timeRange;
+    public mixed $tabValue;
+
+    public ?string $currentTab = 'tags';
 
     public function getTabs(): array
     {
@@ -34,33 +39,41 @@ class ListAnalyzes extends ListRecords
 
             $tabs[$slug] = Tab::make($name)
                 ->modifyQueryUsing(function ($query) use ($name, $teamId) {
+                    $key = '';
 
-                    if ($name === 'tags') {
-                        $test = Tag::where('team_id', $teamId);
+                    switch ($name) {
+                        case 'tags':
+                            $query = Tag::where('team_id', $teamId);
+                            $key = 'tag';
+                            break;
+                        case 'categories':
+                            $query = Category::where('team_id', $teamId);
+                            $key = 'categories';
+                            break;
+                        case 'accounts':
+                            $query = Account::where('team_id', $teamId);
+                            $key = 'account';
+                            break;
+                        case 'recurring':
+                            $query = RecurringItem::where('team_id', $teamId);
+                            $key = 'recurring';
+                            break;
+                        case 'payee':
+                            $query = Transaction::where('team_id', $teamId);
+                            $key = 'payee';
+                            break;
                     }
 
-                    if ($name === 'categories') {
-                        $test = Category::where('team_id', $teamId);
-                    }
+                    Session::put('key', $key);
+                    $this->dispatch('created');
 
-                    if ($name === 'accounts') {
-                        $test = Account::where('team_id', $teamId);
-                    }
-
-                    if ($name === 'recurring') {
-                        $test = RecurringItem::where('team_id', $teamId);
-                    }
-
-                    if ($name === 'payee') {
-                        $test = Transaction::where('team_id', $teamId);
-                    }
-
-                    return $test;
+                    return $query;
                 });
         }
 
         return $tabs;
     }
+
 
     #[NoReturn]
     public function createTimeRange(): void

@@ -13,9 +13,4 @@ class TransactionPayee extends Model
         'transaction_id',
         'payee_id',
     ];
-
-    //    public function payee()
-    //    {
-    //        return $this->hasMany();
-    //    }
 }
