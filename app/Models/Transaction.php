@@ -44,9 +44,8 @@ class Transaction extends Model
         return $this->belongsToMany(Payee::class, 'transaction_payees');
     }
 
-    //    public static function test()
-    //    {
-    //        $test = Payee::where('id', 1)->get();
-    //        return $test;
-    //    }
+    public function tag()
+    {
+        return $this->belongsTo(Tag::class);
+    }
 }

@@ -37,32 +37,26 @@ class AnalyzeResource extends Resource
 
 
 
-       $tagName = Tag::get()->pluck('name');
-       $value = session('key');
+        $selectedModel = Tag::get()->pluck('name');
+        $Model = session('key');
 
-        if($value === 'tag'){
-            $tagName = Tag::get()->pluck('name');
+        if ($Model === 'tag') {
+            $selectedModel = Tag::get();
         }
-        if($value === 'categories'){
-            $tagName = Category::get()->pluck('name');
+        if ($Model === 'categories') {
+            $selectedModel = Category::get()->pluck('name');
         }
-        if($value === 'account'){
-            $tagName = Account::get()->pluck('account_name');
+        if ($Model === 'account') {
+            $selectedModel = Account::get()->pluck('account_name');
         }
-        if($value === 'recurring'){
-            $tagName = RecurringItem::get()->pluck('name');
+        if ($Model === 'recurring') {
+            $selectedModel = RecurringItem::get()->pluck('name');
         }
-        if($value === 'payee'){
-            $tagName = Payee::get()->pluck('name');
+        if ($Model === 'payee') {
+            $selectedModel = Payee::get()->pluck('name');
         }
 
-       $test = 'test';
-       $table->content(
-            view('livewire.your-table-view',['table' => $test, 'tagName' => $tagName])
-       );
-
-
-
+        $test = 'test';
 
         $selectedPeriod = session('status') ?? 'year';
         $timeRange = session('timeRange') ?? 'last 7 days';
@@ -70,41 +64,56 @@ class AnalyzeResource extends Resource
         $currentYear = Carbon::now()->year;
         $startYear = $currentYear - 5;
 
+        $data = [];
+        $tableValues = [];
+        $values = Transaction::get();
+
         if ($selectedPeriod === 'month') {
-            $startMonth = Carbon::now()->month - 5;
+            $startMonth = Carbon::now()->subMonths(5)->month;
             $endMonth = Carbon::now()->month;
 
             if ($timeRange === 'last 3 months') {
-                $startMonth = Carbon::now()->month - 2;
+                $startMonth = Carbon::now()->subMonths(2)->month;
                 $endMonth = Carbon::now()->month;
             }
 
             for ($month = $startMonth; $month <= $endMonth; $month++) {
-
                 $monthName = Carbon::create()?->month($month)->format('F');
-                $columns[] = TextColumn::make('month_'.$month)
-                    ->label($monthName)
-                    ->getStateUsing(function ($record) use ($month) {
-                        $values = $record->getMonthlyData(null, null);
 
-                        $transactionData = [];
-                        foreach ($values as $value) {
-                            $tagId = $value->tag_id;
-                            $monthKey = $value->created_at->month;
+                $transactionData = [];
+                foreach ($values as $value) {
+                    $tagId = $value->tag_id;
+                    $monthKey = $value->created_at->month;
 
-                            if (isset($transactionData[$tagId][$monthKey])) {
-                                $transactionData[$tagId][$monthKey]['amount'] += $value->amount;
-                            } else {
-                                $transactionData[$tagId][$monthKey] = [
-                                    'amount' => $value->amount,
-                                ];
-                            }
-                        }
+                    if (isset($transactionData[$tagId][$monthKey])) {
+                        $transactionData[$tagId][$monthKey]['amount'] += $value->amount;
+                    } else {
+                        $transactionData[$tagId][$monthKey] = [
+                            'amount' => $value->amount,
+                        ];
+                    }
+                }
 
-                        return $transactionData[$record->id][$month] ?? null;
-                    });
+                $data[$monthName] = $transactionData;
+                $tableValues = $transactionData;
             }
-        } elseif ($selectedPeriod === 'year') {
+        }
+        
+
+        $table->content(
+            view('livewire.your-table-view', [
+                'table' => $test,
+                'tagName' => $selectedModel,
+                'transactionData' => $values,
+                'tableValues' => $tableValues,
+                'data' => $data
+            ])
+        );
+
+
+
+
+        if ($selectedPeriod === 'year') {
 
             if ($timeRange === 'last 3 years') {
                 $startYear = Carbon::now()->year - 2;
