@@ -37,24 +37,26 @@ class AnalyzeResource extends Resource
 
 
 
-        $selectedModel = Tag::get()->pluck('name');
+        $selectedModel = Tag::get();
         $Model = session('key');
 
         if ($Model === 'tag') {
             $selectedModel = Tag::get();
         }
         if ($Model === 'categories') {
-            $selectedModel = Category::get()->pluck('name');
+            $selectedModel = Category::get();
         }
         if ($Model === 'account') {
-            $selectedModel = Account::get()->pluck('account_name');
+            $selectedModel = Account::get();
         }
         if ($Model === 'recurring') {
-            $selectedModel = RecurringItem::get()->pluck('name');
+            $selectedModel = RecurringItem::get();
         }
         if ($Model === 'payee') {
-            $selectedModel = Payee::get()->pluck('name');
+            $selectedModel = Payee::get();
         }
+
+//        dd($selectedModel);
 
         $test = 'test';
 
@@ -81,8 +83,30 @@ class AnalyzeResource extends Resource
                 $monthName = Carbon::create()?->month($month)->format('F');
 
                 $transactionData = [];
+                $tagId = '';
                 foreach ($values as $value) {
-                    $tagId = $value->tag_id;
+
+//                   dd($value->payee[0]->id);
+//                   dd($selectedModel[0]->getTable());
+
+                    if($selectedModel[0]->getTable() === 'tags'){
+                        $tagId = $value->tag_id;
+                    }
+                    if($selectedModel[0]->getTable() === 'categories'){
+                        $tagId = $value->category_id;
+                    }
+                    if($selectedModel[0]->getTable() === 'accounts'){
+                        $tagId = $value->team->accounts[0]->id;
+                    }
+                    if($selectedModel[0]->getTable() === 'recurring_items'){
+                        $tagId = $value->tag_id;
+                    }
+                    if($selectedModel[0]->getTable() === 'payees'){
+                        $tagId = $value->payee[0]->id ?? '0';
+                    }
+
+
+//                    $tagId = $value->tag_id;
                     $monthKey = $value->created_at->month;
 
                     if (isset($transactionData[$tagId][$monthKey])) {
@@ -98,7 +122,7 @@ class AnalyzeResource extends Resource
                 $tableValues = $transactionData;
             }
         }
-        
+
 
         $table->content(
             view('livewire.your-table-view', [

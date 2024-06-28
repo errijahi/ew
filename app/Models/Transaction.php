@@ -29,7 +29,7 @@ class Transaction extends Model
 
     public function recurring()
     {
-        dd('test');
+//        dd('test');
 
         return $this->hasMany(TransactionRecurringItem::class);
     }
@@ -41,11 +41,11 @@ class Transaction extends Model
 
     public function payee()
     {
-        return $this->belongsToMany(Payee::class, 'transaction_payees');
+        return $this->belongsToMany(Payee::class, 'transaction_payees', 'payee_id','transaction_id');
     }
 
-    public function tag()
-    {
-        return $this->belongsTo(Tag::class);
-    }
+//    public function tag()
+//    {
+//        return $this->belongsTo(Tag::class);
+//    }
 }

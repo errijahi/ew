@@ -12,10 +12,10 @@
             <tbody>
             @foreach ($tagName as $tagId => $tag)
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ $tag->name }}</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ $tag->name ?? $tag->account_name }}</th>
                     @foreach (array_keys($data) as $monthName)
                         <td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-500 dark:text-gray-400">
-                            {{ $data[$monthName][$tagId][$monthName]['amount'] ?? 'N/A' }}
+                            {{ $tableValues[$tag->id][DateTime::createFromFormat('F', $monthName)->format('n')]['amount'] ?? "0"}}
                         </td>
                     @endforeach
                 </tr>
