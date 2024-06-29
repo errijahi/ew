@@ -14,11 +14,8 @@ use App\Models\TransactionRecurringItem;
 use Carbon\Carbon;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\SelectAction;
-use Filament\Tables\Columns\Summarizers\Summarizer;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Query\Builder;
-use Illuminate\Support\Facades\Session;
 
 class AnalyzeResource extends Resource
 {
@@ -30,12 +27,11 @@ class AnalyzeResource extends Resource
 
     public static function table(Table $table): Table
     {
+
         $table->headerActions([
             SelectAction::make('make custom table header filters')
                 ->view('livewire.table-filter'),
         ]);
-
-
 
         $selectedModel = Tag::get();
         $Model = session('key');
@@ -55,8 +51,6 @@ class AnalyzeResource extends Resource
         if ($Model === 'payee') {
             $selectedModel = Payee::get();
         }
-
-//        dd($selectedModel);
 
         $test = 'test';
 
@@ -83,30 +77,8 @@ class AnalyzeResource extends Resource
                 $monthName = Carbon::create()?->month($month)->format('F');
 
                 $transactionData = [];
-                $tagId = '';
                 foreach ($values as $value) {
-
-//                   dd($value->payee[0]->id);
-//                   dd($selectedModel[0]->getTable());
-
-                    if($selectedModel[0]->getTable() === 'tags'){
-                        $tagId = $value->tag_id;
-                    }
-                    if($selectedModel[0]->getTable() === 'categories'){
-                        $tagId = $value->category_id;
-                    }
-                    if($selectedModel[0]->getTable() === 'accounts'){
-                        $tagId = $value->team->accounts[0]->id;
-                    }
-                    if($selectedModel[0]->getTable() === 'recurring_items'){
-                        $tagId = $value->tag_id;
-                    }
-                    if($selectedModel[0]->getTable() === 'payees'){
-                        $tagId = $value->payee[0]->id ?? '0';
-                    }
-
-
-//                    $tagId = $value->tag_id;
+                    $tagId = self::getSelectedModel($selectedModel, $value);
                     $monthKey = $value->created_at->month;
 
                     if (isset($transactionData[$tagId][$monthKey])) {
@@ -121,50 +93,28 @@ class AnalyzeResource extends Resource
                 $data[$monthName] = $transactionData;
                 $tableValues = $transactionData;
             }
-        }
-
-
-        $table->content(
-            view('livewire.your-table-view', [
-                'table' => $test,
-                'tagName' => $selectedModel,
-                'transactionData' => $values,
-                'tableValues' => $tableValues,
-                'data' => $data
-            ])
-        );
-
-
-
-
-        if ($selectedPeriod === 'year') {
-
+        } elseif ($selectedPeriod === 'year') {
             if ($timeRange === 'last 3 years') {
                 $startYear = Carbon::now()->year - 2;
             }
 
             for ($year = $startYear; $year <= $currentYear; $year++) {
-                $columns[] = TextColumn::make('year_'.$year)
-                    ->label((string) $year)
-                    ->getStateUsing(function ($record) use ($year) {
-                        $values = $record->getMonthlyData(null, $year);
+                $transactionData = [];
+                foreach ($values as $value) {
+                    $tagId = self::getSelectedModel($selectedModel, $value);
+                    $yearKey = $value->created_at->year;
 
-                        $transactionData = [];
-                        foreach ($values as $value) {
-                            $tagId = $value->tag_id;
-                            $yearKey = $value->created_at->year;
+                    if (isset($transactionData[$tagId][$yearKey])) {
+                        $transactionData[$tagId][$yearKey]['amount'] += $value->amount;
+                    } else {
+                        $transactionData[$tagId][$yearKey] = [
+                            'amount' => $value->amount,
+                        ];
+                    }
+                }
 
-                            if (isset($transactionData[$tagId][$yearKey])) {
-                                $transactionData[$tagId][$yearKey]['amount'] += $value->amount;
-                            } else {
-                                $transactionData[$tagId][$yearKey] = [
-                                    'amount' => $value->amount,
-                                ];
-                            }
-                        }
-
-                        return $transactionData[$record->id][$year] ?? null;
-                    });
+                $data[$year] = $transactionData;
+                $tableValues = $transactionData;
             }
         } elseif ($selectedPeriod === 'week') {
             $numberOfWeeks = 3;
@@ -187,30 +137,25 @@ class AnalyzeResource extends Resource
                 $startOfWeek->addWeek();
             }
 
-            foreach ($weeks as $index => $week) {
+            foreach ($weeks as $week) {
                 $weekLabel = $week['start']->format('d M').' - '.$week['end']->format('d M');
 
-                $columns[] = TextColumn::make('week_'.$index)
-                    ->label($weekLabel)
-                    ->getStateUsing(function ($record) use ($week) {
-                        $values = $record->getMonthlyData($week['start'], $week['end']);
+                $transactionData = [];
+                foreach ($values as $value) {
+                    $tagId = self::getSelectedModel($selectedModel, $value);
+                    $weekKey = $value->created_at->weekOfYear;
 
-                        $transactionData = [];
-                        foreach ($values as $value) {
-                            $tagId = $value->tag_id;
-                            $weekKey = $value->created_at->weekOfYear;
+                    if (isset($transactionData[$tagId][$weekKey])) {
+                        $transactionData[$tagId][$weekKey]['amount'] += $value->amount;
+                    } else {
+                        $transactionData[$tagId][$weekKey] = [
+                            'amount' => $value->amount,
+                        ];
+                    }
+                }
 
-                            if (isset($transactionData[$tagId][$weekKey])) {
-                                $transactionData[$tagId][$weekKey]['amount'] += $value->amount;
-                            } else {
-                                $transactionData[$tagId][$weekKey] = [
-                                    'amount' => $value->amount,
-                                ];
-                            }
-                        }
-
-                        return $transactionData[$record->id][$week['start']->weekOfYear] ?? null;
-                    });
+                $data[$weekLabel] = $transactionData;
+                $tableValues = $transactionData;
             }
         } elseif ($selectedPeriod === 'day') {
             $numberOfDays = 6;
@@ -225,29 +170,33 @@ class AnalyzeResource extends Resource
             for ($day = $startDate; $day <= $endDate; $day->addDay()) {
                 $dayLabel = $day->format('d M');
 
-                $columns[] = TextColumn::make('day_'.$day->day)
-                    ->label($dayLabel)
-                    ->getStateUsing(function ($record) use ($day) {
-                        $values = $record->getMonthlyData($day, null);
+                $transactionData = [];
+                foreach ($values as $value) {
+                    $tagId = self::getSelectedModel($selectedModel, $value);
+                    $dayKey = $value->created_at->day;
 
-                        $transactionData = [];
-                        foreach ($values as $value) {
-                            $tagId = $value->tag_id;
-                            $dayKey = $value->created_at->day;
-
-                            if (isset($transactionData[$tagId][$dayKey])) {
-                                $transactionData[$tagId][$dayKey]['amount'] += $value->amount;
-                            } else {
-                                $transactionData[$tagId][$dayKey] = [
-                                    'amount' => $value->amount,
-                                ];
-                            }
-                        }
-
-                        return $transactionData[$record->id][$day->day] ?? null;
-                    });
+                    if (isset($transactionData[$tagId][$dayKey])) {
+                        $transactionData[$tagId][$dayKey]['amount'] += $value->amount;
+                    } else {
+                        $transactionData[$tagId][$dayKey] = [
+                            'amount' => $value->amount,
+                        ];
+                    }
+                }
+                $data[$dayLabel] = $transactionData;
+                $tableValues = $transactionData;
             }
         }
+
+        $table->content(
+            view('livewire.your-table-view', [
+                'table' => $test,
+                'tagName' => $selectedModel,
+                'transactionData' => $values,
+                'tableValues' => $tableValues,
+                'data' => $data,
+            ])
+        );
 
         $columns[] = TextColumn::make('total')->getStateUsing(function ($record) {
             $tags = $record->getMonthlyData(null, null);
@@ -332,5 +281,28 @@ class AnalyzeResource extends Resource
         return [
             'index' => Pages\ListAnalyzes::route('/'),
         ];
+    }
+
+    public static function getSelectedModel($selectedModel, $value)
+    {
+        $ModelValues = '';
+
+        if ($selectedModel[0]->getTable() === 'tags') {
+            $ModelValues = $value->tag_id;
+        }
+        if ($selectedModel[0]->getTable() === 'categories') {
+            $ModelValues = $value->category_id;
+        }
+        if ($selectedModel[0]->getTable() === 'accounts') {
+            $ModelValues = $value->team->accounts[0]->id;
+        }
+        if ($selectedModel[0]->getTable() === 'recurring_items') {
+            $ModelValues = $value->recurringItem[0]->id ?? '0';
+        }
+        if ($selectedModel[0]->getTable() === 'payees') {
+            $ModelValues = $value->payee[0]->id ?? '0';
+        }
+
+        return $ModelValues;
     }
 }

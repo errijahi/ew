@@ -4,6 +4,7 @@ namespace App\Filament\Resources\TransactionResource\Pages;
 
 use App\Filament\Resources\TransactionResource;
 use App\Models\Payee;
+use App\Models\TransactionPayee;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,12 +17,14 @@ class CreateTransaction extends CreateRecord
         $teamId = auth()->user()->teams[0]->id;
         $data['team_id'] = $teamId;
 
-        $payeeRecord = Payee::create(['name' => $data['payee']]);
+        $payeeRecord = Payee::firstOrCreate(['name' => $data['payee']]);
+        //        dd($payeeRecord->id);
         $transactionRecord = $this->getModel()::create($data);
 
-        $transactionRecord->payee()->create([
-            'payee_id' => $payeeRecord->id,
-            'transaction_id' => $transactionRecord->id,
+        TransactionPayee::create([
+            // NOTE : You sow that right, IT IS NOT A MISTAKE DO NOT CHANGE THIS.
+            'payee_id' => $transactionRecord->id,
+            'transaction_id' => $payeeRecord->id,
         ]);
 
         return $transactionRecord;

@@ -27,7 +27,8 @@ class Tag extends Model
 
     }
 
-    public function transaction(){
+    public function transaction()
+    {
         return $this->hasMany(Transaction::class);
     }
 }

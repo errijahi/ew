@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\AnalyzeResource\Pages;
 
-use AllowDynamicProperties;
 use App\Filament\Resources\AnalyzeResource;
 use App\Models\Account;
 use App\Models\Category;
@@ -22,6 +21,7 @@ class ListAnalyzes extends ListRecords
     public string $status;
 
     public string $timeRange;
+
     public mixed $tabValue;
 
     public ?string $currentTab = 'tags';
@@ -73,7 +73,6 @@ class ListAnalyzes extends ListRecords
 
         return $tabs;
     }
-
 
     #[NoReturn]
     public function createTimeRange(): void
