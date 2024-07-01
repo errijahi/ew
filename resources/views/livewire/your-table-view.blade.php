@@ -18,6 +18,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-500 dark:text-gray-400">
                             @if(is_string($monthName) && !str_contains($monthName, ' '))
                                  {{ $tableValues[$tag->id][DateTime::createFromFormat('F', $monthName)->format('n')]['amount'] ?? "0"}}
+
                             @elseif(is_string($monthName))
                                 @php
                                     $startDate = Carbon\Carbon::createFromFormat('d M', explode(' - ', $monthName)[0]);
@@ -27,13 +28,13 @@
                                     $day = $fullDate->day;
                                 @endphp
                                 @if( (is_string($monthName) && str_contains($monthName, ' - ')))
-                                        {{ $tableValues[$tagId][$weekOfYear]['amount'] ?? "0"}}
+                                        {{ $tableValues[$tag->id][$weekOfYear]['amount'] ?? "0"}}
                                 @else
-                                    {{ $tableValues[$tagId][$day]['amount'] ?? "0"}}
+                                    {{ $tableValues[$tag->id][$day]['amount'] ?? "0"}}
                                 @endif
 
                             @else
-                                {{ $tableValues[$tagId][$monthName]['amount'] ?? "0"}}
+                                {{ $tableValues[$tag->id][$monthName]['amount'] ?? "0"}}
                             @endif
                         </td>
                     @endforeach
@@ -45,14 +46,14 @@
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Sum</th>
 {{--                {{dd($sums)}}--}}
                 @foreach (array_keys($data) as $monthName)
-{{--                        {{dd($sum)}}--}}
+{{--                        {{dd($sums)}}--}}
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{$sums[$monthName]}}</th>
                 @endforeach
             </tr>
             <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Average</th>
                 @foreach (array_keys($data) as $monthName)
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Test</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{$averages[$monthName]}}</th>
                 @endforeach
             </tr>
             </tfoot>
