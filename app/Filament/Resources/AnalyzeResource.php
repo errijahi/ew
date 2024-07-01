@@ -63,6 +63,7 @@ class AnalyzeResource extends Resource
         $data = [];
         $tableValues = [];
         $values = Transaction::get();
+        $sums = [];
 
         if ($selectedPeriod === 'month') {
             $startMonth = Carbon::now()->subMonths(5)->month;
@@ -92,6 +93,20 @@ class AnalyzeResource extends Resource
 
                 $data[$monthName] = $transactionData;
                 $tableValues = $transactionData;
+
+                foreach ($selectedModel as $model) {
+                    $tagId = $model->id;
+                    $transactions = Transaction::where('tag_id', $tagId)
+                        ->whereMonth('created_at', $month)
+                        ->sum('amount');
+
+                    if (! isset($sums[$monthName])) {
+                        $sums[$monthName] = 0; // Initialize if not already set
+                    }
+
+                    $sums[$monthName] += $transactions; // Accumulate the sum for the month
+                }
+
             }
         } elseif ($selectedPeriod === 'year') {
             if ($timeRange === 'last 3 years') {
@@ -115,6 +130,19 @@ class AnalyzeResource extends Resource
 
                 $data[$year] = $transactionData;
                 $tableValues = $transactionData;
+
+                foreach ($selectedModel as $model) {
+                    $tagId = $model->id;
+                    $transactions = Transaction::where('tag_id', $tagId)
+                        ->whereYear('created_at', $year)
+                        ->sum('amount');
+
+                    if (! isset($sums[$year])) {
+                        $sums[$year] = 0; // Initialize if not already set
+                    }
+
+                    $sums[$year] += $transactions; // Accumulate the sum for the month
+                }
             }
         } elseif ($selectedPeriod === 'week') {
             $numberOfWeeks = 3;
@@ -156,6 +184,24 @@ class AnalyzeResource extends Resource
 
                 $data[$weekLabel] = $transactionData;
                 $tableValues = $transactionData;
+
+                foreach ($selectedModel as $model) {
+                    $tagId = $model->id;
+                    $transactions = Transaction::where('tag_id', $tagId)
+                        ->whereBetween('created_at', [$week['start'], $week['end']])
+                        ->sum('amount');
+
+                    $startFormatted = $week['start']->format('d M');
+                    $endFormatted = $week['end']->format('d M');
+
+                    $weekKey = "$startFormatted - $endFormatted";
+
+                    if (! isset($sums[$weekKey])) {
+                        $sums[$weekKey] = 0;
+                    }
+
+                    $sums[$weekKey] += $transactions;
+                }
             }
         } elseif ($selectedPeriod === 'day') {
             $numberOfDays = 6;
@@ -182,12 +228,30 @@ class AnalyzeResource extends Resource
                             'amount' => $value->amount,
                         ];
                     }
+
+                    $data[$dayLabel] = $transactionData;
+                    $tableValues = $transactionData;
+
+                    foreach ($selectedModel as $model) {
+                        $tagId = $model->id;
+                        $transactions = Transaction::where('tag_id', $tagId)
+                            ->whereDate('created_at', $day->format('Y-m-d'))
+                            ->sum('amount');
+
+                        $startFormatted = $startDate->format('d M');
+
+                        if (! isset($sums[$startFormatted])) {
+                            $sums[$startFormatted] = 0;
+                        }
+
+                        $sums[$startFormatted] += $transactions;
+                    }
                 }
-                $data[$dayLabel] = $transactionData;
-                $tableValues = $transactionData;
             }
+
         }
 
+        //       dd($sums);
         $table->content(
             view('livewire.your-table-view', [
                 'table' => $test,
@@ -195,20 +259,9 @@ class AnalyzeResource extends Resource
                 'transactionData' => $values,
                 'tableValues' => $tableValues,
                 'data' => $data,
+                'sums' => $sums,
             ])
         );
-
-        $columns[] = TextColumn::make('total')->getStateUsing(function ($record) {
-            $tags = $record->getMonthlyData(null, null);
-            $transactionsByTag = [];
-
-            foreach ($tags as $tag) {
-                $transactions = Transaction::where('tag_id', $tag->id)->get();
-                $transactionsByTag[$tag->id] = $transactions->sum('amount');
-            }
-
-            return $transactionsByTag[$record->id];
-        });
 
         $columns[] = TextColumn::make('count')->getStateUsing(function ($record) {
             $values = $record->getMonthlyData(null, null);
