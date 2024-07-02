@@ -23,6 +23,7 @@
                                 @php
                                     $startDate = Carbon\Carbon::createFromFormat('d M', explode(' - ', $monthName)[0]);
                                     $currentYear = Carbon\Carbon::now()->year;
+                                    $currentMonth = Carbon\Carbon::now()->month;
                                     $fullDate = Carbon\Carbon::createFromFormat('d M Y', $startDate->format('d M') . ' ' . $currentYear);
                                     $weekOfYear = $fullDate->weekOfYear;
                                     $day = $fullDate->day;
@@ -30,7 +31,28 @@
                                 @if( (is_string($monthName) && str_contains($monthName, ' - ')))
                                         {{ $tableValues[$tag->id][$weekOfYear]['amount'] ?? "0"}}
                                 @else
-                                    {{ $tableValues[$tag->id][$day]['amount'] ?? "0"}}
+                                    @php
+                                        $results = [];
+                                    @endphp
+
+                                    @for($month = 1; $month <= 12; $month++)
+                                        @php
+                                            $amount = $tableValues[$tag->id][$currentYear][$month][$day]['amount'] ?? 0;
+                                        @endphp
+                                        @if($amount !== 0)
+                                            @php
+                                                $results[] = $amount;
+                                            @endphp
+                                        @endif
+                                    @endfor
+
+                                    @foreach ($results as $result)
+                                        {{ $result }}
+                                    @endforeach
+
+                                    @if (empty($results))
+                                        0
+                                    @endif
                                 @endif
 
                             @else
@@ -44,9 +66,7 @@
             <tfoot class="bg-gray-50 dark:bg-gray-900">
             <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Sum</th>
-{{--                {{dd($sums)}}--}}
                 @foreach (array_keys($data) as $monthName)
-{{--                        {{dd($sums)}}--}}
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{$sums[$monthName]}}</th>
                 @endforeach
             </tr>

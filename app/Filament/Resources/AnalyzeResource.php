@@ -10,7 +10,6 @@ use App\Models\Payee;
 use App\Models\RecurringItem;
 use App\Models\Tag;
 use App\Models\Transaction;
-use App\Models\TransactionRecurringItem;
 use Carbon\Carbon;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\SelectAction;
@@ -153,41 +152,33 @@ class AnalyzeResource extends Resource
                 foreach ($selectedModel as $model) {
                     $tagId = $model->id;
 
-                    // Fetch sum of transactions for the current tag and year
                     $transactionsSum = Transaction::where('tag_id', $tagId)
                         ->whereYear('created_at', $year)
                         ->sum('amount');
 
-                    // Fetch transactions with amount > 0
                     $transactionsCount = Transaction::where('tag_id', $tagId)
                         ->whereYear('created_at', $year)
                         ->where('amount', '>', 0)
                         ->count();
 
-                    // Only consider tags with transactions having amount > 0
                     if ($transactionsSum > 0) {
-                        // Accumulate the total sum for the year
                         $totalTransactionsSum += $transactionsSum;
 
-                        // Increment the count of valid tags
                         $totalTagsCount++;
                     }
                 }
 
-                // Store the total sum in the appropriate structure
                 if (! isset($sums[$year])) {
                     $sums[$year] = 0;
                 }
                 $sums[$year] += $totalTransactionsSum;
 
-                // Calculate the average for the entire year
                 if ($totalTagsCount > 0) {
                     $averageAmount = $totalTransactionsSum / $totalTagsCount;
                 } else {
-                    $averageAmount = 0; // Default to 0 if no valid transactions
+                    $averageAmount = 0;
                 }
 
-                // Store the average in the appropriate structure
                 $averages[$year] = $averageAmount;
             }
         } elseif ($selectedPeriod === 'week') {
@@ -270,7 +261,7 @@ class AnalyzeResource extends Resource
                 $averages[$weekLabel] = $averageAmount;
             }
         } elseif ($selectedPeriod === 'day') {
-            $numberOfDays = 6;
+            $numberOfDays = 7;
 
             if ($timeRange === 'last 30 days') {
                 $numberOfDays = 30;
@@ -282,25 +273,15 @@ class AnalyzeResource extends Resource
             for ($day = $startDate; $day <= $endDate; $day->addDay()) {
                 $dayLabel = $day->format('d M');
 
-                $transactionData = [];
                 $totalTransactionsSum = 0;
                 $totalTagsCount = 0;
 
-                foreach ($values as $value) {
-                    $tagId = self::getSelectedModel($selectedModel, $value);
-                    $dayKey = $value->created_at->day;
+                $startDate = Carbon::now()->subDays($numberOfDays);
+                $endDate = Carbon::now();
+                $transactionData = self::getTransactionData($selectedModel, $startDate, $endDate);
 
-                    if (isset($transactionData[$tagId][$dayKey])) {
-                        $transactionData[$tagId][$dayKey]['amount'] += $value->amount;
-                    } else {
-                        $transactionData[$tagId][$dayKey] = [
-                            'amount' => $value->amount,
-                        ];
-                    }
-
-                    $data[$dayLabel] = $transactionData;
-                    $tableValues = $transactionData;
-                }
+                $data[$dayLabel] = $transactionData;
+                $tableValues = $transactionData;
 
                 foreach ($selectedModel as $model) {
                     $tagId = $model->id;
@@ -349,68 +330,7 @@ class AnalyzeResource extends Resource
             ])
         );
 
-        $columns[] = TextColumn::make('count')->getStateUsing(function ($record) {
-            $values = $record->getMonthlyData(null, null);
-
-            $transactionsByTag = [];
-            $columnNames = '';
-
-            if ($record->getTable() === 'tags') {
-                $columnNames = 'tag_id';
-            }
-
-            if ($record->getTable() === 'categories') {
-                $columnNames = 'category_id';
-            }
-
-            if ($record->getTable() === 'accounts') {
-                $columnNames = 'accounts';
-            }
-
-            if ($record->getTable() === 'recurring_items') {
-                $columnNames = 'recurring_items';
-            }
-
-            if ($record->getTable() === 'transactions') {
-                $columnNames = 'recurring_items';
-            }
-
-            foreach ($values as $value) {
-                $test = $value->id;
-
-                if ($columnNames === 'accounts') {
-                    $transactionsByTag[$value->id] = Transaction::count();
-
-                    return $transactionsByTag[$record->id];
-                }
-
-                if ($columnNames === 'recurring_items') {
-                    $transactionsByTag[$value->id] = TransactionRecurringItem::where('recurring_item_id', $test)->count();
-
-                    return $transactionsByTag[$value->id];
-                }
-
-                if ($columnNames === 'payee') {
-                    $test = $value->payee;
-                }
-
-                $transactionsByTag[$value->id] = Transaction::where($columnNames, $test)->count();
-            }
-
-            return $transactionsByTag[$record->id];
-        });
-
-        $columns[] = TextColumn::make('sum avg')->getStateUsing(function ($record) {
-            $tags = $record->getMonthlyData(null, null);
-            $transactionsByTag = [];
-
-            foreach ($tags as $tag) {
-                $transactions = Transaction::where('tag_id', $tag->id)->get();
-                $transactionsByTag[$tag->id] = $transactions->avg('amount');
-            }
-
-            return $transactionsByTag[$record->id];
-        });
+        $columns[] = TextColumn::make('table return placeholder');
 
         return $table->columns($columns);
     }
@@ -443,5 +363,29 @@ class AnalyzeResource extends Resource
         }
 
         return $ModelValues;
+    }
+
+    public static function getTransactionData($selectedModel, $startDate, $endDate)
+    {
+        $transactionData = Transaction::whereBetween('created_at', [$startDate, $endDate])->get();
+        $transactionAmounts = [];
+
+        foreach ($transactionData as $value) {
+            $yearKey = $value->created_at->year;
+            $monthKey = $value->created_at->month;
+            $dayKey = $value->created_at->day;
+
+            $tagId = self::getSelectedModel($selectedModel, $value);
+
+            if (isset($transactionAmounts[$tagId][$yearKey][$monthKey][$dayKey])) {
+                $transactionAmounts[$tagId][$yearKey][$monthKey][$dayKey]['amount'] += $value->amount;
+            } else {
+                $transactionAmounts[$tagId][$yearKey][$monthKey][$dayKey] = [
+                    'amount' => $value->amount,
+                ];
+            }
+        }
+
+        return $transactionAmounts;
     }
 }
