@@ -66,34 +66,43 @@ class AnalyzeResource extends Resource
         $averages = [];
 
         if ($selectedPeriod === 'month') {
-            $startMonth = Carbon::now()->subMonths(5)->month;
-            $endMonth = Carbon::now()->month;
+            $startDate = Carbon::now()->subMonths(5)->startOfMonth();
+            $endDate = Carbon::now()->endOfMonth();
 
             if ($timeRange === 'last 3 months') {
-                $startMonth = Carbon::now()->subMonths(2)->month;
-                $endMonth = Carbon::now()->month;
+                $startDate = Carbon::now()->subMonths(2)->startOfMonth();
+                $endDate = Carbon::now()->endOfMonth();
             }
 
-            for ($month = $startMonth; $month <= $endMonth; $month++) {
-                $monthName = Carbon::create()?->month($month)->format('F');
+            $currentDate = $startDate->copy();
+
+            while ($currentDate <= $endDate) {
+                $monthName = $currentDate->format('F');
+                $year = $currentDate->year;
 
                 $transactionData = [];
                 foreach ($values as $value) {
                     $tagId = self::getSelectedModel($selectedModel, $value);
-                    $monthKey = $value->created_at->month;
+                    $monthKey = $value->created_at->format('F');
+                    $yearKey = $value->created_at->year;
 
-                    if (isset($transactionData[$tagId][$monthKey])) {
-                        $transactionData[$tagId][$monthKey]['amount'] += $value->amount;
+                    //                    dd($tagId);
+
+                    if (isset($transactionData[$tagId][$yearKey][$monthKey])) {
+                        $transactionData[$tagId][$yearKey][$monthKey]['amount'] += $value->amount;
                     } else {
-                        $transactionData[$tagId][$monthKey] = [
+                        $transactionData[$tagId][$yearKey][$monthKey] = [
                             'amount' => $value->amount,
                         ];
                     }
                 }
 
-                $data[$monthName] = $transactionData;
-                $tableValues = $transactionData;
+                // Aggregate the data into a common key without year
+                if (! isset($data[$monthName])) {
+                    $data[$monthName] = [];
+                }
 
+                $tableValues = $transactionData;
                 $totalTransactionsSum = 0;
                 $totalTagsCount = 0;
 
@@ -101,7 +110,8 @@ class AnalyzeResource extends Resource
                     $tagId = $model->id;
 
                     $transactionsSum = Transaction::where('tag_id', $tagId)
-                        ->whereMonth('created_at', $month)
+                        ->whereYear('created_at', $year)
+                        ->whereMonth('created_at', $currentDate->month)
                         ->sum('amount');
 
                     if ($transactionsSum > 0) {
@@ -122,6 +132,9 @@ class AnalyzeResource extends Resource
                 }
 
                 $averages[$monthName] = $averageAmount;
+
+                // Move to the next month
+                $currentDate->addMonth();
             }
         } elseif ($selectedPeriod === 'year') {
             if ($timeRange === 'last 3 years') {
@@ -318,6 +331,7 @@ class AnalyzeResource extends Resource
             }
         }
 
+        //       dd($tableValues);
         $table->content(
             view('livewire.your-table-view', [
                 'table' => $test,

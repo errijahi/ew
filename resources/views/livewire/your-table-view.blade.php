@@ -14,11 +14,12 @@
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ $tag->name ?? $tag->account_name }}</th>
                     @foreach (array_keys($data) as $monthName)
-{{--                        {{dd($data)}}--}}
                         <td class="px-6 py-4 whitespace-nowrap text-xs font-medium text-gray-500 dark:text-gray-400">
+                            @php
+                                $currentYear2 = Carbon\Carbon::now()->year;
+                            @endphp
                             @if(is_string($monthName) && !str_contains($monthName, ' '))
-                                 {{ $tableValues[$tag->id][DateTime::createFromFormat('F', $monthName)->format('n')]['amount'] ?? "0"}}
-
+                                {{ $tableValues[$tag->id][$currentYear2][$monthName]['amount'] ?? "0"}}
                             @elseif(is_string($monthName))
                                 @php
                                     $startDate = Carbon\Carbon::createFromFormat('d M', explode(' - ', $monthName)[0]);
