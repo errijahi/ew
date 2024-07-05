@@ -318,6 +318,7 @@ class AnalyzeResource extends Resource
                     $sums[$dayLabel] = 0;
                 }
                 $sums[$dayLabel] += $totalTransactionsSum;
+//                dd($totalTransactionsSum);
 
                 if ($totalTagsCount > 0) {
                     $averageAmount = $totalTransactionsSum / $totalTagsCount;
@@ -329,6 +330,7 @@ class AnalyzeResource extends Resource
             }
         }
 
+//        dd($sums);
         $table->content(
             view('livewire.your-table-view', [
                 'table' => $test,
@@ -400,3 +402,9 @@ class AnalyzeResource extends Resource
         return $transactionAmounts;
     }
 }
+
+// It seems that all of these errors are connected to the pivot tables and db
+// accounts has bug  in days, weeks, months, years does not show correct data with footer
+// recurring has bug  in days, weeks, months, years does not show correct data with footer
+// payee has bug  in days, weeks, months, years does not show correct data with footer
+
