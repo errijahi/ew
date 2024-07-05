@@ -86,8 +86,6 @@ class AnalyzeResource extends Resource
                     $monthKey = $value->created_at->format('F');
                     $yearKey = $value->created_at->year;
 
-                    //                    dd($tagId);
-
                     if (isset($transactionData[$tagId][$yearKey][$monthKey])) {
                         $transactionData[$tagId][$yearKey][$monthKey]['amount'] += $value->amount;
                     } else {
@@ -331,7 +329,6 @@ class AnalyzeResource extends Resource
             }
         }
 
-        //       dd($tableValues);
         $table->content(
             view('livewire.your-table-view', [
                 'table' => $test,
@@ -386,7 +383,7 @@ class AnalyzeResource extends Resource
 
         foreach ($transactionData as $value) {
             $yearKey = $value->created_at->year;
-            $monthKey = $value->created_at->month;
+            $monthKey = $value->created_at->format('M');
             $dayKey = $value->created_at->day;
 
             $tagId = self::getSelectedModel($selectedModel, $value);

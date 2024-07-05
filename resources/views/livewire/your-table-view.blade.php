@@ -47,23 +47,13 @@
                                     @php
                                         $results = [];
                                     @endphp
-
-                                    @for($month = 1; $month <= 12; $month++)
                                         @php
-                                            $amount = $tableValues[$tag->id][$currentYear][$month][$day]['amount'] ?? 0;
+                                            $month = explode(' ',$monthName)[1];
+                                            $amount = $tableValues[$tag->id][$currentYear][explode(' ',$monthName)[1]][$day]['amount'] ?? 0;
                                             if ($amount !== 0) {
                                                 $results[] = $amount;
                                             }
                                         @endphp
-                                    @endfor
-
-                                    @foreach ($results as $result)
-                                        {{ $result }}
-                                    @endforeach
-
-                                    @if (empty($results))
-                                        0
-                                    @endif
                                 @endif
                             @else
                                 @php
