@@ -55,6 +55,9 @@ class AnalyzeResource extends Resource
 
         $selectedPeriod = session('status') ?? 'year';
         $timeRange = session('timeRange') ?? 'last 7 days';
+        $dateRange = session('dateRange') ?? 'tito';
+
+        //      dd($dateRange);
 
         $currentYear = Carbon::now()->year;
         $startYear = $currentYear - 5;
@@ -318,7 +321,7 @@ class AnalyzeResource extends Resource
                     $sums[$dayLabel] = 0;
                 }
                 $sums[$dayLabel] += $totalTransactionsSum;
-//                dd($totalTransactionsSum);
+                //                dd($totalTransactionsSum);
 
                 if ($totalTagsCount > 0) {
                     $averageAmount = $totalTransactionsSum / $totalTagsCount;
@@ -330,7 +333,7 @@ class AnalyzeResource extends Resource
             }
         }
 
-//        dd($sums);
+        //        dd($sums);
         $table->content(
             view('livewire.your-table-view', [
                 'table' => $test,
@@ -407,4 +410,3 @@ class AnalyzeResource extends Resource
 // accounts has bug  in days, weeks, months, years does not show correct data with footer
 // recurring has bug  in days, weeks, months, years does not show correct data with footer
 // payee has bug  in days, weeks, months, years does not show correct data with footer
-

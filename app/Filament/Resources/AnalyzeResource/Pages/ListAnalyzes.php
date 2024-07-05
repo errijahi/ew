@@ -22,7 +22,11 @@ class ListAnalyzes extends ListRecords
 
     public string $timeRange;
 
-    public mixed $tabValue;
+    public ?string $startDate;
+
+    public ?string $endDate;
+
+    public string $dateRange;
 
     public ?string $currentTab = 'tags';
 
@@ -85,6 +89,13 @@ class ListAnalyzes extends ListRecords
     public function create(): void
     {
         session(['status' => $this->status ?? 'year']);
+        $this->dispatch('created');
+    }
+
+    #[NoReturn]
+    public function searchByDateRange(): void
+    {
+        session(['dateRange' => $this->startDate.' '.$this->endDate]);
         $this->dispatch('created');
     }
 
