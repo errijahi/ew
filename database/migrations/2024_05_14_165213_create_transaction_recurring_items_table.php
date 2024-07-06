@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transaction_recurring_items', function (Blueprint $table) {
+        Schema::create('recurring_item_transaction', function (Blueprint $table) {
             $table->id();
             $table->foreignId('transaction_id');
             $table->foreignId('recurring_item_id');
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transaction_recurring_items');
+        Schema::dropIfExists('recurring_item_transaction');
     }
 };

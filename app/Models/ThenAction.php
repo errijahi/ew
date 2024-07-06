@@ -28,21 +28,21 @@ class ThenAction extends Model
 
     public function category()
     {
-        return $this->belongsTo(Category::class, 'set_category');
+        return $this->belongsTo(Category::class);
     }
 
     public function tag()
     {
-        return $this->belongsTo(Tag::class, 'add_tag');
+        return $this->belongsTo(Tag::class);
     }
 
     public function recurringItem()
     {
-        return $this->belongsTo(RecurringItem::class, 'link_to_recurring_item');
+        return $this->belongsTo(RecurringItem::class);
     }
 
-    public function splitTransaction()
+    public function RuleSplitTransaction()
     {
-        return $this->belongsTo(SplitTransaction::class, 'split_transaction');
+        return $this->hasOne(SplitTransactionRule::class);
     }
 }

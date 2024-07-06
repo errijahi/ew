@@ -20,15 +20,18 @@ class Tag extends Model
         return $this->belongsTo(Team::class);
     }
 
-    public static function getMonthlyData($start = null, $end = null)
-    {
-
-        return Transaction::get();
-
-    }
-
     public function transaction()
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function SplitTransactions()
+    {
+        return $this->hasMany(SplitTransaction::class);
+    }
+
+    public static function getMonthlyData()
+    {
+        return Transaction::get();
     }
 }

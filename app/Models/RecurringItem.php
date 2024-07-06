@@ -30,7 +30,17 @@ class RecurringItem extends Model
 
     public function transactions()
     {
-        return $this->belongsToMany(Transaction::class, 'transaction_payees');
+        return $this->belongsToMany(Transaction::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsToMany(Category::class);
+    }
+
+    public function thenAction()
+    {
+        return $this->hasMany(ThenAction::Class);
     }
 
     public static function getMonthlyData($month, $year)

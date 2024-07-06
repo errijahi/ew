@@ -29,6 +29,16 @@ class Account extends Model
         return $this->belongsTo(Team::class);
     }
 
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function accountType()
+    {
+        return $this->belongsTo(AccountType::class);
+    }
+
     public static function getMonthlyData($month, $year)
     {
         //        TODO: I will need to add by months and yeard and stuff because this will get all the data might be too much

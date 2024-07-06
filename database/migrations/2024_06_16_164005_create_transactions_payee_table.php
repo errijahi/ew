@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transaction_payees', function (Blueprint $table) {
+        Schema::create('payee_transaction', function (Blueprint $table) {
             $table->id();
             $table->foreignId('transaction_id');
             $table->foreignId('payee_id');
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transactions_payee');
+        Schema::dropIfExists('payee_transaction');
     }
 };

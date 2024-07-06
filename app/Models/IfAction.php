@@ -48,4 +48,9 @@ class IfAction extends Model
     {
         return $this->belongsTo(Account::class, 'in_account');
     }
+
+    public function rule()
+    {
+        return $this->belongsTo(Rule::class);
+    }
 }

@@ -23,7 +23,7 @@ return [
 
         'rules' => [
 
-            'label' => 'Rules',
+            'label' => 'Rule',
 
             'item' => [
                 'and' => 'AND',

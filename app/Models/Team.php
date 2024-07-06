@@ -78,7 +78,7 @@ class Team extends JetstreamTeam
 
     public function rules()
     {
-        return $this->hasMany(Rules::class);
+        return $this->hasMany(Rule::class);
     }
 
     public function recurringItem()

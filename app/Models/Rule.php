@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Rules extends Model
+class Rule extends Model
 {
     use HasFactory;
 
@@ -27,8 +27,8 @@ class Rules extends Model
         return $this->hasMany(IfAction::class);
     }
 
-    public function thenAction()
+    public function splitTransactions()
     {
-        return $this->hasMany(ThenAction::class);
+        return $this->hasMany(SplitTransaction::class);
     }
 }

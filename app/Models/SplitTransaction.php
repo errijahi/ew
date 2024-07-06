@@ -17,4 +17,19 @@ class SplitTransaction extends Model
         'category_id',
         'tag_id',
     ];
+
+    public function rules()
+    {
+        return $this->belongsToMany(Rule::class);
+    }
+
+    public function tag()
+    {
+        return $this->belongsTo(Tag::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

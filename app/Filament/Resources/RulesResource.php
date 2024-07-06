@@ -11,7 +11,7 @@ use App\Filament\Resources\RulesResource\Pages;
 use App\Models\Account;
 use App\Models\Category;
 use App\Models\RecurringItem;
-use App\Models\Rules;
+use App\Models\Rule;
 use App\Models\Tag;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Repeater;
@@ -28,7 +28,7 @@ use Filament\Tables\Table;
 
 class RulesResource extends Resource
 {
-    protected static ?string $model = Rules::class;
+    protected static ?string $model = Rule::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 

@@ -15,18 +15,17 @@ return new class extends Migration
             $table->id();
             $table->string('set_payee')->nullable();
             $table->string('set_notes')->nullable();
-            $table->foreignId('set_category')->nullable();
+            $table->foreignId('category_id')->nullable();
             $table->boolean('set_uncategorized')->nullable();
-            $table->foreignId('add_tag')->nullable();
+            $table->foreignId('tag_id')->nullable();
             $table->boolean('delete_transaction')->nullable();
-            $table->foreignId('link_to_recurring_item')->nullable();
+            $table->foreignId('recurring_item_id')->nullable();
             $table->boolean('do_not_link_to_recurring_item')->nullable();
             $table->boolean('do_not_create_rule')->nullable();
-            $table->foreignId('split_transaction')->nullable();
             $table->boolean('mark_as_reviewed')->nullable();
             $table->boolean('mark_as_unreviewed')->nullable();
             $table->boolean('send_me_email')->nullable();
-            $table->foreignId('rules_id');
+            $table->foreignId('rule_split_transaction_id');
             $table->timestamps();
         });
     }

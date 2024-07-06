@@ -29,9 +29,7 @@ class Transaction extends Model
 
     public function recurring()
     {
-        //        dd('test');
-
-        return $this->hasMany(TransactionRecurringItem::class);
+        return $this->belongsToMany(RecurringItem::class);
     }
 
     public static function getMonthlyData($month, $year)
@@ -41,7 +39,17 @@ class Transaction extends Model
 
     public function payee()
     {
-        return $this->belongsToMany(Payee::class, 'transaction_payees', 'payee_id', 'transaction_id');
+        return $this->belongsToMany(Payee::class);
+    }
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 
     public function recurringItem()
@@ -49,8 +57,8 @@ class Transaction extends Model
         return $this->belongsToMany(RecurringItem::class, 'transaction_recurring_items', 'recurring_item_id', 'transaction_id');
     }
 
-    //    public function tag()
-    //    {
-    //        return $this->belongsTo(Tag::class);
-    //    }
+    public function tag()
+    {
+        return $this->belongsTo(Tag::class);
+    }
 }

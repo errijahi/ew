@@ -14,8 +14,8 @@ class SplitTransactionRule extends Model
         'rule_id',
     ];
 
-    public function transaction()
+    public function thenAction()
     {
-        return $this->belongsTo(Transaction::class, 'transaction_id');
+        return $this->belongsTo(ThenAction::class);
     }
 }

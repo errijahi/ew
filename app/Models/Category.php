@@ -44,4 +44,25 @@ class Category extends Model
     {
         return self::get()->keyBy('id')->toArray();
     }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function recurringItems()
+    {
+        return $this->belongsToMany(RecurringItem::class);
+    }
+
+    public function splitTransactions()
+    {
+        return $this->hasMany(SplitTransaction::class);
+    }
+
+    public function ifActions()
+    {
+        return $this->hasMany(IfAction::class);
+    }
+
 }
