@@ -23,10 +23,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'name' => 'boris',
-            'email' => 'boris@gmail.com',
+            'name' => 'usama',
+            'email' => 'usama@gmail.com',
             'email_verified_at' => now(),
-            'password' => bcrypt('boris123'),
+            'password' => bcrypt('usama123'),
             'remember_token' => Str::random(10),
             'current_team_id' => null,
             'profile_photo_path' => null,
@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
 
         Team::create([
             'user_id' => '1',
-            'name' => 'boris team',
+            'name' => 'usama team',
             'personal_team' => 1,
         ]);
 
