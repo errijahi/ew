@@ -39,7 +39,7 @@ class Transaction extends Model
 
     public function payee()
     {
-        return $this->belongsToMany(Payee::class);
+        return $this->belongsTo(Payee::class);
     }
 
     public function account()

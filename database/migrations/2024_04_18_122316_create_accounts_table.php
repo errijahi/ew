@@ -17,14 +17,12 @@ return new class extends Migration
             $table->id();
             $table->string('balance');
             $table->enum('status', Status::values());
-            $table->string('account_name')->unique();
-            $table->string('institution_name')->nullable()->unique();
-            $table->foreignId('user_id');
+            $table->string('name')->unique();
+            $table->string('institution_name')->nullable();
+            $table->foreignId('user_id')->constrained();
             $table->foreignId('category_id')->nullable()->constrained();
-            //$table->foreignId('transaction_id')->nullable()->constrained();
-            //check how transaction exists in this table, shouldn't transaction table have accountId
-            $table->foreignId('team_id');
-            $table->enum('account_type', AccountType::values());
+            $table->foreignId('team_id')->constrained();
+            $table->enum('type', AccountType::values());
             $table->boolean('set_as_a_default_account')->default(false);
             $table->boolean('do_not_track_transactions')->default(false);
             $table->boolean('mark_as_closed')->default(false);

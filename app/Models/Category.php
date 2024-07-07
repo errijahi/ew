@@ -65,4 +65,14 @@ class Category extends Model
         return $this->hasMany(IfAction::class);
     }
 
+    public function thenActions()
+    {
+        return $this->hasMany(ThenAction::class);
+    }
+
+    public function budget()
+    {
+        return $this->belongsTo(Budget::class);
+    }
+
 }

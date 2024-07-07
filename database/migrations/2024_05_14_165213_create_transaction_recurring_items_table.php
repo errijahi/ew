@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('recurring_item_transaction', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('transaction_id');
-            $table->foreignId('recurring_item_id');
+            $table->foreignId('transaction_id')->constrained();
+            $table->foreignId('recurring_item_id')->constrained();
             $table->timestamps();
         });
     }

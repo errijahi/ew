@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('split_transaction_rules', function (Blueprint $table) {
+        Schema::create('rule_split_transaction', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('transaction_id');
-            $table->foreignId('rule_id');
+            $table->foreignId('transaction_id')->constrained();
+            $table->foreignId('rule_id')->constrained();
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('split_transaction_rule');
+        Schema::dropIfExists('rule_split_transaction');
     }
 };

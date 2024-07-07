@@ -13,4 +13,9 @@ class Note extends Model
         'note',
         'filter',
     ];
+
+    public function ifAction()
+    {
+        return $this->hasMany(IfAction::class);
+    }
 }

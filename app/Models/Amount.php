@@ -14,4 +14,9 @@ class Amount extends Model
         'type',
         'filter',
     ];
+
+    public function ifAction()
+    {
+        return $this->hasMany(IfAction::class);
+    }
 }

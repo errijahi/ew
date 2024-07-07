@@ -30,6 +30,11 @@ class Tag extends Model
         return $this->hasMany(SplitTransaction::class);
     }
 
+    public function thenAction()
+    {
+        return $this->hasMany(ThenAction::class);
+    }
+
     public static function getMonthlyData()
     {
         return Transaction::get();

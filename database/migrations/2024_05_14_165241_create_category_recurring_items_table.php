@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('category_recurring_item', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id');
-            $table->foreignId('recurring_item_id');
+            $table->foreignId('category_id')->constrained();
+            $table->foreignId('recurring_item_id')->constrained();
             $table->timestamps();
         });
     }

@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('rules', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('team_id')->nullable()->constrained();
+            $table->foreignId('team_id')->constrained();
             $table->enum('priority', Priority::values());
             $table->boolean('stop_processing_other_rules');
             $table->boolean('delete_this_rule_after_use');

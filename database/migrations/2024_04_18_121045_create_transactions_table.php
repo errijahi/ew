@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->string('amount');
-            //           TODO: Must payee save to the table payee
-            //            $table->string('payee')->unique();
+            $table->foreignId('payee_id')->constrained();
             $table->string('notes');
             $table->date('date');
             $table->foreignId('team_id')->constrained();
@@ -23,6 +22,7 @@ return new class extends Migration
             $table->boolean('status'); // TODO: change boolean to enum.
             $table->foreignId('category_id')->nullable()->constrained();
             $table->foreignId('tag_id')->nullable()->constrained();
+            $table->foreignId('account_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

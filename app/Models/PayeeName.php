@@ -13,4 +13,9 @@ class PayeeName extends Model
         'payee_name',
         'filter',
     ];
+
+    public function ifAction()
+    {
+        return $this->hasMany(IfAction::class);
+    }
 }

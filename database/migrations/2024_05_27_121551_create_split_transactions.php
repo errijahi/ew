@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('amount');
             $table->string('payee')->nullable();
             $table->string('notes')->nullable();
-            $table->foreignId('team_id');
-            $table->foreignId('category_id')->nullable();
-            $table->foreignId('tag_id')->nullable();
+            $table->foreignId('team_id')->constrained();
+            $table->foreignId('category_id')->nullable()->constrained();
+            $table->foreignId('tag_id')->nullable()->constrained();
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('split_transaction');
+        Schema::dropIfExists('split_transactions');
     }
 };

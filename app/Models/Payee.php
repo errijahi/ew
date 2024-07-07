@@ -15,6 +15,6 @@ class Payee extends Model
 
     public function transaction()
     {
-        return $this->belongsToMany(Transaction::class);
+        return $this->hasMany(Transaction::class);
     }
 }
