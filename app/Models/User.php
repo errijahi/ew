@@ -104,8 +104,8 @@ class User extends Authenticatable implements FilamentUser, HasTenants
         return $this->teams()->whereKey($tenant)->exists();
     }
 
-    // public function team()
-    // {
-    //     return $this->belongsTo(Team::class);
-    // }
+//     public function team()
+//     {
+//         return $this->belongsTo(Team::class);
+//     }
 }

@@ -54,7 +54,7 @@ class Transaction extends Model
 
     public function recurringItem()
     {
-        return $this->belongsToMany(RecurringItem::class, 'transaction_recurring_items', 'recurring_item_id', 'transaction_id');
+        return $this->belongsToMany(RecurringItem::class);
     }
 
     public function tag()
