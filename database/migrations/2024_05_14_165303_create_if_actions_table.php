@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('if_actions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('rule_id')->constrained();
-            $table->foreignId('payee_name_id')->nullable()->constrained();
+            $table->foreignId('payee_filter_id')->nullable()->constrained();
             $table->foreignId('category_id')->nullable()->constrained();
             $table->foreignId('note_id')->nullable()->constrained();
             $table->foreignId('amount_id')->nullable()->constrained();

@@ -12,7 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('payee_filter', function (Blueprint $table) {
+        Schema::create('payee_filters', function (Blueprint $table) {
             $table->id();
             $table->string('name', length: 300);
             $table->enum('filter', TextMatchType::values());
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('payee_filter');
+        Schema::dropIfExists('payee_filters');
     }
 };

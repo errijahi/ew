@@ -5,11 +5,11 @@ namespace Database\Seeders;
 use App\Enums\Status;
 use App\Models\Account;
 use App\Models\Category;
+use App\Models\Payee;
 use App\Models\RecurringItem;
 use App\Models\Tag;
 use App\Models\Team;
 use App\Models\TeamUser;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -71,9 +71,13 @@ class DatabaseSeeder extends Seeder
             'team_id' => 1,
         ]);
 
+        Payee::create([
+            'name' => 'Usama',
+        ]);
+
         Transaction::create([
             'amount' => '50',
-            //            'payee' => 'boris',
+            'payee_id' => 1,
             'date' => now(),
             'notes' => Str::random(10),
             'transaction_source' => 'CSV import',
@@ -82,7 +86,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Account::create([
-            'account_name' => 'transaction one',
+            'name' => 'transaction one',
             'status' => Status::TRUE,
             'balance' => '50',
             'user_id' => 1,

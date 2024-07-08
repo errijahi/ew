@@ -25,7 +25,7 @@ return new class extends Migration
             $table->boolean('mark_as_reviewed')->nullable();
             $table->boolean('mark_as_unreviewed')->nullable();
             $table->boolean('send_me_email')->nullable();
-            $table->foreignId('rule_split_transaction_id')->constrained();
+            $table->foreignId('rule_split_transaction_id')->constrained('rule_split_transaction');
             $table->timestamps();
         });
     }
