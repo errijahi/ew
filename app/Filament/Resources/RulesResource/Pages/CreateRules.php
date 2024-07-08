@@ -8,7 +8,7 @@ use App\Models\Day;
 use App\Models\Note;
 use App\Models\PayeeName;
 use App\Models\SplitTransaction;
-use App\Models\SplitTransactionRule;
+use App\Models\RuleSplitTransaction;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
 
@@ -113,7 +113,7 @@ class CreateRules extends CreateRecord
                 ];
             }
 
-            SplitTransactionRule::insert($pivotData);
+            RuleSplitTransaction::insert($pivotData);
         }
 
         return $record;

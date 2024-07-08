@@ -43,6 +43,6 @@ class ThenAction extends Model
 
     public function RuleSplitTransaction()
     {
-        return $this->hasOne(SplitTransactionRule::class);
+        return $this->hasOne(RuleSplitTransaction::class);
     }
 }
