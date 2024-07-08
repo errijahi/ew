@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\BudgetResource\Pages;
 use App\Models\Budget;
+use App\Models\Category;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -21,9 +23,15 @@ class BudgetResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $teamId = auth()->user()->teams[0]->id;
+
         return $form
             ->schema([
                 TextInput::make('budget')->numeric()->required(),
+                Select::make('category_id')
+                    ->options(Category::where('team_id', $teamId)->pluck('name', 'id')->toArray())
+                    ->native(false)
+                    ->required(),
             ]);
     }
 
@@ -32,6 +40,7 @@ class BudgetResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('budget'),
+                TextColumn::make('category.name'),
             ])
             ->filters([
                 //

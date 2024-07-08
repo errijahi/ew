@@ -72,6 +72,6 @@ class Category extends Model
 
     public function budget()
     {
-        return $this->belongsTo(Budget::class);
+        return $this->hasMany(Budget::class);
     }
 }

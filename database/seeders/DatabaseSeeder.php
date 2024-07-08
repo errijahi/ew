@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Enums\Status;
 use App\Models\Account;
+use App\Models\Budget;
 use App\Models\Category;
 use App\Models\Payee;
 use App\Models\RecurringItem;
@@ -59,8 +60,8 @@ class DatabaseSeeder extends Seeder
             'billing_date' => 'every day',
             'repeating_cadence' => 'Once_a_week',
             'description' => Str::random(10),
-            'start_date' => 'now',
-            'end_date' => 'before day of judgment',
+            'start_date' => now(),
+            'end_date' => now()->addMonth(),
             'team_id' => 1,
         ]);
 
@@ -75,22 +76,31 @@ class DatabaseSeeder extends Seeder
             'name' => 'Usama',
         ]);
 
-        Transaction::create([
-            'amount' => '50',
-            'payee_id' => 1,
-            'date' => now(),
-            'notes' => Str::random(10),
-            'transaction_source' => 'CSV import',
-            'status' => true,
+        Budget::create([
+            'budget' => '500',
+            'category_id' => 1,
             'team_id' => 1,
         ]);
 
         Account::create([
-            'name' => 'transaction one',
+            'name' => 'account one',
+            'balance' => '500',
             'status' => Status::TRUE,
-            'balance' => '50',
-            'category_id' => 1,
             'user_id' => 1,
+            'team_id' => 1,
+            'category_id' => 1,
+        ]);
+
+        Transaction::create([
+            'amount' => '50',
+            'payee_id' => 1,
+            'tag_id' => 1,
+            'category_id' => 1,
+            'account_id' => 1,
+            'date' => now(),
+            'notes' => Str::random(10),
+            'transaction_source' => 'CSV import',
+            'status' => true,
             'team_id' => 1,
         ]);
     }

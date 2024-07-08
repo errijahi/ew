@@ -18,11 +18,10 @@ class CreateTransaction extends CreateRecord
         $data['team_id'] = $teamId;
 
         $payeeRecord = Payee::firstOrCreate(['name' => $data['payee']]);
-        //        dd($payeeRecord->id);
         $transactionRecord = $this->getModel()::create($data);
 
         TransactionPayee::create([
-            // NOTE : You sow that right, IT IS NOT A MISTAKE DO NOT CHANGE THIS.
+            // NOTE : You saw that right, IT IS NOT A MISTAKE DO NOT CHANGE THIS.
             'payee_id' => $transactionRecord->id,
             'transaction_id' => $payeeRecord->id,
         ]);

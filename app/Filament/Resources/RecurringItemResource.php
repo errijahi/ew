@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\Cadence;
 use App\Filament\Resources\RecurringItemResource\Pages;
 use App\Models\RecurringItem;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -29,7 +31,10 @@ class RecurringItemResource extends Resource
                 DateTimePicker::make('billing_date')->required(),
                 DateTimePicker::make('start_date')->required(),
                 DateTimePicker::make('end_date')->required(),
-                TextInput::make('repeating_cadence')->required(),
+                Select::make('repeating_cadence')
+                    ->options(Cadence::values())
+                    ->native(false)
+                    ->required(),
             ]);
     }
 
