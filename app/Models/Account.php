@@ -12,7 +12,7 @@ class Account extends Model
     protected $fillable = [
         'balance',
         'status',
-        'account_name',
+        'name',
         'last_updated',
         'category_id',
         'user_id',

@@ -11,6 +11,7 @@ class Category extends Model
 
     protected $fillable = [
         'name',
+        'budget',
         'description',
         'treat_as_income',
         'exclude_from_budget',
@@ -36,7 +37,6 @@ class Category extends Model
 
     public static function getMonthlyData($month, $year)
     {
-        //        TODO: I will need to add by months and yeard and stuff because this will get all the data might be too much
         return Transaction::get();
     }
 

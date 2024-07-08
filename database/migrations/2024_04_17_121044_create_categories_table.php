@@ -19,7 +19,7 @@ return new class extends Migration
             $table->boolean('exclude_from_budget');
             $table->boolean('exclude_from_total');
             $table->foreignId('sub_category_group_id')->nullable()->references('id')->on('categories');
-            $table->string('budget')->nullable();
+            $table->string('budget');
             $table->foreignId('team_id')->constrained();
             $table->timestamps();
         });

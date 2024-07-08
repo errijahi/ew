@@ -7,6 +7,7 @@ use App\Models\Account;
 use App\Models\Category;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -28,9 +29,9 @@ class AccountResource extends Resource
 
         return $form
             ->schema([
-                TextInput::make('account_name')->required()->maxLength(255),
-                TextInput::make('balance')->required()->maxLength(255),
-                TextInput::make('status')->required()->maxLength(255),
+                TextInput::make('name')->required()->maxLength(255),
+                TextInput::make('balance')->numeric()->required()->maxLength(255),
+                Toggle::make('status')->required(),
                 Select::make('category_id')
                     ->options(Category::where('team_id', $teamId)->pluck('name', 'id')->toArray())
                     ->native(false),
@@ -41,7 +42,7 @@ class AccountResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('account_name'),
+                TextColumn::make('name'),
                 TextColumn::make('balance'),
                 TextColumn::make('status'),
                 TextColumn::make('updated_at'),

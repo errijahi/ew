@@ -4,9 +4,12 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\RecurringItemResource\Pages;
 use App\Models\RecurringItem;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class RecurringItemResource extends Resource
@@ -21,7 +24,12 @@ class RecurringItemResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('name')->required(),
+                TextInput::make('description'),
+                DateTimePicker::make('billing_date')->required(),
+                DateTimePicker::make('start_date')->required(),
+                DateTimePicker::make('end_date')->required(),
+                TextInput::make('repeating_cadence')->required(),
             ]);
     }
 
@@ -29,7 +37,12 @@ class RecurringItemResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('name'),
+                TextColumn::make('billing_date'),
+                TextColumn::make('description'),
+                TextColumn::make('start_date'),
+                TextColumn::make('end_date'),
+                TextColumn::make('repeating_cadence'),
             ])
             ->filters([
                 //

@@ -23,7 +23,7 @@ class BudgetResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('budget')->numeric(),
+                TextInput::make('budget')->numeric()->required(),
             ]);
     }
 
@@ -31,7 +31,7 @@ class BudgetResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('category.name'),
+                TextColumn::make('budget'),
             ])
             ->filters([
                 //

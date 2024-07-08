@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('billing_date');
             $table->enum('repeating_cadence', Cadence::values());
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->string('start_date');
             $table->string('end_date');
             $table->foreignId('team_id')->constrained();

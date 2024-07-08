@@ -15,14 +15,14 @@ return new class extends Migration
     {
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
+            $table->string('name')->unique();
             $table->string('balance');
             $table->enum('status', Status::values());
-            $table->string('name')->unique();
             $table->string('institution_name')->nullable();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('category_id')->nullable()->constrained();
             $table->foreignId('team_id')->constrained();
-            $table->enum('type', AccountType::values());
+            $table->enum('type', AccountType::values())->nullable();
             $table->boolean('set_as_a_default_account')->default(false);
             $table->boolean('do_not_track_transactions')->default(false);
             $table->boolean('mark_as_closed')->default(false);

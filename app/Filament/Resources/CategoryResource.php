@@ -29,9 +29,9 @@ class CategoryResource extends Resource
 
         return $form
             ->schema([
-                TextInput::make('name'),
-                TextInput::make('description'),
-                TextInput::make('budget'),
+                TextInput::make('name')->required(),
+                TextInput::make('description')->required(),
+                TextInput::make('budget')->required(),
                 Select::make('sub_category_group_id')
                     ->options(Category::where('team_id', $teamId)->pluck('name', 'id')->toArray())
                     ->native(false),
@@ -54,7 +54,7 @@ class CategoryResource extends Resource
                     ->boolean(),
                 IconColumn::make('exclude_from_total')
                     ->boolean(),
-                TextColumn::make('budget'),
+                TextColumn::make('budget')->numeric(),
                 TextColumn::make('parentCategoryGroup.name')
                     ->label('Category group'),
             ])

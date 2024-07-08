@@ -11,6 +11,7 @@ class Transaction extends Model
 
     protected $fillable = [
         'name',
+        'payee_id',
         'notes',
         'amount',
         'page',

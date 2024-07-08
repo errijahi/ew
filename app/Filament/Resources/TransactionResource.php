@@ -6,9 +6,11 @@ use App\Filament\Resources\TransactionResource\Pages;
 use App\Models\Transaction;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -24,12 +26,12 @@ class TransactionResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('amount')->numeric(),
-                TextInput::make('payee'),
+                TextInput::make('amount')->numeric()->required(),
+                TextInput::make('payee')->required(),
+                DateTimePicker::make('date')->required(),
                 TextInput::make('notes'),
-                DateTimePicker::make('date'),
                 TextInput::make('transaction_source'),
-                TextInput::make('status'),
+                Toggle::make('status'),
             ]);
     }
 
@@ -42,7 +44,7 @@ class TransactionResource extends Resource
                 TextColumn::make('notes'),
                 TextColumn::make('date'),
                 TextColumn::make('transaction_source'),
-                TextColumn::make('status'),
+                IconColumn::make('status')->boolean(),
             ])
             ->filters([
                 //

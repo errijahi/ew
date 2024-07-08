@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'usama',
             'email' => 'usama@gmail.com',
             'email_verified_at' => now(),
-            'password' => bcrypt('usama123'),
+            'password' => bcrypt('usama@gmail.com'),
             'remember_token' => Str::random(10),
             'current_team_id' => null,
             'profile_photo_path' => null,
@@ -89,6 +89,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'transaction one',
             'status' => Status::TRUE,
             'balance' => '50',
+            'category_id' => 1,
             'user_id' => 1,
             'team_id' => 1,
         ]);
