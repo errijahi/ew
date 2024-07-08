@@ -7,8 +7,8 @@ use App\Models\Amount;
 use App\Models\Day;
 use App\Models\Note;
 use App\Models\PayeeName;
-use App\Models\SplitTransaction;
 use App\Models\RuleSplitTransaction;
+use App\Models\SplitTransaction;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
 

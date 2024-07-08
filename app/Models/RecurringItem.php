@@ -35,7 +35,7 @@ class RecurringItem extends Model
 
     public function thenAction()
     {
-        return $this->hasMany(ThenAction::Class);
+        return $this->hasMany(ThenAction::class);
     }
 
     public static function getMonthlyData($month, $year)

@@ -13,5 +13,4 @@ class AccountType extends Model
     {
         return $this->hasMany(Account::class);
     }
-
 }
