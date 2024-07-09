@@ -14,6 +14,12 @@ class RegisterTeam extends RegisterTenant
         return 'Proceed to your new account';
     }
 
+    public function mount(): void
+    {
+        $team = $this->createTeam();
+        $this->redirectToTeamAccounts($team->id);
+    }
+
     public function form(Form $form): Form
     {
         return $form->schema([]);
@@ -21,14 +27,26 @@ class RegisterTeam extends RegisterTenant
 
     protected function handleRegistration(array $data): Team|TeamUser
     {
+        return $this->createTeam();
+    }
+
+    protected function createTeam(): Team
+    {
+        $user = auth()->user();
+
         $team = Team::create([
-            'user_id' => auth()->user()->id,
-            'name' => auth()->user()->name.'\'s Team',
+            'user_id' => $user?->id,
+            'name' => $user?->name.'\'s Team',
             'personal_team' => 1,
         ]);
 
-        $team->members()->attach(auth()->user()->id);
+        $team->members()->attach($user?->id);
 
         return $team;
+    }
+
+    protected function redirectToTeamAccounts(int $teamId)
+    {
+        return redirect()->to("/admin/{$teamId}/accounts");
     }
 }
