@@ -21,32 +21,32 @@ class IfAction extends Model
 
     public function note()
     {
-        return $this->belongsTo(Note::class, 'matches_notes');
+        return $this->belongsTo(Note::class);
     }
 
     public function category()
     {
-        return $this->belongsTo(Category::class, 'matches_category');
+        return $this->belongsTo(Category::class);
     }
 
     public function day()
     {
-        return $this->belongsTo(Day::class, 'matches_day');
+        return $this->belongsTo(Day::class);
     }
 
     public function amount()
     {
-        return $this->belongsTo(Amount::class, 'matches_amount');
+        return $this->belongsTo(Amount::class);
     }
 
     public function payee()
     {
-        return $this->belongsTo(PayeeName::class, 'matches_payee_name');
+        return $this->belongsTo(PayeeName::class);
     }
 
     public function account()
     {
-        return $this->belongsTo(Account::class, 'in_account');
+        return $this->belongsTo(Account::class);
     }
 
     public function rule()

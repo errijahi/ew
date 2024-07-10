@@ -295,27 +295,27 @@ class RulesResource extends Resource
                         $getIfAction = $record->ifAction[0];
                         $response = '';
 
-                        if ($getIfAction['matches_payee_name']) {
+                        if ($getIfAction['payee_filter_id']) {
                             $response .= ' '.'payee name = '.' '.$getIfAction->paye?->payee_name.'<br>';
                         }
 
-                        if ($getIfAction['matches_category']) {
+                        if ($getIfAction['category_id']) {
                             $response .= ' '.'matches category = '.' '.$getIfAction->category?->name.'<br>';
                         }
 
-                        if ($getIfAction['matches_notes']) {
+                        if ($getIfAction['note_id']) {
                             $response .= ' '.'matches notes = '.' '.$getIfAction->note?->note.'<br>';
                         }
 
-                        if ($getIfAction['matches_day']) {
+                        if ($getIfAction['day_id']) {
                             $response .= ' '.'matches day = '.' '.$getIfAction->day?->day.'<br>';
                         }
 
-                        if ($getIfAction['in_account']) {
+                        if ($getIfAction['account_id']) {
                             $response .= ' '.'in account = '.' '.$getIfAction->account?->account_name.'<br>';
                         }
 
-                        if ($getIfAction['matches_amount']) {
+                        if ($getIfAction['amount_id']) {
                             $response .= ' '.'amount = '.' '.$getIfAction->amount?->amount.'<br>';
                         }
 
@@ -324,6 +324,7 @@ class RulesResource extends Resource
                 TextColumn::make('rule_effect')
                     ->getStateUsing(function ($record) {
                         $getThenAction = $record->thenAction[0];
+                        //                        dd($getThenAction);
                         $response = '';
 
                         if ($getThenAction['set_payee']) {
@@ -334,7 +335,7 @@ class RulesResource extends Resource
                             $response .= ' '.'set notes = '.' '.$getThenAction['set_notes'].'<br>';
                         }
 
-                        if ($getThenAction['set_category']) {
+                        if ($getThenAction['category_id']) {
                             $response .= ' '.'set_category = '.' '.$getThenAction?->category->name.'<br>';
                         }
 
@@ -342,7 +343,7 @@ class RulesResource extends Resource
                             $response .= ' '.'set_uncategorized = '.' '.$getThenAction['set_uncategorized'].'<br>';
                         }
 
-                        if ($getThenAction['add_tag']) {
+                        if ($getThenAction['tag_id']) {
                             $response .= ' '.'add_tag = '.' '.$getThenAction->tag?->name.'<br>';
                         }
 
@@ -350,7 +351,7 @@ class RulesResource extends Resource
                             $response .= ' '.'delete_transaction = '.' '.$getThenAction['delete_transaction'].'<br>';
                         }
 
-                        if ($getThenAction['link_to_recurring_item']) {
+                        if ($getThenAction['recurring_item_id']) {
                             $response .= ' '.'link_to_recurring_item = '.' '.$getThenAction->recurringItem?->name.'<br>';
                         }
 
@@ -362,7 +363,7 @@ class RulesResource extends Resource
                             $response .= ' '.'do_not_create_rule = '.' '.$getThenAction['do_not_create_rule'].'<br>';
                         }
 
-                        if ($getThenAction['split_transaction']) {
+                        if ($getThenAction['rule_split_transaction_id']) {
                             $response .= ' '.'split_transaction = '.' '.$getThenAction->splitTransaction?->day.'<br>';
                         }
 
