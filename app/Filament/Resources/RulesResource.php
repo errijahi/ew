@@ -324,7 +324,6 @@ class RulesResource extends Resource
                 TextColumn::make('rule_effect')
                     ->getStateUsing(function ($record) {
                         $getThenAction = $record->thenAction[0];
-                        //                        dd($getThenAction);
                         $response = '';
 
                         if ($getThenAction['set_payee']) {
