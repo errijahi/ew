@@ -10,13 +10,13 @@ class IfAction extends Model
     use HasFactory;
 
     protected $fillable = [
-        'matches_payee_name',
-        'matches_category',
-        'matches_notes',
-        'matches_amount',
-        'rules_id',
-        'matches_day',
-        'in_account',
+        'payee_filter_id',
+        'note_id',
+        'amount_id',
+        'day_id',
+        'rule_id',
+        'category_id',
+        'account_id',
     ];
 
     public function note()
@@ -39,7 +39,7 @@ class IfAction extends Model
         return $this->belongsTo(Amount::class, 'matches_amount');
     }
 
-    public function paye()
+    public function payee()
     {
         return $this->belongsTo(PayeeName::class, 'matches_payee_name');
     }

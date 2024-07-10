@@ -64,25 +64,25 @@ class CreateRules extends CreateRecord
 
         $record = $this->getModel()::create($data);
         $record->ifAction()->create([
-            'matches_payee_name' => $payeeNameId,
-            'matches_notes' => $noteId,
-            'matches_amount' => $amountId,
-            'matches_day' => $dayId,
-            'matches_category' => $categoryId,
-            'in_account' => $inAccount,
+            'payee_filter_id' => $payeeNameId,
+            'note_id' => $noteId,
+            'amount_id' => $amountId,
+            'day_id' => $dayId,
+            'category_id' => $categoryId,
+            'account_id' => $inAccount,
         ]);
 
         $record->thenAction()->create([
             'set_payee' => $transformedDataThen['set_payee']['set_payee'] ?? null,
             'set_notes' => $transformedDataThen['set_notes']['set_notes'] ?? null,
-            'set_category' => $transformedDataThen['set_category']['set_category'] ?? null,
+            'category_id' => $transformedDataThen['set_category']['set_category'] ?? null,
             'set_uncategorized' => array_key_exists('set_uncategorized', $transformedDataThen),
-            'add_tag' => $transformedDataThen['add_tags']['add_tags'] ?? null,
+            'tag_id' => $transformedDataThen['add_tags']['add_tags'] ?? null,
             'delete_transaction' => array_key_exists('delete_transaction', $transformedDataThen),
-            'link_to_recurring_item' => $transformedDataThen['link_to_recurring_item']['link_to_recurring_item'] ?? null,
+            'recurring_item_id' => $transformedDataThen['link_to_recurring_item']['link_to_recurring_item'] ?? null,
             'do_not_link_to_recurring_item' => array_key_exists('do_not_link_to_recurring_item', $transformedDataThen),
             'do_not_create_rule' => array_key_exists('do_not_create_rule', $transformedDataThen),
-            'split_transaction' => null, //TODO: later maybe I need to create a new table or something,right now too complex
+            'rule_split_transaction_id' => null, //TODO: later maybe I need to create a new table or something,right now too complex
             'mark_as_reviewed' => array_key_exists('mark_as_reviewed', $transformedDataThen),
             'mark_as_unreviewed' => array_key_exists('mark_as_unreviewed', $transformedDataThen),
             'send_me_email' => array_key_exists('send_me_email', $transformedDataThen),
@@ -108,7 +108,7 @@ class CreateRules extends CreateRecord
             $pivotData = [];
             foreach ($insertedIds as $id) {
                 $pivotData[] = [
-                    'split_transaction_id' => $id,
+                    'transaction_id' => $id,
                     'rule_id' => $record->id,
                 ];
             }

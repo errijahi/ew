@@ -12,18 +12,17 @@ class ThenAction extends Model
     protected $fillable = [
         'set_payee',
         'set_notes',
-        'set_category',
+        'category_id',
         'set_uncategorized',
-        'add_tag',
+        'tag_id',
         'delete_transaction',
-        'link_to_recurring_item',
+        'recurring_item_id',
         'do_not_link_to_recurring_item',
         'do_not_create_rule',
-        'split_transaction',
+        'rule_split_transaction_id',
         'mark_as_reviewed',
         'mark_as_unreviewed',
         'send_me_email',
-        'rule_id',
     ];
 
     public function category()

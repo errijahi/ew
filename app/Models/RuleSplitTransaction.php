@@ -9,6 +9,8 @@ class RuleSplitTransaction extends Model
 {
     use HasFactory;
 
+    protected $table = 'rule_split_transaction';
+
     protected $fillable = [
         'transaction_id',
         'rule_id',

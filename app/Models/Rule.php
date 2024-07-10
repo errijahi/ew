@@ -27,6 +27,11 @@ class Rule extends Model
         return $this->hasMany(IfAction::class);
     }
 
+    public function thenAction()
+    {
+        return $this->hasMany(ThenAction::class);
+    }
+
     public function splitTransactions()
     {
         return $this->hasMany(SplitTransaction::class);
