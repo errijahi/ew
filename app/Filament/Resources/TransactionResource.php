@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TransactionResource\Pages;
 use App\Models\Transaction;
-use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
@@ -27,7 +27,17 @@ class TransactionResource extends Resource
         return $form
             ->schema([
                 TextInput::make('amount')->numeric()->required(),
-                TextInput::make('payee')->required(),
+                //                TextInput::make('payee')->required(),
+                Select::make('payee_id')
+                    ->label('Payee')
+                    ->relationship('payee', 'name')
+                    ->searchable()
+                    ->required()
+                    ->createOptionForm([
+                        TextInput::make('name')
+                            ->required()
+                            ->label('Payee Name'),
+                    ]),
                 TextInput::make('notes'),
                 TextInput::make('transaction_source'),
                 Toggle::make('status'),

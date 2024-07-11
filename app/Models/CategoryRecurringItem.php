@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class CategoryRecurringItem extends Model
 {
     use HasFactory;
+
+    protected $table = 'category_recurring_item';
 }

@@ -9,6 +9,8 @@ class TransactionRecurringItem extends Model
 {
     use HasFactory;
 
+    protected $table = 'transaction_recurring_item';
+
     protected $fillable = [
         'transaction_id',
         'recurring_item_id',
