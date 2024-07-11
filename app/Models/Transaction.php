@@ -14,7 +14,6 @@ class Transaction extends Model
         'payee_id',
         'notes',
         'amount',
-        'page',
         'status',
         'transaction_source',
         'team_id',
