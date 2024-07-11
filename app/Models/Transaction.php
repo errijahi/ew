@@ -15,7 +15,6 @@ class Transaction extends Model
         'notes',
         'amount',
         'page',
-        'date',
         'status',
         'transaction_source',
         'team_id',

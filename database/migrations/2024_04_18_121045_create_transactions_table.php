@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('amount');
             $table->foreignId('payee_id')->constrained();
             $table->string('notes');
-            $table->date('date');
             $table->foreignId('team_id')->constrained();
             $table->string('transaction_source');
             $table->boolean('status'); // TODO: change boolean to enum.

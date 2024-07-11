@@ -28,7 +28,6 @@ class TransactionResource extends Resource
             ->schema([
                 TextInput::make('amount')->numeric()->required(),
                 TextInput::make('payee')->required(),
-                DateTimePicker::make('date')->required(),
                 TextInput::make('notes'),
                 TextInput::make('transaction_source'),
                 Toggle::make('status'),
@@ -42,7 +41,6 @@ class TransactionResource extends Resource
                 TextColumn::make('amount'),
                 TextColumn::make('payee.name'),
                 TextColumn::make('notes'),
-                TextColumn::make('date'),
                 TextColumn::make('transaction_source'),
                 IconColumn::make('status')->boolean(),
             ])

@@ -19,7 +19,6 @@ class TransactionSeeder extends Seeder
             'tag_id' => 1,
             'category_id' => 1,
             'account_id' => 1,
-            'date' => now(),
             'notes' => Str::random(10),
             'transaction_source' => 'CSV import',
             'status' => true,
