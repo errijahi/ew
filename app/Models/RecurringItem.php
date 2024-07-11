@@ -23,11 +23,6 @@ class RecurringItem extends Model
         return $this->belongsTo(Team::class);
     }
 
-    public function transactions()
-    {
-        return $this->belongsToMany(Transaction::class);
-    }
-
     public function category()
     {
         return $this->belongsToMany(Category::class);
@@ -36,6 +31,11 @@ class RecurringItem extends Model
     public function thenAction()
     {
         return $this->hasMany(ThenAction::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
     }
 
     public static function getMonthlyData($month, $year)
