@@ -27,6 +27,7 @@ class TransactionResource extends Resource
         return $form
             ->schema([
                 TextInput::make('amount')->numeric()->required(),
+                //                TextInput::make('payee')->required(),
                 Select::make('payee_id')
                     ->label('Payee')
                     ->relationship('payee', 'name')

@@ -321,6 +321,7 @@ class AnalyzeResource extends Resource
                     $sums[$dayLabel] = 0;
                 }
                 $sums[$dayLabel] += $totalTransactionsSum;
+                //                dd($totalTransactionsSum);
 
                 if ($totalTagsCount > 0) {
                     $averageAmount = $totalTransactionsSum / $totalTagsCount;
@@ -368,13 +369,13 @@ class AnalyzeResource extends Resource
             $ModelValues = $value->category_id;
         }
         if ($selectedModel[0]->getTable() === 'accounts') {
-            $ModelValues = $value->account->id;
+            $ModelValues = $value->team->accounts[0]->id;
         }
         if ($selectedModel[0]->getTable() === 'recurring_items') {
-            $ModelValues = $value->recurringItem->id ?? '0';
+            $ModelValues = $value->recurringItem[0]->id ?? '0';
         }
         if ($selectedModel[0]->getTable() === 'payees') {
-            $ModelValues = $value->payee->id ?? '0';
+            $ModelValues = $value->payee[0]->id ?? '0';
         }
 
         return $ModelValues;

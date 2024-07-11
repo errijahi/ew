@@ -22,7 +22,6 @@ return new class extends Migration
             $table->foreignId('category_id')->nullable()->constrained();
             $table->foreignId('tag_id')->nullable()->constrained();
             $table->foreignId('account_id')->nullable()->constrained();
-            $table->foreignId('recurring_item_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

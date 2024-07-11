@@ -27,6 +27,11 @@ class Transaction extends Model
         return $this->belongsTo(Team::class);
     }
 
+    public function recurring()
+    {
+        return $this->belongsToMany(RecurringItem::class);
+    }
+
     public static function getMonthlyData($month, $year)
     {
         return Transaction::get();
@@ -49,7 +54,7 @@ class Transaction extends Model
 
     public function recurringItem()
     {
-        return $this->belongsTo(RecurringItem::class);
+        return $this->belongsToMany(RecurringItem::class);
     }
 
     public function tag()
