@@ -52,13 +52,8 @@ class AnalyzeResource extends Resource
         }
 
         $test = 'test';
-
         $selectedPeriod = session('status') ?? 'year';
         $timeRange = session('timeRange') ?? 'last 7 days';
-        $dateRange = session('dateRange') ?? 'tito';
-
-        //      dd($dateRange);
-
         $currentYear = Carbon::now()->year;
         $startYear = $currentYear - 5;
 
@@ -85,7 +80,9 @@ class AnalyzeResource extends Resource
 
                 $transactionData = [];
                 foreach ($values as $value) {
-                    $tagId = self::getSelectedModel($selectedModel, $value);
+                    $modelData = self::getSelectedModel($selectedModel, $value);
+                    $tagId = $modelData['ModelValues'];
+                    $searchBy = $modelData['SearchBy'];
                     $monthKey = $value->created_at->format('F');
                     $yearKey = $value->created_at->year;
 
@@ -110,7 +107,7 @@ class AnalyzeResource extends Resource
                 foreach ($selectedModel as $model) {
                     $tagId = $model->id;
 
-                    $transactionsSum = Transaction::where('tag_id', $tagId)
+                    $transactionsSum = Transaction::where($searchBy, $tagId)
                         ->whereYear('created_at', $year)
                         ->whereMonth('created_at', $currentDate->month)
                         ->sum('amount');
@@ -144,9 +141,12 @@ class AnalyzeResource extends Resource
 
             for ($year = $startYear; $year <= $currentYear; $year++) {
                 $transactionData = [];
+                $searchBy = '';
                 foreach ($values as $value) {
-                    $tagId = self::getSelectedModel($selectedModel, $value);
+                    $modelData = self::getSelectedModel($selectedModel, $value);
+                    $tagId = $modelData['ModelValues'];
                     $yearKey = $value->created_at->year;
+                    $searchBy = $modelData['SearchBy'];
 
                     if (isset($transactionData[$tagId][$yearKey])) {
                         $transactionData[$tagId][$yearKey]['amount'] += $value->amount;
@@ -166,11 +166,11 @@ class AnalyzeResource extends Resource
                 foreach ($selectedModel as $model) {
                     $tagId = $model->id;
 
-                    $transactionsSum = Transaction::where('tag_id', $tagId)
+                    $transactionsSum = Transaction::where($searchBy, $tagId)
                         ->whereYear('created_at', $year)
                         ->sum('amount');
 
-                    $transactionsCount = Transaction::where('tag_id', $tagId)
+                    $transactionsCount = Transaction::where($searchBy, $tagId)
                         ->whereYear('created_at', $year)
                         ->where('amount', '>', 0)
                         ->count();
@@ -195,9 +195,10 @@ class AnalyzeResource extends Resource
 
                 $averages[$year] = $averageAmount;
             }
-        } elseif ($selectedPeriod === 'week') {
-            $numberOfWeeks = 3;
+        }
 
+        if ($selectedPeriod === 'week') {
+            $numberOfWeeks = 3;
             if ($timeRange === 'last 6 weeks') {
                 $numberOfWeeks = 6;
             }
@@ -206,54 +207,50 @@ class AnalyzeResource extends Resource
             $endOfWeek = Carbon::now()->endOfWeek();
 
             $weeks = [];
-            $data = [];
-            $sums = [];
-            $averages = [];
-
             while ($startOfWeek->lte($endOfWeek)) {
-                $weekEnd = $startOfWeek->copy()->endOfWeek();
                 $weeks[] = [
                     'start' => $startOfWeek->copy(),
-                    'end' => $weekEnd,
+                    'end' => $startOfWeek->copy()->endOfWeek(),
                 ];
                 $startOfWeek->addWeek();
             }
 
-            foreach ($weeks as $week) {
-                $weekLabel = $week['start']->format('d M').' - '.$week['end']->format('d M');
+            $sums = [];
+            $averages = [];
 
+            foreach ($weeks as $week) {
                 $transactionData = [];
-                $totalTransactionsSum = 0;
-                $totalTagsCount = 0;
+                $searchBy = '';
 
                 foreach ($values as $value) {
-                    $tagId = self::getSelectedModel($selectedModel, $value);
+                    $modelData = self::getSelectedModel($selectedModel, $value);
+                    $tagId = $modelData['ModelValues'];
                     $weekKey = $value->created_at->weekOfYear;
+                    $yearKey = $value->created_at->year;
+                    $searchBy = $modelData['SearchBy'];
 
-                    if (isset($transactionData[$tagId][$weekKey])) {
-                        $transactionData[$tagId][$weekKey]['amount'] += $value->amount;
+                    if (isset($transactionData[$tagId][$yearKey][$weekKey])) {
+                        $transactionData[$tagId][$yearKey][$weekKey]['amount'] += $value->amount;
                     } else {
-                        $transactionData[$tagId][$weekKey] = [
+                        $transactionData[$tagId][$yearKey][$weekKey] = [
                             'amount' => $value->amount,
                         ];
                     }
-
-                    $data[$weekLabel] = $transactionData;
-                    $tableValues = $transactionData;
                 }
+
+                $weekLabel = $week['start']->format('d M').' - '.$week['end']->format('d M');
+                $data[$weekLabel] = $transactionData;
+                $tableValues = $transactionData;
+
+                $totalTransactionsSum = 0;
+                $totalTagsCount = 0;
 
                 foreach ($selectedModel as $model) {
                     $tagId = $model->id;
 
-                    $transactionsSum = Transaction::where('tag_id', $tagId)
+                    $transactionsSum = Transaction::where($searchBy, $tagId)
                         ->whereBetween('created_at', [$week['start'], $week['end']])
                         ->sum('amount');
-
-                    // Fetch transactions with amount > 0 for the current tag and week
-                    $transactionsCount = Transaction::where('tag_id', $tagId)
-                        ->whereBetween('created_at', [$week['start'], $week['end']])
-                        ->where('amount', '>', 0)
-                        ->count();
 
                     if ($transactionsSum > 0) {
                         $totalTransactionsSum += $transactionsSum;
@@ -274,6 +271,7 @@ class AnalyzeResource extends Resource
 
                 $averages[$weekLabel] = $averageAmount;
             }
+
         } elseif ($selectedPeriod === 'day') {
             $numberOfDays = 7;
 
@@ -298,14 +296,14 @@ class AnalyzeResource extends Resource
                 $tableValues = $transactionData;
 
                 foreach ($selectedModel as $model) {
-                    $tagId = $model->id;
+                    $modelId = $model->id;
 
-                    $transactionsSum = Transaction::where('tag_id', $tagId)
+                    //     TODO:               I need to make this category_id dynamic based on the selectedModel, this will fix a bug.
+                    $transactionsSum = Transaction::where('category_id', $modelId)
                         ->whereDate('created_at', $day)
                         ->sum('amount');
 
-                    // Fetch transactions with amount > 0
-                    $transactionsCount = Transaction::where('tag_id', $tagId)
+                    $transactionsCount = Transaction::where('category_id', $modelId)
                         ->whereDate('created_at', $day)
                         ->where('amount', '>', 0)
                         ->count();
@@ -331,8 +329,6 @@ class AnalyzeResource extends Resource
                 $averages[$dayLabel] = $averageAmount;
             }
         }
-
-        //        dd($sums);
         $table->content(
             view('livewire.your-table-view', [
                 'table' => $test,
@@ -360,24 +356,31 @@ class AnalyzeResource extends Resource
     public static function getSelectedModel($selectedModel, $value)
     {
         $ModelValues = '';
+        $SearchBy = '';
+        //        dd($value->recurringItem::get());
 
         if ($selectedModel[0]->getTable() === 'tags') {
             $ModelValues = $value->tag_id;
+            $SearchBy = 'tag_id';
         }
         if ($selectedModel[0]->getTable() === 'categories') {
             $ModelValues = $value->category_id;
+            $SearchBy = 'category_id';
         }
         if ($selectedModel[0]->getTable() === 'accounts') {
             $ModelValues = $value->account->id;
+            $SearchBy = 'account_id';
         }
         if ($selectedModel[0]->getTable() === 'recurring_items') {
             $ModelValues = $value->recurringItem->id ?? '0';
+            $SearchBy = 'recurring_item_id';
         }
         if ($selectedModel[0]->getTable() === 'payees') {
             $ModelValues = $value->payee->id ?? '0';
+            $SearchBy = 'payee_id';
         }
 
-        return $ModelValues;
+        return ['ModelValues' => $ModelValues, 'SearchBy' => $SearchBy];
     }
 
     public static function getTransactionData($selectedModel, $startDate, $endDate)
@@ -390,7 +393,7 @@ class AnalyzeResource extends Resource
             $monthKey = $value->created_at->format('M');
             $dayKey = $value->created_at->day;
 
-            $tagId = self::getSelectedModel($selectedModel, $value);
+            $tagId = self::getSelectedModel($selectedModel, $value)['ModelValues'];
 
             if (isset($transactionAmounts[$tagId][$yearKey][$monthKey][$dayKey])) {
                 $transactionAmounts[$tagId][$yearKey][$monthKey][$dayKey]['amount'] += $value->amount;
@@ -404,8 +407,3 @@ class AnalyzeResource extends Resource
         return $transactionAmounts;
     }
 }
-
-// It seems that all of these errors are connected to the pivot tables and db
-// accounts has bug  in days, weeks, months, years does not show correct data with footer
-// recurring has bug  in days, weeks, months, years does not show correct data with footer
-// payee has bug  in days, weeks, months, years does not show correct data with footer

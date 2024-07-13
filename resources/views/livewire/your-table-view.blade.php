@@ -30,7 +30,7 @@
                                 @php
                                     $amount = $tableValues[$tag->id][$currentYear2][$monthName]['amount'] ?? 0;
                                 @endphp
-                            @elseif(is_string($monthName))
+                            @elseif(is_string($monthName) )
                                 @php
                                     $startDate = Carbon\Carbon::createFromFormat('d M', explode(' - ', $monthName)[0]);
                                     $currentYear = Carbon\Carbon::now()->year;
@@ -41,7 +41,7 @@
                                 @endphp
                                 @if( (is_string($monthName) && str_contains($monthName, ' - ')))
                                     @php
-                                        $amount = $tableValues[$tag->id][$weekOfYear]['amount'] ?? 0;
+                                        $amount = $tableValues[$tag->id][$currentYear][$weekOfYear]['amount'] ?? 0;
                                     @endphp
                                 @else
                                     @php
