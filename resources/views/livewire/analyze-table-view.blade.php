@@ -4,7 +4,7 @@
             <thead class="bg-gray-50 dark:bg-gray-900">
             <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Time period</th>
-                @foreach (array_keys($data) as $monthName)
+                @foreach (array_keys($transactionDataByPeriod) as $monthName)
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ $monthName }}</th>
                 @endforeach
                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Count</th>
@@ -13,14 +13,14 @@
             </tr>
             </thead>
             <tbody class="bg-white dark:bg-gray-800">
-            @foreach ($tagName as $tagId => $tag)
+            @foreach ($selectedModel as $modelId => $model)
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ $tag->name ?? $tag->account_name }}</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ $model->name ?? $model->account_name }}</th>
                     @php
                         $totalCount = 0;
                         $totalSum = 0;
                     @endphp
-                    @foreach (array_keys($data) as $monthName)
+                    @foreach (array_keys($transactionDataByPeriod) as $monthName)
                         <td class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             @php
                                 $currentYear2 = Carbon\Carbon::now()->year;
@@ -28,7 +28,7 @@
                             @endphp
                             @if(is_string($monthName) && !str_contains($monthName, ' '))
                                 @php
-                                    $amount = $tableValues[$tag->id][$currentYear2][$monthName]['amount'] ?? 0;
+                                    $amount = $tableValues[$model->id][$currentYear2][$monthName]['amount'] ?? 0;
                                 @endphp
                             @elseif(is_string($monthName) )
                                 @php
@@ -41,7 +41,7 @@
                                 @endphp
                                 @if( (is_string($monthName) && str_contains($monthName, ' - ')))
                                     @php
-                                        $amount = $tableValues[$tag->id][$currentYear][$weekOfYear]['amount'] ?? 0;
+                                        $amount = $tableValues[$model->id][$currentYear][$weekOfYear]['amount'] ?? 0;
                                     @endphp
                                 @else
                                     @php
@@ -67,7 +67,7 @@
                                             ];
 
                                             $monthNumber = $months[$monthAbbreviation];
-                                            $amount = $tableValues[$tag->id][$currentYear][$monthNumber][$day]['amount'] ?? 0;
+                                            $amount = $tableValues[$model->id][$currentYear][$monthNumber][$day]['amount'] ?? 0;
                                             if ($amount !== 0) {
                                                 $results[] = $amount;
                                             }
@@ -75,7 +75,7 @@
                                 @endif
                             @else
                                 @php
-                                        $amount = $tableValues[$tag->id][$monthName]['amount'] ?? 0;
+                                        $amount = $tableValues[$model->id][$monthName]['amount'] ?? 0;
                                 @endphp
                             @endif
                             {{ $amount }}
@@ -99,7 +99,7 @@
             <tfoot class="bg-gray-50 dark:bg-gray-900">
             <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Sum</th>
-                @foreach (array_keys($data) as $monthName)
+                @foreach (array_keys($transactionDataByPeriod) as $monthName)
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{$sums[$monthName]}}</th>
                 @endforeach
                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"></th>
@@ -108,7 +108,7 @@
             </tr>
             <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Average</th>
-                @foreach (array_keys($data) as $monthName)
+                @foreach (array_keys($transactionDataByPeriod) as $monthName)
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{$averages[$monthName]}}</th>
                 @endforeach
                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"></th>

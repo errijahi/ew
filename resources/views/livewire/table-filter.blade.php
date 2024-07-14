@@ -24,7 +24,6 @@
                     <option value="last 6 months">Last 6 months</option>
                     <option value="last 3 years">Last 3 years</option>
                     <option value="last 6 years">Last 6 years</option>
-                    {{-- <option value="custom">Custom Date Range</option> --}}
                 </x-filament::input.select>
             </x-filament::input.wrapper>
         </form>
