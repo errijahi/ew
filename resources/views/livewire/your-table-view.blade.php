@@ -49,7 +49,25 @@
                                     @endphp
                                         @php
                                             $month = explode(' ',$monthName)[1];
-                                            $amount = $tableValues[$tag->id][$currentYear][explode(' ',$monthName)[1]][$day]['amount'] ?? 0;
+                                            $monthAbbreviation = explode(' ', $monthName)[1];
+
+                                            $months = [
+                                                'Jan' => 1,
+                                                'Feb' => 2,
+                                                'Mar' => 3,
+                                                'Apr' => 4,
+                                                'May' => 5,
+                                                'Jun' => 6,
+                                                'Jul' => 7,
+                                                'Aug' => 8,
+                                                'Sep' => 9,
+                                                'Oct' => 10,
+                                                'Nov' => 11,
+                                                'Dec' => 12,
+                                            ];
+
+                                            $monthNumber = $months[$monthAbbreviation];
+                                            $amount = $tableValues[$tag->id][$currentYear][$monthNumber][$day]['amount'] ?? 0;
                                             if ($amount !== 0) {
                                                 $results[] = $amount;
                                             }
@@ -57,7 +75,7 @@
                                 @endif
                             @else
                                 @php
-                                    $amount = $tableValues[$tag->id][$monthName]['amount'] ?? 0;
+                                        $amount = $tableValues[$tag->id][$monthName]['amount'] ?? 0;
                                 @endphp
                             @endif
                             {{ $amount }}

@@ -195,9 +195,7 @@ class AnalyzeResource extends Resource
 
                 $averages[$year] = $averageAmount;
             }
-        }
-
-        if ($selectedPeriod === 'week') {
+        } elseif ($selectedPeriod === 'week') {
             $numberOfWeeks = 3;
             if ($timeRange === 'last 6 weeks') {
                 $numberOfWeeks = 6;
@@ -282,35 +280,52 @@ class AnalyzeResource extends Resource
             $startDate = Carbon::now()->subDays($numberOfDays)->startOfDay();
             $endDate = Carbon::now()->endOfDay();
 
-            for ($day = $startDate; $day <= $endDate; $day->addDay()) {
+            $days = [];
+            while ($startDate->lte($endDate)) {
+                $days[] = $startDate->copy();
+                $startDate->addDay();
+            }
+
+            $sums = [];
+            $averages = [];
+
+            foreach ($days as $day) {
+                $transactionData = [];
+                $searchBy = '';
+
+                foreach ($values as $value) {
+                    $modelData = self::getSelectedModel($selectedModel, $value);
+                    $tagId = $modelData['ModelValues'];
+                    $dayKey = $value->created_at->dayOfMonth;
+                    $monthKey = $value->created_at->month;
+                    $yearKey = $value->created_at->year;
+                    $searchBy = $modelData['SearchBy'];
+
+                    if (isset($transactionData[$tagId][$yearKey][$monthKey][$dayKey])) {
+                        $transactionData[$tagId][$yearKey][$monthKey][$dayKey]['amount'] += $value->amount;
+                    } else {
+                        $transactionData[$tagId][$yearKey][$monthKey][$dayKey] = [
+                            'amount' => $value->amount,
+                        ];
+                    }
+                }
+
                 $dayLabel = $day->format('d M');
+                $data[$dayLabel] = $transactionData;
+                $tableValues = $transactionData;
 
                 $totalTransactionsSum = 0;
                 $totalTagsCount = 0;
 
-                $startDate = Carbon::now()->subDays($numberOfDays);
-                $endDate = Carbon::now();
-                $transactionData = self::getTransactionData($selectedModel, $startDate, $endDate);
-
-                $data[$dayLabel] = $transactionData;
-                $tableValues = $transactionData;
-
                 foreach ($selectedModel as $model) {
-                    $modelId = $model->id;
+                    $tagId = $model->id;
 
-                    //     TODO:               I need to make this category_id dynamic based on the selectedModel, this will fix a bug.
-                    $transactionsSum = Transaction::where('category_id', $modelId)
+                    $transactionsSum = Transaction::where($searchBy, $tagId)
                         ->whereDate('created_at', $day)
                         ->sum('amount');
 
-                    $transactionsCount = Transaction::where('category_id', $modelId)
-                        ->whereDate('created_at', $day)
-                        ->where('amount', '>', 0)
-                        ->count();
-
                     if ($transactionsSum > 0) {
                         $totalTransactionsSum += $transactionsSum;
-
                         $totalTagsCount++;
                     }
                 }
@@ -329,6 +344,7 @@ class AnalyzeResource extends Resource
                 $averages[$dayLabel] = $averageAmount;
             }
         }
+
         $table->content(
             view('livewire.your-table-view', [
                 'table' => $test,
