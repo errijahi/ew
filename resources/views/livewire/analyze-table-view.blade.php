@@ -4,8 +4,8 @@
             <thead class="bg-gray-50 dark:bg-gray-900">
             <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Time period</th>
-                @foreach (array_keys($transactionDataByPeriod) as $monthName)
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ $monthName }}</th>
+                @foreach (array_keys($transactionDataByPeriod) as $periodLabel)
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ $periodLabel }}</th>
                 @endforeach
                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Count</th>
                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Sum</th>
@@ -20,26 +20,26 @@
                         $totalCount = 0;
                         $totalSum = 0;
                     @endphp
-                    @foreach (array_keys($transactionDataByPeriod) as $monthName)
+                    @foreach (array_keys($transactionDataByPeriod) as $periodLabel)
                         <td class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                             @php
                                 $currentYear2 = Carbon\Carbon::now()->year;
                                 $amount = 0;
                             @endphp
-                            @if(is_string($monthName) && !str_contains($monthName, ' '))
+                            @if(is_string($periodLabel) && !str_contains($periodLabel, ' '))
                                 @php
-                                    $amount = $tableValues[$model->id][$currentYear2][$monthName]['amount'] ?? 0;
+                                    $amount = $tableValues[$model->id][$currentYear2][$periodLabel]['amount'] ?? 0;
                                 @endphp
-                            @elseif(is_string($monthName) )
+                            @elseif(is_string($periodLabel) )
                                 @php
-                                    $startDate = Carbon\Carbon::createFromFormat('d M', explode(' - ', $monthName)[0]);
+                                    $startDate = Carbon\Carbon::createFromFormat('d M', explode(' - ', $periodLabel)[0]);
                                     $currentYear = Carbon\Carbon::now()->year;
                                     $currentMonth = Carbon\Carbon::now()->month;
                                     $fullDate = Carbon\Carbon::createFromFormat('d M Y', $startDate->format('d M') . ' ' . $currentYear);
                                     $weekOfYear = $fullDate->weekOfYear;
                                     $day = $fullDate->day;
                                 @endphp
-                                @if( (is_string($monthName) && str_contains($monthName, ' - ')))
+                                @if( (is_string($periodLabel) && str_contains($periodLabel, ' - ')))
                                     @php
                                         $amount = $tableValues[$model->id][$currentYear][$weekOfYear]['amount'] ?? 0;
                                     @endphp
@@ -48,8 +48,8 @@
                                         $results = [];
                                     @endphp
                                         @php
-                                            $month = explode(' ',$monthName)[1];
-                                            $monthAbbreviation = explode(' ', $monthName)[1];
+                                            $month = explode(' ',$periodLabel)[1];
+                                            $monthAbbreviation = explode(' ', $periodLabel)[1];
 
                                             $months = [
                                                 'Jan' => 1,
@@ -75,7 +75,7 @@
                                 @endif
                             @else
                                 @php
-                                        $amount = $tableValues[$model->id][$monthName]['amount'] ?? 0;
+                                        $amount = $tableValues[$model->id][$periodLabel]['amount'] ?? 0;
                                 @endphp
                             @endif
                             {{ $amount }}
@@ -99,8 +99,8 @@
             <tfoot class="bg-gray-50 dark:bg-gray-900">
             <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Sum</th>
-                @foreach (array_keys($transactionDataByPeriod) as $monthName)
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{$sums[$monthName]}}</th>
+                @foreach (array_keys($transactionDataByPeriod) as $periodLabel)
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{$sums[$periodLabel]}}</th>
                 @endforeach
                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"></th>
                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"></th>
@@ -108,8 +108,8 @@
             </tr>
             <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Average</th>
-                @foreach (array_keys($transactionDataByPeriod) as $monthName)
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{$averages[$monthName]}}</th>
+                @foreach (array_keys($transactionDataByPeriod) as $periodLabel)
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{$averages[$periodLabel]}}</th>
                 @endforeach
                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"></th>
                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"></th>
