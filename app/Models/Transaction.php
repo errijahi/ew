@@ -55,4 +55,58 @@ class Transaction extends Model
     {
         return $this->belongsTo(Tag::class);
     }
+
+    public static function calculateTransaction(
+        $selectedModel,
+        $searchBy,
+        $period,
+        $year = null,
+        $currentDate = null,
+        $week = null,
+        $day = null): array
+    {
+        $totalTransactionsSum = 0;
+        $totalTagsCount = 0;
+
+        foreach ($selectedModel as $model) {
+            $modelId = $model->id;
+            $query = self::where($searchBy, $modelId);
+
+            switch ($period) {
+                case 'year':
+                    $query->whereYear('created_at', $year);
+                    break;
+                case 'month':
+                    $query->whereYear('created_at', $year)
+                        ->whereMonth('created_at', $currentDate->month);
+                    break;
+                case 'week':
+                    $query->whereBetween('created_at', [$week['start'], $week['end']]);
+                    break;
+                case 'day':
+                    $query->whereDate('created_at', $day);
+                    break;
+            }
+
+            $transactionsSum = $query->sum('amount');
+
+            if ($transactionsSum > 0) {
+                $totalTransactionsSum += $transactionsSum;
+                $totalTagsCount++;
+            }
+        }
+
+        if ($totalTagsCount > 0) {
+            $averageAmount = $totalTransactionsSum / $totalTagsCount;
+        } else {
+            $averageAmount = 0;
+        }
+
+        return [
+            'transactionsSum' => $totalTransactionsSum,
+            'averageAmount' => $averageAmount,
+            'totalTransactionsSum' => $totalTransactionsSum,
+            'totalTagsCount' => $totalTagsCount
+        ];
+    }
 }
