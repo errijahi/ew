@@ -57,34 +57,20 @@ class AnalyzeResource extends Resource
         $startYear = $currentYear - 5;
 
         $transactionDataByPeriod = [];
-        $tableValues = [];
         $transactionValues = Transaction::get();
         $sums = [];
         $averages = [];
+        $tableValues = '';
 
-         if ($selectedPeriod === 'year') {
+        if ($selectedPeriod === 'year') {
             if ($timeRange === 'last 3 years') {
                 $startYear = Carbon::now()->year - 2;
             }
 
             for ($year = $startYear; $year <= $currentYear; $year++) {
-                $tableValues = [];
-                $searchBy = '';
-                foreach ($transactionValues as $transactionValue) {
-                    $modelData = self::getSelectedModel($selectedModel, $transactionValue);
-                    $modelId = $modelData['ModelValues'];
-                    $yearKey = $transactionValue->created_at->year;
-                    $searchBy = $modelData['SearchBy'];
-
-                    if (isset($tableValues[$modelId][$yearKey])) {
-                        $tableValues[$modelId][$yearKey]['amount'] += $transactionValue->amount;
-                    } else {
-                        $tableValues[$modelId][$yearKey] = [
-                            'amount' => $transactionValue->amount,
-                        ];
-                    }
-                }
-
+                $aggregatedTransactionValues = Transaction::aggregateTransactionValues($transactionValues, $selectedModel, 'year');
+                $tableValues = $aggregatedTransactionValues['tableValues'];
+                $searchBy = $aggregatedTransactionValues['searchBy'];
                 $transactionDataByPeriod[$year] = $tableValues;
 
                 $transactionCalculation = Transaction::calculateTransaction(
@@ -97,58 +83,39 @@ class AnalyzeResource extends Resource
                 $sums[$year] = $transactionCalculation['transactionsSum'];
                 $averages[$year] = $transactionCalculation['averageAmount'];
             }
-        }elseif ($selectedPeriod === 'month') {
-             $startDate = Carbon::now()->subMonths(5)->startOfMonth();
-             $endDate = Carbon::now()->endOfMonth();
+        } elseif ($selectedPeriod === 'month') {
+            $startDate = Carbon::now()->subMonths(5)->startOfMonth();
+            $endDate = Carbon::now()->endOfMonth();
 
-             if ($timeRange === 'last 3 months') {
-                 $startDate = Carbon::now()->subMonths(2)->startOfMonth();
-                 $endDate = Carbon::now()->endOfMonth();
-             }
+            if ($timeRange === 'last 3 months') {
+                $startDate = Carbon::now()->subMonths(2)->startOfMonth();
+                $endDate = Carbon::now()->endOfMonth();
+            }
 
-             $currentDate = $startDate->copy();
+            $currentDate = $startDate->copy();
 
-             while ($currentDate <= $endDate) {
-                 $monthName = $currentDate->format('F');
-                 $year = $currentDate->year;
-                 $searchBy = '';
+            while ($currentDate <= $endDate) {
+                $monthName = $currentDate->format('F');
+                $year = $currentDate->year;
 
-                 $tableValues = [];
-                 foreach ($transactionValues as $transactionValue) {
-                     $modelData = self::getSelectedModel($selectedModel, $transactionValue);
-                     $modelId = $modelData['ModelValues'];
-                     $searchBy = $modelData['SearchBy'];
-                     $monthKey = $transactionValue->created_at->format('F');
-                     $yearKey = $transactionValue->created_at->year;
+                $aggregatedTransactionValues = Transaction::aggregateTransactionValues($transactionValues, $selectedModel, 'month');
+                $tableValues = $aggregatedTransactionValues['tableValues'];
+                $searchBy = $aggregatedTransactionValues['searchBy'];
+                $transactionDataByPeriod[$monthName] = $tableValues;
 
-                     if (isset($tableValues[$modelId][$yearKey][$monthKey])) {
-                         $tableValues[$modelId][$yearKey][$monthKey]['amount'] += $transactionValue->amount;
-                     } else {
-                         $tableValues[$modelId][$yearKey][$monthKey] = [
-                             'amount' => $transactionValue->amount,
-                         ];
-                     }
-                 }
+                $transactionCalculation = Transaction::calculateTransaction(
+                    selectedModel: $selectedModel,
+                    searchBy: $searchBy,
+                    period: 'month',
+                    year: $year,
+                    currentDate: $currentDate
+                );
 
-                 if (! isset($data[$monthName])) {
-                     $transactionDataByPeriod[$monthName] = [];
-                 }
-
-                 $transactionCalculation = Transaction::calculateTransaction(
-                     selectedModel: $selectedModel,
-                     searchBy: $searchBy,
-                     period: 'month',
-                     year: $year,
-                     currentDate: $currentDate
-                 );
-
-                 $sums[$monthName] = $transactionCalculation['transactionsSum'];
-                 $averages[$monthName] = $transactionCalculation['averageAmount'];
-
-
-                 $currentDate->addMonth();
-             }
-         } elseif ($selectedPeriod === 'week') {
+                $sums[$monthName] = $transactionCalculation['transactionsSum'];
+                $averages[$monthName] = $transactionCalculation['averageAmount'];
+                $currentDate->addMonth();
+            }
+        } elseif ($selectedPeriod === 'week') {
             $numberOfWeeks = 6;
             if ($timeRange === 'last 4 weeks') {
                 $numberOfWeeks = 3;
@@ -167,25 +134,9 @@ class AnalyzeResource extends Resource
             }
 
             foreach ($weeks as $week) {
-                $tableValues = [];
-                $searchBy = '';
-
-                foreach ($transactionValues as $transactionValue) {
-                    $modelData = self::getSelectedModel($selectedModel, $transactionValue);
-                    $modelId = $modelData['ModelValues'];
-                    $weekKey = $transactionValue->created_at->weekOfYear;
-                    $yearKey = $transactionValue->created_at->year;
-                    $searchBy = $modelData['SearchBy'];
-
-                    if (isset($tableValues[$modelId][$yearKey][$weekKey])) {
-                        $tableValues[$modelId][$yearKey][$weekKey]['amount'] += $transactionValue->amount;
-                    } else {
-                        $tableValues[$modelId][$yearKey][$weekKey] = [
-                            'amount' => $transactionValue->amount,
-                        ];
-                    }
-                }
-
+                $aggregatedTransactionValues = Transaction::aggregateTransactionValues($transactionValues, $selectedModel, 'week');
+                $tableValues = $aggregatedTransactionValues['tableValues'];
+                $searchBy = $aggregatedTransactionValues['searchBy'];
                 $weekLabel = $week['start']->format('d M').' - '.$week['end']->format('d M');
                 $transactionDataByPeriod[$weekLabel] = $tableValues;
 
@@ -217,26 +168,9 @@ class AnalyzeResource extends Resource
             }
 
             foreach ($days as $day) {
-                $tableValues = [];
-                $searchBy = '';
-
-                foreach ($transactionValues as $transactionValue) {
-                    $modelData = self::getSelectedModel($selectedModel, $transactionValue);
-                    $modelId = $modelData['ModelValues'];
-                    $dayKey = $transactionValue->created_at->dayOfMonth;
-                    $monthKey = $transactionValue->created_at->month;
-                    $yearKey = $transactionValue->created_at->year;
-                    $searchBy = $modelData['SearchBy'];
-
-                    if (isset($tableValues[$modelId][$yearKey][$monthKey][$dayKey])) {
-                        $tableValues[$modelId][$yearKey][$monthKey][$dayKey]['amount'] += $transactionValue->amount;
-                    } else {
-                        $tableValues[$modelId][$yearKey][$monthKey][$dayKey] = [
-                            'amount' => $transactionValue->amount,
-                        ];
-                    }
-                }
-
+                $aggregatedTransactionValues = Transaction::aggregateTransactionValues($transactionValues, $selectedModel, 'day');
+                $tableValues = $aggregatedTransactionValues['tableValues'];
+                $searchBy = $aggregatedTransactionValues['searchBy'];
                 $dayLabel = $day->format('d M');
                 $transactionDataByPeriod[$dayLabel] = $tableValues;
 
@@ -272,34 +206,5 @@ class AnalyzeResource extends Resource
         return [
             'index' => Pages\ListAnalyzes::route('/'),
         ];
-    }
-
-    public static function getSelectedModel($selectedModel, $value)
-    {
-        $ModelValues = '';
-        $SearchBy = '';
-
-        if ($selectedModel[0]->getTable() === 'tags') {
-            $ModelValues = $value->tag_id;
-            $SearchBy = 'tag_id';
-        }
-        if ($selectedModel[0]->getTable() === 'categories') {
-            $ModelValues = $value->category_id;
-            $SearchBy = 'category_id';
-        }
-        if ($selectedModel[0]->getTable() === 'accounts') {
-            $ModelValues = $value->account->id;
-            $SearchBy = 'account_id';
-        }
-        if ($selectedModel[0]->getTable() === 'recurring_items') {
-            $ModelValues = $value->recurringItem->id ?? '0';
-            $SearchBy = 'recurring_item_id';
-        }
-        if ($selectedModel[0]->getTable() === 'payees') {
-            $ModelValues = $value->payee->id ?? '0';
-            $SearchBy = 'payee_id';
-        }
-
-        return ['ModelValues' => $ModelValues, 'SearchBy' => $SearchBy];
     }
 }

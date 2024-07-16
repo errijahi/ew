@@ -49,25 +49,9 @@
                                     @endphp
                                         @php
                                             $month = explode(' ',$periodLabel)[1];
-                                            $monthAbbreviation = explode(' ', $periodLabel)[1];
+                                            $monthName = DateTime::createFromFormat('M', $month)->format('F');
+                                            $amount = $tableValues[$model->id][$currentYear][$monthName][$day]['amount'] ?? 0;
 
-                                            $months = [
-                                                'Jan' => 1,
-                                                'Feb' => 2,
-                                                'Mar' => 3,
-                                                'Apr' => 4,
-                                                'May' => 5,
-                                                'Jun' => 6,
-                                                'Jul' => 7,
-                                                'Aug' => 8,
-                                                'Sep' => 9,
-                                                'Oct' => 10,
-                                                'Nov' => 11,
-                                                'Dec' => 12,
-                                            ];
-
-                                            $monthNumber = $months[$monthAbbreviation];
-                                            $amount = $tableValues[$model->id][$currentYear][$monthNumber][$day]['amount'] ?? 0;
                                             if ($amount !== 0) {
                                                 $results[] = $amount;
                                             }
