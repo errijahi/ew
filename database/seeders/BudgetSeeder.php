@@ -17,5 +17,7 @@ class BudgetSeeder extends Seeder
             'category_id' => 1,
             'team_id' => 1,
         ]);
+
+        Budget::factory()->count(20)->create();
     }
 }

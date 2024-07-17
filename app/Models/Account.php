@@ -19,6 +19,20 @@ class Account extends Model
         'team_id',
     ];
 
+    protected $casts = [
+        'status' => 'string',
+    ];
+
+    public function getStatusAttribute($value)
+    {
+        return $value === 'true';
+    }
+
+    public function setStatusAttribute($value)
+    {
+        $this->attributes['status'] = $value ? 'true' : 'false';
+    }
+
     public function category()
     {
         return $this->hasOne(Category::class, 'id', 'category_id');

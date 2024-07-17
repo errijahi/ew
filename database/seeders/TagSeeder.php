@@ -18,5 +18,7 @@ class TagSeeder extends Seeder
             'color' => '#457821',
             'team_id' => 1,
         ]);
+
+        Tag::factory()->count(20)->create();
     }
 }

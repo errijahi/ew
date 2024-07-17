@@ -21,5 +21,7 @@ class CategorySeeder extends Seeder
             'exclude_from_total' => true,
             'team_id' => 1,
         ]);
+
+        Category::factory()->count(20)->create();
     }
 }

@@ -22,5 +22,7 @@ class RecurringItemSeeder extends Seeder
             'end_date' => now()->addMonth(),
             'team_id' => 1,
         ]);
+
+        RecurringItem::factory()->count(20)->create();
     }
 }

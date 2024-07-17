@@ -24,5 +24,7 @@ class TransactionSeeder extends Seeder
             'status' => true,
             'team_id' => 1,
         ]);
+
+        Transaction::factory()->count(20)->create();
     }
 }

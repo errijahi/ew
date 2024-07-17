@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('balance');
             $table->enum('status', Status::values());
             $table->string('institution_name')->nullable();
-            $table->foreignId('user_id')->constrained();
             $table->foreignId('category_id')->nullable()->constrained();
             $table->foreignId('team_id')->constrained();
             $table->enum('type', AccountType::values())->nullable();

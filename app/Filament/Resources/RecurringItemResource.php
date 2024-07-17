@@ -44,7 +44,7 @@ class RecurringItemResource extends Resource
             ->columns([
                 TextColumn::make('name'),
                 TextColumn::make('billing_date'),
-                TextColumn::make('description'),
+                TextColumn::make('description')->words(3),
                 TextColumn::make('start_date'),
                 TextColumn::make('end_date'),
                 TextColumn::make('repeating_cadence'),

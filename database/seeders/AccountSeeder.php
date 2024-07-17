@@ -17,9 +17,10 @@ class AccountSeeder extends Seeder
             'name' => 'account one',
             'balance' => '500',
             'status' => Status::TRUE,
-            'user_id' => 1,
             'team_id' => 1,
             'category_id' => 1,
         ]);
+
+        Account::factory()->count(20)->create();
     }
 }

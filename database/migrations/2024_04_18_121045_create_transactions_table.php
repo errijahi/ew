@@ -21,7 +21,7 @@ return new class extends Migration
             $table->boolean('status'); // TODO: change boolean to enum.
             $table->foreignId('category_id')->nullable()->constrained();
             $table->foreignId('tag_id')->nullable()->constrained();
-            $table->foreignId('account_id')->nullable()->constrained();
+            $table->foreignId('account_id')->constrained();
             $table->foreignId('recurring_item_id')->nullable()->constrained();
             $table->timestamps();
         });

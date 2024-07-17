@@ -12,7 +12,6 @@ class CreateAccount extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
-        $data['user_id'] = auth()->user()->id;
         $data['team_id'] = auth()->user()->teams[0]->id;
 
         return $this->getModel()::create($data);
