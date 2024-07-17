@@ -20,8 +20,7 @@ class AccountFactory extends Factory
         return [
             'name' => $this->faker->unique()->company.' account',
             'balance' => $this->faker->randomNumber(),
-            'status' => Status::TRUE,
-            //            'user_id' => 1,
+            'status' => $this->faker->randomElement(Status::cases())->value,
             'team_id' => 1,
             'category_id' => $this->faker->numberBetween(1, 20),
         ];

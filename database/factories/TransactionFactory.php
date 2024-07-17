@@ -20,7 +20,7 @@ class TransactionFactory extends Factory
             'account_id' => $this->faker->numberBetween(1, 20),
             'notes' => $this->faker->sentence,
             'transaction_source' => $this->faker->sentence,
-            'status' => 1,
+            'status' => $this->faker->boolean,
             'created_at' => $this->faker->dateTimeBetween('2021-01-01', '2024-12-31'),
         ];
     }

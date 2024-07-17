@@ -16,9 +16,9 @@ class CategoryFactory extends Factory
         return [
             'name' => $this->faker->unique()->word,
             'description' => $this->faker->text(50),
-            'treat_as_income' => false,
-            'exclude_from_budget' => false,
-            'exclude_from_total' => false,
+            'treat_as_income' => $this->faker->boolean,
+            'exclude_from_budget' => $this->faker->boolean,
+            'exclude_from_total' => $this->faker->boolean,
             'budget' => $this->faker->randomNumber(),
             'team_id' => 1,
         ];

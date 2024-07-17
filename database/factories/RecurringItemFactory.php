@@ -19,7 +19,7 @@ class RecurringItemFactory extends Factory
 
         return [
             'name' => $this->faker->unique()->word.' recurring item',
-            'repeating_cadence' => Cadence::ONCE_A_WEEK,
+            'repeating_cadence' => $this->faker->randomElement(Cadence::cases())->value,
             'description' => 'Recurring item description '.$this->faker->text(50),
             'billing_date' => 'every day',
             'start_date' => $startDate,
