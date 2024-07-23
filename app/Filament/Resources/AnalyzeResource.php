@@ -15,6 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Tables\Actions\SelectAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class AnalyzeResource extends Resource
 {
@@ -58,8 +59,6 @@ class AnalyzeResource extends Resource
 
         $transactionDataByPeriod = [];
         $transactionValues = Transaction::get();
-        $sums = [];
-        $averages = [];
         $tableValues = '';
 
         if ($selectedPeriod === 'year') {
@@ -70,18 +69,7 @@ class AnalyzeResource extends Resource
             for ($year = $startYear; $year <= $currentYear; $year++) {
                 $aggregatedTransactionValues = Transaction::aggregateTransactionValues($transactionValues, $selectedModel, 'year');
                 $tableValues = $aggregatedTransactionValues['tableValues'];
-                $searchBy = $aggregatedTransactionValues['searchBy'];
                 $transactionDataByPeriod[$year] = $tableValues;
-
-                $transactionCalculation = Transaction::calculateTransaction(
-                    selectedModel: $selectedModel,
-                    searchBy: $searchBy,
-                    period: 'year',
-                    year: $year
-                );
-
-                $sums[$year] = $transactionCalculation['transactionsSum'];
-                $averages[$year] = $transactionCalculation['averageAmount'];
             }
         } elseif ($selectedPeriod === 'month') {
             $startDate = Carbon::now()->subMonths(5)->startOfMonth();
@@ -96,23 +84,11 @@ class AnalyzeResource extends Resource
 
             while ($currentDate <= $endDate) {
                 $monthName = $currentDate->format('F');
-                $year = $currentDate->year;
 
                 $aggregatedTransactionValues = Transaction::aggregateTransactionValues($transactionValues, $selectedModel, 'month');
                 $tableValues = $aggregatedTransactionValues['tableValues'];
-                $searchBy = $aggregatedTransactionValues['searchBy'];
                 $transactionDataByPeriod[$monthName] = $tableValues;
 
-                $transactionCalculation = Transaction::calculateTransaction(
-                    selectedModel: $selectedModel,
-                    searchBy: $searchBy,
-                    period: 'month',
-                    year: $year,
-                    currentDate: $currentDate
-                );
-
-                $sums[$monthName] = $transactionCalculation['transactionsSum'];
-                $averages[$monthName] = $transactionCalculation['averageAmount'];
                 $currentDate->addMonth();
             }
         } elseif ($selectedPeriod === 'week') {
@@ -136,19 +112,8 @@ class AnalyzeResource extends Resource
             foreach ($weeks as $week) {
                 $aggregatedTransactionValues = Transaction::aggregateTransactionValues($transactionValues, $selectedModel, 'week');
                 $tableValues = $aggregatedTransactionValues['tableValues'];
-                $searchBy = $aggregatedTransactionValues['searchBy'];
                 $weekLabel = $week['start']->format('d M').' - '.$week['end']->format('d M');
                 $transactionDataByPeriod[$weekLabel] = $tableValues;
-
-                $transactionCalculation = Transaction::calculateTransaction(
-                    selectedModel: $selectedModel,
-                    searchBy: $searchBy,
-                    period: 'week',
-                    week: $week
-                );
-
-                $sums[$weekLabel] = $transactionCalculation['transactionsSum'];
-                $averages[$weekLabel] = $transactionCalculation['averageAmount'];
             }
 
         } elseif ($selectedPeriod === 'day') {
@@ -170,29 +135,31 @@ class AnalyzeResource extends Resource
             foreach ($days as $day) {
                 $aggregatedTransactionValues = Transaction::aggregateTransactionValues($transactionValues, $selectedModel, 'day');
                 $tableValues = $aggregatedTransactionValues['tableValues'];
-                $searchBy = $aggregatedTransactionValues['searchBy'];
                 $dayLabel = $day->format('d M');
                 $transactionDataByPeriod[$dayLabel] = $tableValues;
-
-                $transactionCalculation = Transaction::calculateTransaction(
-                    selectedModel: $selectedModel,
-                    searchBy: $searchBy,
-                    period: 'day',
-                    day: $day
-                );
-
-                $sums[$dayLabel] = $transactionCalculation['transactionsSum'];
-                $averages[$dayLabel] = $transactionCalculation['averageAmount'];
             }
         }
 
+        //      TODO: check if I am sending more data then necessary for pagination, for other values like tableValues, etc.
+        $perPage = request()?->input('perPage', 10);
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $selectedModelArray = $selectedModel->toArray();
+        $currentItems = array_slice($selectedModelArray, ($currentPage - 1) * $perPage, $perPage);
+
+        $paginatedData = new LengthAwarePaginator(
+            $currentItems,
+            count($selectedModelArray),
+            $perPage,
+            $currentPage,
+            ['path' => LengthAwarePaginator::resolveCurrentPath()]
+        );
+
         $table->content(
             view('livewire.analyze-table-view', compact(
-                'selectedModel',
                 'tableValues',
+                'paginatedData',
                 'transactionDataByPeriod',
-                'sums',
-                'averages',
+                'paginatedData'
             ))
         );
 
