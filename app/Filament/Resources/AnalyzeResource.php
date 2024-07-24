@@ -50,6 +50,8 @@ class AnalyzeResource extends Resource
         $selectedPeriod = session('status') ?? 'year';
         $timeRange = session('timeRange') ?? 'last 7 days';
         $currentYear = Carbon::now()->year;
+        $startDateRange = session('startDate');
+        $endDateRange = session('endDate');
         $startYear = $currentYear - 5;
 
         $transactionDataByPeriod = [];
@@ -59,6 +61,14 @@ class AnalyzeResource extends Resource
         if ($selectedPeriod === 'year') {
             if ($timeRange === 'last 3 years') {
                 $startYear = Carbon::now()->year - 2;
+            }
+
+            if ($startDateRange) {
+                $startYear = Carbon::createFromFormat('Y-m-d', $startDateRange)->year;
+            }
+
+            if ($endDateRange) {
+                $endYear = Carbon::createFromFormat('Y-m-d', $endDateRange)->year;
             }
 
             for ($year = $startYear; $year <= $currentYear; $year++) {

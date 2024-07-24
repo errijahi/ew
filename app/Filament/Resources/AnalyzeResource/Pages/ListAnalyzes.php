@@ -22,9 +22,9 @@ class ListAnalyzes extends ListRecords
 
     public string $timeRange;
 
-    public ?string $startDate;
+    public ?string $startDate = null;
 
-    public ?string $endDate;
+    public ?string $endDate = null;
 
     public string $dateRange;
 
@@ -102,7 +102,17 @@ class ListAnalyzes extends ListRecords
     #[NoReturn]
     public function searchByDateRange(): void
     {
-        session(['dateRange' => $this->startDate.' '.$this->endDate]);
+        if ($this->startDate === '') {
+            $this->startDate = null;
+        }
+
+        if ($this->endDate === '') {
+            $this->endDate = null;
+        }
+
+        session(['startDate' => $this->startDate ?? null]);
+        session(['endDate' => $this->endDate ?? null]);
+
         $this->dispatch('created');
     }
 
