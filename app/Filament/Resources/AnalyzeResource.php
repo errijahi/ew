@@ -27,7 +27,6 @@ class AnalyzeResource extends Resource
 
     public static function table(Table $table): Table
     {
-
         $table->headerActions([
             SelectAction::make('make custom table header filters')
                 ->view('livewire.table-filter'),
@@ -38,17 +37,13 @@ class AnalyzeResource extends Resource
 
         if ($Model === 'tag') {
             $selectedModel = Tag::get();
-        }
-        if ($Model === 'categories') {
+        } elseif ($Model === 'categories') {
             $selectedModel = Category::get();
-        }
-        if ($Model === 'account') {
+        } elseif ($Model === 'account') {
             $selectedModel = Account::get();
-        }
-        if ($Model === 'recurring') {
+        } elseif ($Model === 'recurring') {
             $selectedModel = RecurringItem::get();
-        }
-        if ($Model === 'payee') {
+        } elseif ($Model === 'payee') {
             $selectedModel = Payee::get();
         }
 
@@ -140,8 +135,7 @@ class AnalyzeResource extends Resource
             }
         }
 
-        //      TODO: check if I am sending more data then necessary for pagination, for other values like tableValues, etc.
-        $perPage = request()?->input('perPage', 10);
+        $perPage = session('perPage') ?? 5;
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $selectedModelArray = $selectedModel->toArray();
         $currentItems = array_slice($selectedModelArray, ($currentPage - 1) * $perPage, $perPage);
@@ -158,14 +152,17 @@ class AnalyzeResource extends Resource
             view('livewire.analyze-table-view', compact(
                 'tableValues',
                 'paginatedData',
-                'transactionDataByPeriod',
-                'paginatedData'
+                'transactionDataByPeriod'
             ))
         );
 
-        $columns[] = TextColumn::make('This needs to return something to work, it is here only for that reason.');
+        $table->contentFooter(view('livewire.analyze-table-footer', compact(
+            'paginatedData',
+        )));
 
-        return $table->columns($columns);
+        $columns[] = TextColumn::make('placeholder_column')->label('This needs to return something to work, it is here only for that reason.');
+
+        return $table->columns($columns)->paginated(false);
     }
 
     public static function getPages(): array

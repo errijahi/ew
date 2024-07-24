@@ -28,6 +28,8 @@ class ListAnalyzes extends ListRecords
 
     public string $dateRange;
 
+    public int $perPage;
+
     public ?string $currentTab = 'tags';
 
     public function getTabs(): array
@@ -38,7 +40,6 @@ class ListAnalyzes extends ListRecords
         $getValues = ['tags', 'categories', 'accounts', 'recurring', 'payee'];
 
         foreach ($getValues as $name) {
-
             $slug = str($name)->slug()->toString();
 
             $tabs[$slug] = Tab::make($name)
@@ -89,6 +90,12 @@ class ListAnalyzes extends ListRecords
     public function create(): void
     {
         session(['status' => $this->status ?? 'year']);
+        $this->dispatch('created');
+    }
+
+    public function changeInPerPage(): void
+    {
+        session(['perPage' => $this->perPage ?? 5]);
         $this->dispatch('created');
     }
 
