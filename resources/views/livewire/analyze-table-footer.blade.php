@@ -2,6 +2,6 @@
     <x-filament::pagination wire:model="perPage" wire:change="changeInPerPage" id="pg"
         :paginator="$paginatedData"
         :page-options="[5, 10, 20, 50, 100]"
-        :current-page-option-property=10
+        :current-page-option-property=5
     />
 </div>
