@@ -32,16 +32,12 @@
     <!-- New Date Range Search Form -->
     <div style="flex: 1; display: flex; gap: 1rem; align-items: center;">
         <form wire:submit.prevent="searchByDateRange" id="dates" style="flex: 1; display: flex; gap: 1rem; align-items: center;">
-
             <x-filament::input.wrapper style="margin-bottom: 0; flex: 1; display: flex; align-items: center;">
                 <x-filament::input type="date" wire:model.lazy="startDate" id="startDate"  wire:change="searchByDateRange" style="flex: 1;" />
             </x-filament::input.wrapper>
-
             <x-filament::input.wrapper style="margin-bottom: 0; flex: 1; display: flex; align-items: center;">
                 <x-filament::input type="date" wire:model.lazy="endDate" id="endDate" wire:change="searchByDateRange" style="flex: 1;" />
             </x-filament::input.wrapper>
-
-{{--            <x-filament::button type="submit" wire:submit="searchByDateRange" style="flex: 0;">Search</x-filament::button>--}}
         </form>
     </div>
 </div>
