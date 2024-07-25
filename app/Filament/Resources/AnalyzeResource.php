@@ -68,7 +68,7 @@ class AnalyzeResource extends Resource
             }
 
             if ($endDateRange) {
-                $endYear = Carbon::createFromFormat('Y-m-d', $endDateRange)->year;
+                $currentYear = Carbon::createFromFormat('Y-m-d', $endDateRange)->year;
             }
 
             for ($year = $startYear; $year <= $currentYear; $year++) {
@@ -85,16 +85,22 @@ class AnalyzeResource extends Resource
                 $endDate = Carbon::now()->endOfMonth();
             }
 
-            $currentDate = $startDate->copy();
+            if ($startDateRange) {
+                $startDate = Carbon::createFromFormat('Y-m-d', $startDateRange)?->startOfMonth();
+            }
 
-            while ($currentDate <= $endDate) {
-                $monthName = $currentDate->format('F');
+            if ($endDateRange) {
+                $endDate = Carbon::createFromFormat('Y-m-d', $endDateRange)?->endOfMonth();
+            }
+
+            while ($startDate <= $endDate) {
+                $monthName = $startDate->format('F');
 
                 $aggregatedTransactionValues = Transaction::aggregateTransactionValues($transactionValues, $selectedModel, 'month');
                 $tableValues = $aggregatedTransactionValues['tableValues'];
                 $transactionDataByPeriod[$monthName] = $tableValues;
 
-                $currentDate->addMonth();
+                $startDate->addMonth();
             }
         } elseif ($selectedPeriod === 'week') {
             $numberOfWeeks = 6;
@@ -104,6 +110,14 @@ class AnalyzeResource extends Resource
 
             $startOfWeek = Carbon::now()->subWeeks($numberOfWeeks)->startOfWeek();
             $endOfWeek = Carbon::now()->endOfWeek();
+
+            if ($startDateRange) {
+                $startOfWeek = Carbon::createFromFormat('Y-m-d', $startDateRange)?->startOfWeek();
+            }
+
+            if ($endDateRange) {
+                $endOfWeek = Carbon::createFromFormat('Y-m-d', $endDateRange)?->endOfWeek();
+            }
 
             $weeks = [];
             while ($startOfWeek->lte($endOfWeek)) {
@@ -130,6 +144,14 @@ class AnalyzeResource extends Resource
 
             $startDate = Carbon::now()->subDays($numberOfDays)->startOfDay();
             $endDate = Carbon::now()->endOfDay();
+
+            if ($startDateRange) {
+                $startDate = Carbon::createFromFormat('Y-m-d', $startDateRange)?->startOfDay();
+            }
+
+            if ($endDateRange) {
+                $endDate = Carbon::createFromFormat('Y-m-d', $endDateRange)?->endOfDay();
+            }
 
             $days = [];
             while ($startDate->lte($endDate)) {
