@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\AnalyzeResource\Pages;
-use App\Filament\Resources\AnalyzeResource\Widgets\PieChartAnalyze as PieChartWidget;
 use App\Models\Account;
 use App\Models\Analyze;
 use App\Models\Category;

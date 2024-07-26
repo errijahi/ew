@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\AnalyzeResource\Pages;
 
 use App\Filament\Resources\AnalyzeResource;
-use Filament\Resources\Pages\Page;
 use App\Filament\Resources\AnalyzeResource\Widgets\PieChartAnalyze as PieChartWidget;
+use Filament\Resources\Pages\Page;
 
 class PieChartAnalyze extends Page
 {
