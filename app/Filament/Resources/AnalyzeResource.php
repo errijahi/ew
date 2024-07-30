@@ -201,7 +201,6 @@ class AnalyzeResource extends Resource
     {
         return [
             'index' => Pages\ListAnalyzes::route('/'),
-            'pie-chart' => Pages\PieChartAnalyze::route('/pie-chart'),
         ];
     }
 }

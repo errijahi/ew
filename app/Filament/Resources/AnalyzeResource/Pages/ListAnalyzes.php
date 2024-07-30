@@ -33,17 +33,6 @@ class ListAnalyzes extends ListRecords
 
     public ?string $currentTab = 'tags';
 
-    protected function getHeaderActions(): array
-    {
-        $pieChartUrl = parse_url(AnalyzeResource::getUrl('pie-chart'), PHP_URL_PATH);
-
-        return [
-            Actions\Action::make('PieChart')
-                ->label('Pie')
-                ->url($pieChartUrl),
-        ];
-    }
-
     public function getTabs(): array
     {
         $this->status = session('status', 'year');
