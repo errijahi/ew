@@ -81,8 +81,10 @@ class ListAnalyzes extends ListRecords
                             break;
                     }
 
-                    Session::put('key', $key);
-                    $this->dispatch('created');
+                    if (Session::get('key') !== $key) {
+                        Session::put('key', $key);
+                        $this->dispatch('created');
+                    }
 
                     return $query;
                 });
