@@ -47,12 +47,14 @@ class AnalyzeResource extends Resource
             $selectedModel = Payee::get();
         }
 
+        $perPage = session('perPage') ?? 5;
         $selectedPeriod = session('status') ?? 'year';
         $timeRange = session('timeRange') ?? 'last 7 days';
         $currentYear = Carbon::now()->year;
         $startDateRange = session('startDate');
         $endDateRange = session('endDate');
         $startYear = $currentYear - 5;
+        $viewType = session('viewType') ?? 'table';
 
         $transactionDataByPeriod = [];
         $transactionValues = Transaction::get();
@@ -167,7 +169,6 @@ class AnalyzeResource extends Resource
             }
         }
 
-        $perPage = session('perPage') ?? 5;
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $selectedModelArray = $selectedModel->toArray();
         $currentItems = array_slice($selectedModelArray, ($currentPage - 1) * $perPage, $perPage);
@@ -184,13 +185,16 @@ class AnalyzeResource extends Resource
             view('livewire.analyze-table-view', compact(
                 'tableValues',
                 'paginatedData',
-                'transactionDataByPeriod'
+                'transactionDataByPeriod',
+                'viewType'
             ))
         );
 
-        $table->contentFooter(view('livewire.analyze-table-footer', compact(
-            'paginatedData',
-        )));
+        if ($viewType === 'table') {
+            $table->contentFooter(view('livewire.analyze-table-footer', compact(
+                'paginatedData',
+            )));
+        }
 
         $columns[] = TextColumn::make('placeholder_column')->label('This needs to return something to work, it is here only for that reason.');
 

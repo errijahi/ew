@@ -8,7 +8,6 @@ use App\Models\Category;
 use App\Models\RecurringItem;
 use App\Models\Tag;
 use App\Models\Transaction;
-use Filament\Actions;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Session;
@@ -31,11 +30,13 @@ class ListAnalyzes extends ListRecords
 
     public int $perPage;
 
-    public ?string $currentTab = 'tags';
+    public string $viewType;
 
     public function getTabs(): array
     {
         $this->status = session('status', 'year');
+        $this->viewType = session('viewType', 'table');
+        $this->perPage = session('perPage', 5);
         $this->timeRange = session('timeRange', 'last 6 years');
         $teamId = auth()->user()->teams[0]->id;
         $getValues = ['tags', 'categories', 'accounts', 'recurring', 'payee'];
@@ -80,6 +81,14 @@ class ListAnalyzes extends ListRecords
         }
 
         return $tabs;
+    }
+
+    #[NoReturn]
+    public function changeViewType(): void
+    {
+        session(['viewType' => $this->viewType ?? 'table']);
+        session(['reloadPage' => 'true']);
+        $this->dispatch('created');
     }
 
     #[NoReturn]
