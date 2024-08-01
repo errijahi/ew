@@ -1,5 +1,20 @@
 <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
     <div style="flex: 1;">
+        <form wire:submit.prevent="changeViewType" id="viewType">
+            <x-filament::input.wrapper style="margin-bottom: 0;">
+                <x-filament::input.select wire:model="viewType"  wire:change="changeViewType">
+                    <option value="table">Table</option>
+                    <option value="pie">Pie</option>
+                    <option value="bar">Bar</option>
+                    <option value="line">Line</option>
+                    <option value="stacked">Stacked</option>
+                </x-filament::input.select>
+            </x-filament::input.wrapper>
+        </form>
+    </div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
+    <div style="flex: 1;">
         <form wire:submit.prevent="create" id="show-time">
             <x-filament::input.wrapper style="margin-bottom: 0;">
                 <x-filament::input.select wire:model="status" wire:change="create">
