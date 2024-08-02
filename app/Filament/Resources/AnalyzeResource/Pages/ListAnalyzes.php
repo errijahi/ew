@@ -24,7 +24,7 @@ class ListAnalyzes extends ListRecords
 
     public ?string $startDate = null;
 
-                      public ?string $endDate = null;
+    public ?string $endDate = null;
 
     public string $dateRange;
 
