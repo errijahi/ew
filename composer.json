@@ -66,14 +66,11 @@
         },
         "hooks": {
             "config": {
-                "stop-on-failure": [
-                    "pre-commit"
-                ]
+                "stop-on-failure": ["pre-push"]
             },
-            "pre-commit": [
-                "composer lint-validate"
-            ],
-            "post-merge": "composer install --ignore-platform-reqs"
+            "pre-push": [
+                "php-cs-fixer fix --dry-run --stop-on-violation ."
+            ]
         }
     },
     "config": {
