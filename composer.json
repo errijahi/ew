@@ -64,14 +64,6 @@
         "laravel": {
             "dont-discover": []
         },
-        "hooks": {
-            "config": {
-                "stop-on-failure": ["pre-push"]
-            },
-            "pre-push": [
-                "php-cs-fixer fix --dry-run --stop-on-violation ."
-            ]
-        }
     },
     "config": {
         "optimize-autoloader": true,
