@@ -30,7 +30,7 @@ class ListAnalyzes extends ListRecords
 
     public int $perPage;
 
-    public string $viewType;
+                                 public string $viewType;
 
     public function getTabs(): array
     {
