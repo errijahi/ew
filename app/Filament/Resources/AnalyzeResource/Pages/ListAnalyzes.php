@@ -26,9 +26,9 @@ class ListAnalyzes extends ListRecords
 
     public ?string $endDate = null;
 
-    public string $dateRange;
+                                             public string $dateRange;
 
-                                             public int $perPage;
+    public int $perPage;
 
     public string $viewType;
 
