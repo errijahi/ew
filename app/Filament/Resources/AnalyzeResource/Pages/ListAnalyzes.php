@@ -20,13 +20,13 @@ class ListAnalyzes extends ListRecords
 
     public string $status;
 
-    public string $timeRange;
+                                                     public string $timeRange;
 
     public ?string $startDate = null;
 
     public ?string $endDate = null;
 
-                                             public string $dateRange;
+    public string $dateRange;
 
     public int $perPage;
 
