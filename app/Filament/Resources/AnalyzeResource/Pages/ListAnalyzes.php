@@ -87,7 +87,7 @@ class ListAnalyzes extends ListRecords
     public function changeViewType(): void
     {
         session(['viewType' => $this->viewType ?? 'table']);
-        session(['reloadPage' => 'true']);
+                     session(['reloadPage' => 'true']);
         $this->dispatch('created');
     }
 
