@@ -58,12 +58,27 @@
             "@php artisan key:generate --ansi",
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
             "@php artisan migrate --graceful --ansi"
-        ]
+        ],
+        "lint-validate": [
+            "./vendor/bin/pint --test"
+        ],
+        "larastan": "./vendor/bin/phpstan analyse --memory-limit 1024M",
+        "rector": "./vendor/bin/rector",
+        "pint": "./vendor/bin/pint"
     },
     "extra": {
         "laravel": {
             "dont-discover": []
         },
+        "config": {
+            "stop-on-failure": [
+                "pre-commit"
+            ]
+        },
+        "pre-commit": [
+            "composer lint-validate"
+        ],
+        "post-merge": "composer install --ignore-platform-reqs"
     },
     "config": {
         "optimize-autoloader": true,
