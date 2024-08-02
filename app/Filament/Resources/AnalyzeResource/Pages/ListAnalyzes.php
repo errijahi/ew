@@ -28,9 +28,9 @@ class ListAnalyzes extends ListRecords
 
     public string $dateRange;
 
-    public int $perPage;
+                                             public int $perPage;
 
-                                 public string $viewType;
+    public string $viewType;
 
     public function getTabs(): array
     {
