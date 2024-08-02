@@ -62,6 +62,17 @@
     "extra": {
         "laravel": {
             "dont-discover": []
+        },
+        "hooks": {
+            "config": {
+                "stop-on-failure": [
+                    "pre-commit"
+                ]
+            },
+            "pre-commit": [
+                "composer lint-validate"
+            ],
+            "post-merge": "composer install --ignore-platform-reqs"
         }
     },
     "config": {
