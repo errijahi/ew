@@ -20,7 +20,7 @@ class ListAnalyzes extends ListRecords
 
     public string $status;
 
-                                                     public string $timeRange;
+    public string $timeRange;
 
     public ?string $startDate = null;
 
@@ -129,7 +129,5 @@ class ListAnalyzes extends ListRecords
     }
 
     #[NoReturn] #[On('created')]
-    public function refresh(): void
-    {
-    }
+    public function refresh(): void {}
 }
