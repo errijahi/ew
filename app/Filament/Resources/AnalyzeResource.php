@@ -186,7 +186,8 @@ class AnalyzeResource extends Resource
                 'tableValues',
                 'paginatedData',
                 'transactionDataByPeriod',
-                'viewType'
+                'viewType',
+                'selectedPeriod',
             ))
         );
 
