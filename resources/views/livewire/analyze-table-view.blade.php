@@ -123,10 +123,9 @@
     }
 @endphp
 
-
 @if($viewType === 'pie')
     <div>
-        <canvas id="pieChart" style="height: 50vh"></canvas>
+        <canvas id="pieChart" style="height: 50vh; padding-top: 10px; padding-bottom: 10px;"></canvas>
     </div>
 @endif
 
@@ -211,6 +210,11 @@
                     }]
                 },
                 options: {
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                    },
                     maintainAspectRatio: false,
                 }
             });
