@@ -246,31 +246,6 @@
             new Chart(bar, config);
         }
 
-        const line = document.getElementById('lineChart');
-        if (line) {
-            const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-            const data = {
-                labels: labels,
-                datasets: [{
-                    label: 'Red',
-                    data: sums,
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1
-                }]
-            };
-
-            const config = {
-                type: 'line',
-                data: data,
-                options: {
-                    maintainAspectRatio: false,
-                },
-            };
-
-            new Chart(line, config);
-        }
-
         let labels1 = Object.keys(period);
         let test = [];
         let ids = [];
@@ -302,6 +277,43 @@
                 });
             }
         });
+
+        const line = document.getElementById('lineChart');
+        if (line) {
+
+            let datasets = [];
+            for (let i = 0; i < sums2.length; i++) {
+                datasets.push({
+                    data: sums2[i],
+                    label: labels[i],
+                });
+            }
+
+            let data = {
+                labels: labels1,
+                datasets: datasets
+            };
+
+            const config = {
+                type: 'line',
+                data: data,
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false // Hides the legend
+                        },
+                    },
+                    interaction: {
+                        intersect: false,
+                    },
+                    maintainAspectRatio: false,
+                },
+            };
+
+            new Chart(line, config);
+        }
+
+
 
         const stacked = document.getElementById('stackedChart');
         if (stacked) {
