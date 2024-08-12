@@ -197,7 +197,6 @@
     let paginatedData = @json($paginatedData);
     let selectedPeriod = @json($selectedPeriod);
 
-
     document.addEventListener('DOMContentLoaded', function () {
         const pie = document.getElementById('pieChart');
         if (pie) {
@@ -300,7 +299,7 @@
                 options: {
                     plugins: {
                         legend: {
-                            display: false // Hides the legend
+                            display: false
                         },
                     },
                     interaction: {
@@ -347,7 +346,7 @@
                     },
                     plugins: {
                         legend: {
-                            display: false // Hides the legend
+                            display: false
                         }
                     },
                     maintainAspectRatio: false,
