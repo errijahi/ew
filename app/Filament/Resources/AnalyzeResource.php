@@ -74,7 +74,8 @@ class AnalyzeResource extends Resource
             }
 
             for ($year = $startYear; $year <= $currentYear; $year++) {
-                $aggregatedTransactionValues = Transaction::aggregateTransactionValues($transactionValues, $selectedModel, 'year');
+                $aggregatedTransactionValues = Transaction::aggregateTransactionValues($transactionValues, $selectedModel,
+                    'year');
                 $tableValues = $aggregatedTransactionValues['tableValues'];
                 $transactionDataByPeriod[$year] = $tableValues;
             }
@@ -98,7 +99,8 @@ class AnalyzeResource extends Resource
             while ($startDate <= $endDate) {
                 $monthName = $startDate->format('F');
 
-                $aggregatedTransactionValues = Transaction::aggregateTransactionValues($transactionValues, $selectedModel, 'month');
+                $aggregatedTransactionValues = Transaction::aggregateTransactionValues($transactionValues, $selectedModel,
+                    'month');
                 $tableValues = $aggregatedTransactionValues['tableValues'];
                 $transactionDataByPeriod[$monthName] = $tableValues;
 
@@ -131,7 +133,8 @@ class AnalyzeResource extends Resource
             }
 
             foreach ($weeks as $week) {
-                $aggregatedTransactionValues = Transaction::aggregateTransactionValues($transactionValues, $selectedModel, 'week');
+                $aggregatedTransactionValues = Transaction::aggregateTransactionValues($transactionValues, $selectedModel,
+                    'week');
                 $tableValues = $aggregatedTransactionValues['tableValues'];
                 $weekLabel = $week['start']->format('d M').' - '.$week['end']->format('d M');
                 $transactionDataByPeriod[$weekLabel] = $tableValues;
@@ -162,7 +165,8 @@ class AnalyzeResource extends Resource
             }
 
             foreach ($days as $day) {
-                $aggregatedTransactionValues = Transaction::aggregateTransactionValues($transactionValues, $selectedModel, 'day');
+                $aggregatedTransactionValues = Transaction::aggregateTransactionValues($transactionValues, $selectedModel,
+                    'day');
                 $tableValues = $aggregatedTransactionValues['tableValues'];
                 $dayLabel = $day->format('d M');
                 $transactionDataByPeriod[$dayLabel] = $tableValues;
@@ -197,7 +201,8 @@ class AnalyzeResource extends Resource
             )));
         }
 
-        $columns[] = TextColumn::make('placeholder_column')->label('This needs to return something to work, it is here only for that reason.');
+        $columns[] = TextColumn::make('placeholder_column')->label('This needs to return something to work,
+            it is here only for that reason.');
 
         return $table->columns($columns)->paginated(false);
     }
