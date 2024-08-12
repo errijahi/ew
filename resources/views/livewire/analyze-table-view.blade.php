@@ -216,35 +216,6 @@
             });
         }
 
-        const bar = document.getElementById('barChart');
-        if (bar) {
-            const data = {
-                labels: labels,
-                datasets: [{
-                    label: 'Red',
-                    data: sums,
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1
-                }]
-            };
-
-            const config = {
-                type: 'bar',
-                data: data,
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    },
-                    maintainAspectRatio: false,
-                },
-            };
-
-            new Chart(bar, config);
-        }
-
         let labels1 = Object.keys(period);
         let test = [];
         let ids = [];
@@ -276,6 +247,42 @@
                 });
             }
         });
+
+        const bar = document.getElementById('barChart');
+        if (bar) {
+            let datasets = [];
+            for (let i = 0; i < sums2.length; i++) {
+                datasets.push({
+                    data: sums2[i],
+                    label: labels[i],
+                });
+            }
+
+            let data = {
+                labels: labels1,
+                datasets: datasets
+            };
+
+            const config = {
+                type: 'bar',
+                data: data,
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                    },
+                    maintainAspectRatio: false,
+                },
+            };
+
+            new Chart(bar, config);
+        }
 
         const line = document.getElementById('lineChart');
         if (line) {
@@ -311,8 +318,6 @@
 
             new Chart(line, config);
         }
-
-
 
         const stacked = document.getElementById('stackedChart');
         if (stacked) {
@@ -351,7 +356,6 @@
                     },
                     maintainAspectRatio: false,
                 },
-
             };
 
             new Chart(stacked, config);
