@@ -193,10 +193,9 @@
     let labels = @json($labels);
     let sums = @json($totalSums);
     let period = @json($transactionDataByPeriod);
-    {{--let datasets1 = @json($datasets, JSON_THROW_ON_ERROR); // Fetch the PHP data--}}
-        let tableValues = @json($tableValues);
-        let paginatedData = @json($paginatedData);
-        let selectedPeriod = @json($selectedPeriod);
+    let tableValues = @json($tableValues);
+    let paginatedData = @json($paginatedData);
+    let selectedPeriod = @json($selectedPeriod);
 
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -273,15 +272,8 @@
         }
 
         let labels1 = Object.keys(period);
-        // console.log(tableValues);
-        // console.log(labels1);
-
         let test = [];
         let ids = [];
-        // let sums2 = [];
-
-        console.log(tableValues);
-        console.log(selectedPeriod)
 
         paginatedData['data'].forEach((model) => {
             const yearData = tableValues[model['id']];
@@ -295,80 +287,21 @@
             }
         });
 
-        // console.log(test);
-        // console.log(ids);
-        // console.log(labels1);
-
-// Initialize sums2 as an array of empty arrays based on the number of ids
         let sums2 = Array(ids.length).fill(null).map(() => Array(labels1.length).fill(0));
-
-        // console.log(sums2);
-
-// Populate sums2 with the values from test
         ids.forEach((id, index) => {
             const values = test[index];
             if (values) {
                 labels1.forEach((label, monthIndex) => {
-                    // Extract the numeric value if it exists and is an object
                     if (values[label] && typeof values[label] === 'object' && values[label].amount) {
-                        sums2[index][monthIndex] = parseFloat(values[label].amount); // Convert to number
+                        sums2[index][monthIndex] = parseFloat(values[label].amount);
                     } else if (typeof values[label] === 'number') {
-                        sums2[index][monthIndex] = values[label]; // Directly assign if it's already a number
+                        sums2[index][monthIndex] = values[label];
                     } else {
-                        sums2[index][monthIndex] = 0; // Default to 0 if no amount is available
+                        sums2[index][monthIndex] = 0;
                     }
                 });
             }
         });
-        console.log(sums2);
-
-        // let sums2 = [
-        //     // The array itself is tag, but the values in the array are data for the months.
-        //     [10, 20, 30, 40, 50], // Data for dataset 1 (e.g., tag1)
-        //     [15, 25, 35, 45, 55], // Data for dataset 2 (e.g., tag2)
-        //     [20, 30, 40, 50, 60],  // Data for dataset 3 (e.g., tag3)
-        //     [20, 40, 60, 70, 80],  // Data for dataset 3 (e.g., tag4)
-        //     [20, 50, 70, 80, 90, 100],  // Data for dataset 3 (e.g., tag5)
-        // ];
-
-
-
-//         let datasets1 = [];
-//
-//         const targetYear = '2024';
-//
-// // Iterate over each tagId in tableValues
-//         Object.entries(tableValues).forEach(([tagId, years], i) => {
-//             let tagAmounts = new Array(labels1.length).fill(0); // Initialize with zeros for each month
-//
-//             let hasData = false; // Flag to check if the tag has any data
-//
-//             // Iterate over each year and get the amounts for each month
-//             Object.entries(years).forEach(([year, monthsData]) => {
-//                 if (year === targetYear) { // Check if the year matches the target year
-//                     labels1.forEach((month, index) => {
-//                         if (monthsData[month]) {
-//                             tagAmounts[index] = monthsData[month].amount;
-//                             hasData = true; // Mark that there is data for this tag
-//                         }
-//                     });
-//                 }
-//             });
-//
-//             // Only add dataset if the tag has valid data
-//             if (hasData) {
-//                 // Determine color index based on the current dataset index
-//                 // let colorIndex = i % colors.length;
-//
-//                 // Create a dataset object for each tagId
-//                 datasets1.push({
-//                     data: tagAmounts,
-//                     label: labels[tagId] || `Tag ${tagId}`, // Use tag name if available, otherwise fallback to `Tag ${tagId}`
-//                     // backgroundColor: colors[colorIndex], // Use the color based on index
-//                     // borderColor: colors[colorIndex].replace('0.5', '1') // Slightly darker border color
-//                 });
-//             }
-//         });
 
         const stacked = document.getElementById('stackedChart');
         if (stacked) {
@@ -385,8 +318,6 @@
                 labels: labels1,
                 datasets: datasets
             };
-
-            // console.log(data);
 
             const config = {
                 type: 'bar',
