@@ -108,6 +108,7 @@ class ListAnalyzes extends ListRecords
     public function changeInPerPage(): void
     {
         session(['perPage' => $this->perPage ?? 5]);
+        session(['reloadPage' => 'true']);
         $this->dispatch('created');
     }
 

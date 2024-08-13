@@ -197,7 +197,7 @@ class AnalyzeResource extends Resource
 
         if ($viewType === 'table') {
             $table->contentFooter(view('livewire.analyze-table-footer', compact(
-                'paginatedData',
+                'paginatedData', 'perPage'
             )));
         }
 
