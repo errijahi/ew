@@ -8,7 +8,7 @@
         }
     }
 
-     $shouldRelod = session('reloadPage');
+    $shouldRelod = session('reloadPage');
     if($shouldRelod  === 'true') {
          session(['reloadPage' => 'false']);
 @endphp

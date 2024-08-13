@@ -39,8 +39,13 @@ class BudgetResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('budget'),
+                TextColumn::make('budget')->label("this period's budget"),
                 TextColumn::make('category.name'),
+                TextColumn::make("this period's total"),
+                TextColumn::make('difference'),
+                TextColumn::make("last period's budget"),
+                TextColumn::make("last period's total"),
+                TextColumn::make('difference'),
             ])
             ->filters([
                 //
