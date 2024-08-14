@@ -18,6 +18,7 @@ class Category extends Model
         'exclude_from_total',
         'account_id',
         'sub_category_group_id',
+        'team_id',
     ];
 
     public function subCategoryGroup()

@@ -14,9 +14,9 @@ class BudgetFactory extends Factory
     public function definition(): array
     {
         return [
-            'budget' => $this->faker->randomNumber(),
+            'budget' => $this->faker->optional()->randomNumber(),
             'team_id' => 1,
-            'category_id' => $this->faker->optional()->numberBetween(1, 10),
+            'category_id' => $this->faker->unique()->numberBetween(2, 21),
         ];
     }
 }

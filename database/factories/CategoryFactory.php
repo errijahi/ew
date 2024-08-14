@@ -19,7 +19,6 @@ class CategoryFactory extends Factory
             'treat_as_income' => $this->faker->boolean,
             'exclude_from_budget' => $this->faker->boolean,
             'exclude_from_total' => $this->faker->boolean,
-            'budget' => $this->faker->randomNumber(),
             'team_id' => 1,
         ];
     }

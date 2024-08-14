@@ -15,7 +15,6 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'transport',
             'description' => 'every day transport',
-            'budget' => '50',
             'treat_as_income' => false,
             'exclude_from_budget' => false,
             'exclude_from_total' => true,

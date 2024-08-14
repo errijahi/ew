@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('budgets', function (Blueprint $table) {
             $table->id();
-            $table->string('budget');
+            $table->string('budget')->nullable();
             $table->foreignId('team_id')->constrained();
-            $table->foreignId('category_id')->nullable()->constrained();
+            $table->foreignId('category_id')->unique()->constrained();
             $table->timestamps();
         });
     }

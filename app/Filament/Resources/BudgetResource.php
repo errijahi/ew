@@ -11,6 +11,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Table;
 
 class BudgetResource extends Resource
@@ -24,14 +25,24 @@ class BudgetResource extends Resource
     public static function form(Form $form): Form
     {
         $teamId = auth()->user()->teams[0]->id;
+        $categories = Category::where('team_id', $teamId)
+            ->pluck('name', 'id')
+            ->toArray();
+
+        $budgetCategoryIds = Budget::pluck('category_id')->toArray();
+        $filteredCategories = array_filter(
+            $categories,
+            fn ($name, $id) => ! in_array($id, $budgetCategoryIds),
+            ARRAY_FILTER_USE_BOTH
+        );
 
         return $form
             ->schema([
-                TextInput::make('budget')->numeric()->required(),
                 Select::make('category_id')
-                    ->options(Category::where('team_id', $teamId)->pluck('name', 'id')->toArray())
+                    ->options($filteredCategories)
                     ->native(false)
                     ->required(),
+                TextInput::make('budget')->numeric()->required(),
             ]);
     }
 
@@ -39,8 +50,8 @@ class BudgetResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('budget')->label("this period's budget"),
                 TextColumn::make('category.name'),
+                TextInputColumn::make('budget')->label("This period's budget"),
                 TextColumn::make("this period's total"),
                 TextColumn::make('difference'),
                 TextColumn::make("last period's budget"),
