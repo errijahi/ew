@@ -14,6 +14,8 @@ class BudgetSeeder extends Seeder
     {
         Budget::create([
             'budget' => '500',
+            'year' => '2024',
+            'month' => '04',
             'category_id' => 1,
             'team_id' => 1,
         ]);
