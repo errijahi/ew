@@ -25,7 +25,7 @@ class TagResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->required(),
+                TextInput::make('name')->required()->unique(),
                 TextInput::make('description')->required(),
                 ColorPicker::make('color')->required(),
             ]);

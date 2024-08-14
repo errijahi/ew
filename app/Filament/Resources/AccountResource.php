@@ -29,7 +29,7 @@ class AccountResource extends Resource
 
         return $form
             ->schema([
-                TextInput::make('name')->required()->maxLength(255),
+                TextInput::make('name')->required()->maxLength(255)->unique(),
                 TextInput::make('balance')->numeric()->required()->maxLength(255),
                 Toggle::make('status')->required(),
                 Select::make('category_id')

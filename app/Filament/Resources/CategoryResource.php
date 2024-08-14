@@ -29,7 +29,7 @@ class CategoryResource extends Resource
 
         return $form
             ->schema([
-                TextInput::make('name')->required(),
+                TextInput::make('name')->required()->unique(),
                 TextInput::make('description')->required(),
                 Select::make('sub_category_group_id')
                     ->options(Category::where('team_id', $teamId)->pluck('name', 'id')->toArray())

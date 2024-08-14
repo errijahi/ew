@@ -26,7 +26,7 @@ class RecurringItemResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')->required(),
+                TextInput::make('name')->required()->unique(),
                 TextInput::make('description'),
                 DateTimePicker::make('billing_date')->required(),
                 DateTimePicker::make('start_date')->required(),
