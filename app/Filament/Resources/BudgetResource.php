@@ -24,11 +24,14 @@ class BudgetResource extends Resource
             ->columns([
                 TextColumn::make('category.name'),
                 TextInputColumn::make('budget')->label("This period's budget"),
-                TextColumn::make("this period's total"),
-                TextColumn::make('difference'),
-                TextColumn::make("last period's budget"),
-                TextColumn::make("last period's total"),
-                TextColumn::make('difference2')->label('Difference'),
+                TextColumn::make("this period's total")->placeholder('---'),
+                TextColumn::make('difference')->placeholder('---'),
+                TextColumn::make("last period's budget")->placeholder('---')
+                    ->extraAttributes([
+                        'style' => 'border-left: 2px solid black;',
+                    ]),
+                TextColumn::make("last period's total")->placeholder('---'),
+                TextColumn::make('difference2')->label('Difference')->placeholder('---'),
             ])
             ->filters([
                 //
