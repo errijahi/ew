@@ -12,7 +12,6 @@ use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Session;
 use JetBrains\PhpStorm\NoReturn;
-use Livewire\Attributes\On;
 
 class ListAnalyzes extends ListRecords
 {
@@ -73,7 +72,7 @@ class ListAnalyzes extends ListRecords
 
                     if (Session::get('key') !== $key) {
                         Session::put('key', $key);
-                        $this->dispatch('created');
+                        session(['reloadPage' => 'true']);
                     }
 
                     return $query;
@@ -88,28 +87,26 @@ class ListAnalyzes extends ListRecords
     {
         session(['viewType' => $this->viewType ?? 'table']);
         session(['reloadPage' => 'true']);
-        $this->dispatch('created');
     }
 
     #[NoReturn]
     public function createTimeRange(): void
     {
         session(['timeRange' => $this->timeRange ?? 'last 7 days']);
-        $this->dispatch('created');
+        session(['reloadPage' => 'true']);
     }
 
     #[NoReturn]
     public function create(): void
     {
         session(['status' => $this->status ?? 'year']);
-        $this->dispatch('created');
+        session(['reloadPage' => 'true']);
     }
 
     public function changeInPerPage(): void
     {
         session(['perPage' => $this->perPage ?? 5]);
         session(['reloadPage' => 'true']);
-        $this->dispatch('created');
     }
 
     #[NoReturn]
@@ -125,10 +122,6 @@ class ListAnalyzes extends ListRecords
 
         session(['startDate' => $this->startDate ?? null]);
         session(['endDate' => $this->endDate ?? null]);
-
-        $this->dispatch('created');
+        session(['reloadPage' => 'true']);
     }
-
-    #[NoReturn] #[On('created')]
-    public function refresh(): void {}
 }
