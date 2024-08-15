@@ -37,6 +37,8 @@ class ListAnalyzes extends ListRecords
         $this->viewType = session('viewType', 'table');
         $this->perPage = session('perPage', 5);
         $this->timeRange = session('timeRange', 'last 6 years');
+        $this->startDate = session('startDate');
+        $this->endDate = session('endDate');
         $teamId = auth()->user()->teams[0]->id;
         $getValues = ['tags', 'categories', 'accounts', 'recurring', 'payee'];
 
@@ -112,14 +114,6 @@ class ListAnalyzes extends ListRecords
     #[NoReturn]
     public function searchByDateRange(): void
     {
-        if ($this->startDate === '') {
-            $this->startDate = null;
-        }
-
-        if ($this->endDate === '') {
-            $this->endDate = null;
-        }
-
         session(['startDate' => $this->startDate ?? null]);
         session(['endDate' => $this->endDate ?? null]);
         session(['reloadPage' => 'true']);
