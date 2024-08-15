@@ -8,6 +8,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\TextInputColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class BudgetResource extends Resource
@@ -34,7 +35,29 @@ class BudgetResource extends Resource
                 TextColumn::make('difference2')->label('Difference')->placeholder('---'),
             ])
             ->filters([
-                //
+                SelectFilter::make('year')
+                    ->label('Year')
+                    ->options([
+                        '2023' => '2023',
+                        '2024' => '2024',
+                        '2025' => '2025',
+                    ]),
+                SelectFilter::make('month')
+                    ->label('Month')
+                    ->options([
+                        '1' => 'January',
+                        '2' => 'February',
+                        '3' => 'March',
+                        '4' => 'April',
+                        '5' => 'May',
+                        '6' => 'June',
+                        '7' => 'July',
+                        '8' => 'August',
+                        '9' => 'September',
+                        '10' => 'October',
+                        '11' => 'November',
+                        '12' => 'December',
+                    ]),
             ])
             ->bulkActions([
                 //                Tables\Actions\BulkActionGroup::make([
