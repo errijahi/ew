@@ -25,5 +25,29 @@
         wire:change="changeInPerPage"
         :paginator="$paginatedData"
         :page-options="$pageOptions"
+        id="paginationComponent"
     />
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const paginationComponent = document.getElementById('paginationComponent');
+
+        if (paginationComponent) {
+            paginationComponent.addEventListener('click', function (event) {
+                const target = event.target;
+                console.log(target)
+                const isIcon = target.closest('svg');
+                const text = target.textContent.trim();
+                console.log(text);
+                if ((!isNaN(text) && text.length > 0) || isIcon) {
+                    // TODO: It works but I don't like this depending on the lot of stuff it might get slower of faster
+                    //  destroying this functionality.
+                    setTimeout(function() {
+                        location.reload();
+                    }, 600);
+                }
+            });
+        }
+    });
+</script>
