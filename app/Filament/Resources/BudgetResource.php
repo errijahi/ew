@@ -3,17 +3,18 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\BudgetResource\Pages;
-use App\Models\Budget;
+use App\Models\Category;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class BudgetResource extends Resource
 {
-    protected static ?string $model = Budget::class;
+    protected static ?string $model = Category::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -23,7 +24,8 @@ class BudgetResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('category.name'),
+                TextColumn::make('name'),
+                TextColumn::make('year'),
                 TextInputColumn::make('budget')->label("This period's budget"),
                 TextColumn::make("this period's total")->placeholder('---'),
                 TextColumn::make('difference')->placeholder('---'),
@@ -41,23 +43,10 @@ class BudgetResource extends Resource
                         '2023' => '2023',
                         '2024' => '2024',
                         '2025' => '2025',
-                    ]),
-                SelectFilter::make('month')
-                    ->label('Month')
-                    ->options([
-                        '1' => 'January',
-                        '2' => 'February',
-                        '3' => 'March',
-                        '4' => 'April',
-                        '5' => 'May',
-                        '6' => 'June',
-                        '7' => 'July',
-                        '8' => 'August',
-                        '9' => 'September',
-                        '10' => 'October',
-                        '11' => 'November',
-                        '12' => 'December',
-                    ]),
+                    ])
+                    ->query(function (Builder $query, $data): Builder {
+                        return $query;
+                    }),
             ])
             ->bulkActions([
                 //                Tables\Actions\BulkActionGroup::make([

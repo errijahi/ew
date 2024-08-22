@@ -21,6 +21,8 @@ class Category extends Model
         'team_id',
     ];
 
+    protected $with = ['budgets'];
+
     public function subCategoryGroup()
     {
         return $this->hasMany(Category::class, 'sub_category_group_id', 'id');
@@ -71,7 +73,7 @@ class Category extends Model
         return $this->hasMany(ThenAction::class);
     }
 
-    public function budget()
+    public function budgets()
     {
         return $this->hasMany(Budget::class);
     }
