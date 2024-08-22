@@ -20,6 +20,8 @@ class BudgetResource extends Resource
 
     protected static ?string $navigationGroup = 'Finances';
 
+    protected static ?string $label = 'Budget';
+
     public static function table(Table $table): Table
     {
         return $table
