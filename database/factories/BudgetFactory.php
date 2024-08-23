@@ -18,14 +18,14 @@ class BudgetFactory extends Factory
         do {
             $category_id = $this->faker->numberBetween(2, 21);
             $year = $this->faker->numberBetween(2020, 2024);
-            $month = $this->faker->numberBetween(1, 12);
+            $month = sprintf('%02d', $this->faker->numberBetween(1, 12));
             $combination = $category_id.'-'.$year.'-'.$month;
         } while (in_array($combination, $uniqueCombinations, true));
 
         $uniqueCombinations[] = $combination;
 
         return [
-            'budget' => $this->faker->optional()->randomNumber(),
+            'budget' => $this->faker->randomNumber(),
             'year' => $year,
             'month' => $month,
             'team_id' => 1,
