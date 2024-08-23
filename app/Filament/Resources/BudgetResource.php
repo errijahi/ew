@@ -32,7 +32,7 @@ class BudgetResource extends Resource
             ->columns([
                 TextColumn::make('name'),
                 TextColumn::make('year'),
-                TextInputColumn::make('budget')->label("This period's budget"),
+                TextInputColumn::make('budget')->label("This period's budget")->rules(['numeric']),
                 TextColumn::make("this period's total")->placeholder('---'),
                 TextColumn::make('difference')->placeholder('---'),
                 TextColumn::make("last period's budget")->placeholder('---')
