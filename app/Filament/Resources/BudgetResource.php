@@ -48,7 +48,10 @@ class BudgetResource extends Resource
                     ])
                     ->default('2024')
                     ->selectablePlaceholder(false)
-                    ->query(function (Builder $query, $data): Builder {
+                    ->indicateUsing(function (): ?string {
+                        return null;
+                    })
+                    ->query(function (Builder $query): Builder {
                         return $query;
                     }),
             ])
