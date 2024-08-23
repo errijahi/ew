@@ -48,6 +48,7 @@ class BudgetResource extends Resource
                     ->options(function () {
                         $currentYear = date('Y');
                         $startYear = '2000';
+                        //This part needs to stay like this $currentYear + '10' cos using . will cause big performance issues
                         $years = range($startYear, $currentYear + '10');
 
                         return array_combine($years, $years);
