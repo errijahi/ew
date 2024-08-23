@@ -14,10 +14,12 @@ class ListBudgets extends ListRecords
     {
         $filters = $this->tableFilters;
         $year = $filters['year']['value'] ?? null;
+        $month = $filters['month']['value'] ?? null;
 
-        $query->leftJoin('budgets', function ($join) use ($year) {
+        $query->leftJoin('budgets', function ($join) use ($year, $month) {
             $join->on('categories.id', '=', 'budgets.category_id')
-                ->where('budgets.year', $year);
+                ->where('budgets.year', $year)
+                ->where('budgets.month', $month);
         })->select('categories.*', 'budgets.budget', 'budgets.year');
 
         return $query;
