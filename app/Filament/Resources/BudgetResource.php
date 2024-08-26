@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\BudgetResource\Pages;
+use App\Models\Budget;
 use App\Models\Category;
 use Exception;
 use Filament\Resources\Resource;
@@ -31,8 +32,26 @@ class BudgetResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name'),
-                TextColumn::make('year'),
-                TextInputColumn::make('budget')->label("This period's budget")->rules(['numeric']),
+                TextInputColumn::make('budget')->label("This period's budget")->rules(['numeric'])
+                    ->beforeStateUpdated(function ($state, Category $record) {
+
+                        $year = session('selected_year');
+                        $month = session('selected_month');
+
+                        $attributes = [
+                            'year' => $year,
+                            'month' => $month,
+                            'category_id' => $record->id,
+                            'team_id' => $record->team_id,
+                        ];
+
+                        Budget::updateOrCreate(
+                            $attributes,
+                            ['budget' => $state]
+                        );
+                    })->updateStateUsing(function (&$state) {
+                        $state = null;
+                    }),
                 TextColumn::make("this period's total")->placeholder('---'),
                 TextColumn::make('difference')->placeholder('---'),
                 TextColumn::make("last period's budget")->placeholder('---')

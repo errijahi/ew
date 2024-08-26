@@ -16,6 +16,8 @@ class ListBudgets extends ListRecords
         $year = $filters['year']['value'] ?? null;
         $month = $filters['month']['value'] ?? null;
 
+        session(['selected_year' => $year, 'selected_month' => $month]);
+
         $query->leftJoin('budgets', function ($join) use ($year, $month) {
             $join->on('categories.id', '=', 'budgets.category_id')
                 ->where('budgets.year', $year)

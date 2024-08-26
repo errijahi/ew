@@ -13,6 +13,8 @@ class Budget extends Model
         'budget',
         'category_id',
         'team_id',
+        'year',
+        'month',
     ];
 
     public function category()
