@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\BudgetResource\Pages;
 use App\Models\Budget;
 use App\Models\Category;
+use Carbon\Carbon;
 use Exception;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -52,7 +53,11 @@ class BudgetResource extends Resource
                     })->updateStateUsing(function (&$state) {
                         $state = null;
                     }),
-                TextColumn::make("this period's total")->placeholder('---'),
+                TextColumn::make('transactions_sum_amount')->sum([
+                    'transactions' => fn (Builder $query) => $query->whereBetween('created_at',
+                        [Carbon::create(session('selected_year'), session('selected_month'), 1)?->startOfDay(),
+                            Carbon::create(session('selected_year'), session('selected_month'), 1)?->endOfMonth()->endOfDay()]),
+                ], 'amount')->placeholder('---'),
                 TextColumn::make('difference')->placeholder('---'),
                 TextColumn::make("last period's budget")->placeholder('---')
                     ->extraAttributes([
