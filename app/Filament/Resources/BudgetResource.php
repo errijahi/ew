@@ -57,8 +57,21 @@ class BudgetResource extends Resource
                     'transactions' => fn (Builder $query) => $query->whereBetween('created_at',
                         [Carbon::create(session('selected_year'), session('selected_month'), 1)?->startOfDay(),
                             Carbon::create(session('selected_year'), session('selected_month'), 1)?->endOfMonth()->endOfDay()]),
-                ], 'amount')->placeholder('---'),
-                TextColumn::make('difference')->placeholder('---'),
+                ], 'amount')->label("This period's total")->placeholder('---'),
+                TextColumn::make('Difference')->state('This state must be here for formatStateUsing to work')
+                    ->formatStateUsing(function ($record) {
+
+                        $year = session('selected_year');
+                        $month = session('selected_month');
+
+                        $budget = Budget::where('category_id', $record->id)
+                            ->where('team_id', $record->team_id)
+                            ->where('year', $year)
+                            ->where('month', $month)
+                            ->value('budget');
+
+                        return number_format(($budget - $record->transactions_sum_amount), 2);
+                    })->placeholder('---'),
                 TextColumn::make("last period's budget")->placeholder('---')
                     ->extraAttributes([
                         'style' => 'border-left: 2px solid black;',
