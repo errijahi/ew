@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\BudgetResource\Pages;
 use App\Models\Budget;
 use App\Models\Category;
+use App\Models\Transaction;
 use Carbon\Carbon;
 use Exception;
 use Filament\Resources\Resource;
@@ -94,16 +95,26 @@ class BudgetResource extends Resource
                     ->extraAttributes([
                         'style' => 'border-left: 2px solid black;',
                     ]),
-                TextColumn::make("last period's total")
-                //                    ->sum([
-//                        'transactions' => fn (Builder $query) => $query->whereBetween('created_at', [
-//                            // Determine the previous month and handle year changes
-//                            Carbon::create(session('selected_year'), session('selected_month'), 1)
-//                                ?->subMonth()->startOfMonth()->startOfDay(),
-//                            Carbon::create(session('selected_year'), session('selected_month'), 1)
-//                                ?->subMonth()->endOfMonth()->endOfDay()
-//                        ]),
-//                    ], 'amount')
+                TextColumn::make("last period's total")->state('This state must be here for formatStateUsing to work')
+                    ->formatStateUsing(function ($record) {
+                        $year = session('selected_year');
+                        $month = session('selected_month') - 1;
+
+                        if ($month < 1) {
+                            $year--;
+                            $month = 12;
+                        }
+
+                        $totalTransactionLastMonth = Transaction::where('category_id', $record->id)
+                            ->where('team_id', $record->team_id)
+                            ->whereBetween('created_at', [
+                                Carbon::create($year, $month, 1)?->startOfDay(),
+                                Carbon::create($year, $month, 1)?->endOfMonth()->endOfDay(),
+                            ])
+                            ->sum('amount');
+
+                        return number_format($totalTransactionLastMonth, 2);
+                    })
                     ->placeholder('---'),
                 TextColumn::make('difference2')->label('Difference')->placeholder('---'),
             ])
