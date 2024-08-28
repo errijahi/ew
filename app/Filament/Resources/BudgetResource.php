@@ -116,7 +116,33 @@ class BudgetResource extends Resource
                         return number_format($totalTransactionLastMonth, 2);
                     })
                     ->placeholder('---'),
-                TextColumn::make('difference2')->label('Difference')->placeholder('---'),
+                TextColumn::make('lastPeriodDifference')->state('test')
+                    ->formatStateUsing(function ($record) {
+                        $year = session('selected_year');
+                        $month = session('selected_month') - 1;
+
+                        if ($month < 1) {
+                            $year--;
+                            $month = 12;
+                        }
+
+                        $budget = Budget::where('category_id', $record->id)
+                            ->where('team_id', $record->team_id)
+                            ->where('year', $year)
+                            ->where('month', $month)
+                            ->value('budget');
+
+                        $totalTransactionLastMonth = Transaction::where('category_id', $record->id)
+                            ->where('team_id', $record->team_id)
+                            ->whereBetween('created_at', [
+                                Carbon::create($year, $month, 1)?->startOfDay(),
+                                Carbon::create($year, $month, 1)?->endOfMonth()->endOfDay(),
+                            ])
+                            ->sum('amount');
+
+                        return number_format(($budget - $totalTransactionLastMonth), 2);
+                    })
+                    ->label('Difference')->placeholder('---'),
             ])
             ->filters([
                 SelectFilter::make('year')
