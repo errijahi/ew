@@ -37,6 +37,16 @@ class TransactionResource extends Resource
                             ->required()
                             ->label('Payee Name'),
                     ]),
+                Select::make('account_id')
+                    ->label('Account')
+                    ->relationship('account', 'name')
+                    ->searchable()
+                    ->required()
+                    ->createOptionForm([
+                        TextInput::make('name')
+                            ->required()
+                            ->label('Account Name'),
+                    ]),
                 TextInput::make('notes'),
                 TextInput::make('transaction_source'),
                 Toggle::make('status'),

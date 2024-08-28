@@ -18,6 +18,7 @@ class Transaction extends Model
         'status',
         'transaction_source',
         'team_id',
+        'account_id',
     ];
 
     protected $with = ['payee'];
