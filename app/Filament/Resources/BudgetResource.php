@@ -9,7 +9,6 @@ use App\Models\Transaction;
 use Carbon\Carbon;
 use Exception;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -190,11 +189,6 @@ class BudgetResource extends Resource
                     ->query(function (Builder $query): Builder {
                         return $query;
                     }),
-            ])
-            ->bulkActions([
-                //                Tables\Actions\BulkActionGroup::make([
-                //                    Tables\Actions\DeleteBulkAction::make(),
-                //                ]),
             ]);
     }
 
