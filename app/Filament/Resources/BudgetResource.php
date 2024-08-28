@@ -72,11 +72,39 @@ class BudgetResource extends Resource
 
                         return number_format(($budget - $record->transactions_sum_amount), 2);
                     })->placeholder('---'),
-                TextColumn::make("last period's budget")->placeholder('---')
+                TextColumn::make("last period's budget")->state('This state must be here for formatStateUsing to work')
+                    ->formatStateUsing(function ($record) {
+                        $year = session('selected_year');
+                        $month = session('selected_month') - 1;
+
+                        if ($month < 1) {
+                            $year--;
+                            $month = 12;
+                        }
+
+                        $budget = Budget::where('category_id', $record->id)
+                            ->where('team_id', $record->team_id)
+                            ->where('year', $year)
+                            ->where('month', $month)
+                            ->value('budget');
+
+                        return number_format($budget, 2);
+                    })
+                    ->placeholder('---')
                     ->extraAttributes([
                         'style' => 'border-left: 2px solid black;',
                     ]),
-                TextColumn::make("last period's total")->placeholder('---'),
+                TextColumn::make("last period's total")
+                //                    ->sum([
+//                        'transactions' => fn (Builder $query) => $query->whereBetween('created_at', [
+//                            // Determine the previous month and handle year changes
+//                            Carbon::create(session('selected_year'), session('selected_month'), 1)
+//                                ?->subMonth()->startOfMonth()->startOfDay(),
+//                            Carbon::create(session('selected_year'), session('selected_month'), 1)
+//                                ?->subMonth()->endOfMonth()->endOfDay()
+//                        ]),
+//                    ], 'amount')
+                    ->placeholder('---'),
                 TextColumn::make('difference2')->label('Difference')->placeholder('---'),
             ])
             ->filters([
