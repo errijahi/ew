@@ -41,12 +41,7 @@ class TransactionResource extends Resource
                     ->label('Account')
                     ->relationship('account', 'name')
                     ->searchable()
-                    ->required()
-                    ->createOptionForm([
-                        TextInput::make('name')
-                            ->required()
-                            ->label('Account Name'),
-                    ]),
+                    ->required(),
                 TextInput::make('notes'),
                 TextInput::make('transaction_source'),
                 Toggle::make('status'),
