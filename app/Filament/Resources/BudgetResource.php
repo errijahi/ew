@@ -53,35 +53,30 @@ class BudgetResource extends Resource
                         $state = null;
                     }),
                 TextColumn::make('transactions_sum_amount')->sum([
-                    'transactions' => fn (Builder $query) => $query->whereBetween('created_at',
-                        [Carbon::create(session('selected_year'), session('selected_month'), 1)?->startOfDay(),
-                            Carbon::create(session('selected_year'), session('selected_month'), 1)?->endOfMonth()->endOfDay()]),
-                ], 'amount')
-                    ->label("This period's total")->placeholder('---'),
+                    'transactions' => fn (Builder $query) => $query
+                        ->whereBetween('created_at', [
+                            Carbon::create(session('selected_year'), session('selected_month'), 1)?->startOfDay(),
+                            Carbon::create(session('selected_year'), session('selected_month'), 1)?->endOfMonth()->endOfDay(),
+                        ])], 'amount')->label("This period's total")->placeholder('---'),
                 TextColumn::make('Difference')
-                    ->state('This state must be here for formatStateUsing to work')
+                    ->state('FormatStateUsing needs this to work')
                     ->formatStateUsing(function ($record) {
                         return Budget::calculateBudgetPeriods($record);
                     })->placeholder('---'),
                 TextColumn::make("last period's budget")
-                    ->state('This state must be here for formatStateUsing to work')
+                    ->state('FormatStateUsing needs this to work')
                     ->formatStateUsing(function ($record) {
                         return Budget::calculateBudgetPeriods($record, 1);
-                    })
-                    ->placeholder('---')
-                    ->extraAttributes([
-                        'style' => 'border-left: 2px solid black;',
-                    ]),
-                TextColumn::make("last period's total")->state('This state must be here for formatStateUsing to work')
+                    })->placeholder('---')
+                    ->extraAttributes(['style' => 'border-left: 2px solid black;']),
+                TextColumn::make("last period's total")->state('FormatStateUsing needs this to work')
                     ->formatStateUsing(function ($record) {
                         return Budget::calculateBudgetPeriods($record, 1, true);
-                    })
-                    ->placeholder('---'),
+                    })->placeholder('---'),
                 TextColumn::make('lastPeriodDifference')->state('test')
                     ->formatStateUsing(function ($record) {
                         return Budget::calculateBudgetPeriods($record, 1, false, true);
-                    })
-                    ->label('Difference')->placeholder('---'),
+                    })->label('Difference')->placeholder('---'),
             ])
             ->filters([
                 SelectFilter::make('year')
