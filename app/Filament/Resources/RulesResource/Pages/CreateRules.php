@@ -6,7 +6,7 @@ use App\Filament\Resources\RulesResource;
 use App\Models\Amount;
 use App\Models\Day;
 use App\Models\Note;
-use App\Models\PayeeName;
+use App\Models\PayeeFilter;
 use App\Models\RuleSplitTransaction;
 use App\Models\SplitTransaction;
 use Filament\Resources\Pages\CreateRecord;
@@ -43,7 +43,7 @@ class CreateRules extends CreateRecord
         $dayId = null;
 
         if (array_key_exists('matches_payee_name', $transformedData)) {
-            $payeeName = PayeeName::create($transformedData['matches_payee_name']);
+            $payeeName = PayeeFilter::create($transformedData['matches_payee_name']);
             $payeeNameId = $payeeName->id;
         }
 

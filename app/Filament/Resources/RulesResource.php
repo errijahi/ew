@@ -66,7 +66,7 @@ class RulesResource extends Resource
                         Grid::make(2)
                             ->schema(fn (Get $get): array => match ($get('if')) {
                                 'matches_payee_name' => [
-                                    TextInput::make('payee_name'),
+                                    TextInput::make('name'),
                                     Select::make('filter')
                                         ->options(TextMatchType::values())
                                         ->reactive(),
@@ -296,7 +296,8 @@ class RulesResource extends Resource
 
                         foreach ($record->ifAction as $getIfAction) {
                             if ($getIfAction['payee_filter_id']) {
-                                $response .= ' '.'payee name = '.' '.$getIfAction->paye?->payee_name.'<br>';
+                                //                                dd($getIfAction->payee);
+                                $response .= ' '.'payee name = '.' '.$getIfAction->payee?->name.'<br>';
                             }
 
                             if ($getIfAction['category_id']) {

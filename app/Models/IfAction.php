@@ -41,7 +41,7 @@ class IfAction extends Model
 
     public function payee()
     {
-        return $this->belongsTo(PayeeName::class);
+        return $this->belongsTo(PayeeFilter::class, 'payee_filter_id');
     }
 
     public function account()
