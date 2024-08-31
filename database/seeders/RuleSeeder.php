@@ -32,6 +32,8 @@ class RuleSeeder extends Seeder
             'tag_id' => 1,
         ]);
 
-        //        Rule::factory()->count(20)->create();
+        Rule::factory()->count(20)->create();
+        IfAction::factory()->count(20)->create();
+        ThenAction::factory()->count(20)->create();
     }
 }
