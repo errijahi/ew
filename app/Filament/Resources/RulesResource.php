@@ -292,90 +292,91 @@ class RulesResource extends Resource
                 TextColumn::make('priority'),
                 TextColumn::make('rule_trigger')
                     ->getStateUsing(function ($record) {
-                        $getIfAction = $record->ifAction[0];
                         $response = '';
 
-                        if ($getIfAction['payee_filter_id']) {
-                            $response .= ' '.'payee name = '.' '.$getIfAction->paye?->payee_name.'<br>';
-                        }
+                        foreach ($record->ifAction as $getIfAction) {
+                            if ($getIfAction['payee_filter_id']) {
+                                $response .= ' '.'payee name = '.' '.$getIfAction->paye?->payee_name.'<br>';
+                            }
 
-                        if ($getIfAction['category_id']) {
-                            $response .= ' '.'matches category = '.' '.$getIfAction->category?->name.'<br>';
-                        }
+                            if ($getIfAction['category_id']) {
+                                $response .= ' '.'matches category = '.' '.$getIfAction->category?->name.'<br>';
+                            }
 
-                        if ($getIfAction['note_id']) {
-                            $response .= ' '.'matches notes = '.' '.$getIfAction->note?->note.'<br>';
-                        }
+                            if ($getIfAction['note_id']) {
+                                $response .= ' '.'matches notes = '.' '.$getIfAction->note?->note.'<br>';
+                            }
 
-                        if ($getIfAction['day_id']) {
-                            $response .= ' '.'matches day = '.' '.$getIfAction->day?->day.'<br>';
-                        }
+                            if ($getIfAction['day_id']) {
+                                $response .= ' '.'matches day = '.' '.$getIfAction->day?->day.'<br>';
+                            }
 
-                        if ($getIfAction['account_id']) {
-                            $response .= ' '.'in account = '.' '.$getIfAction->account?->account_name.'<br>';
-                        }
+                            if ($getIfAction['account_id']) {
+                                $response .= ' '.'in account = '.' '.$getIfAction->account?->account_name.'<br>';
+                            }
 
-                        if ($getIfAction['amount_id']) {
-                            $response .= ' '.'amount = '.' '.$getIfAction->amount?->amount.'<br>';
+                            if ($getIfAction['amount_id']) {
+                                $response .= ' '.'amount = '.' '.$getIfAction->amount?->amount.'<br>';
+                            }
                         }
 
                         return $response;
                     })->html(),
                 TextColumn::make('rule_effect')
                     ->getStateUsing(function ($record) {
-                        $getThenAction = $record->thenAction[0];
                         $response = '';
+                        foreach ($record->thenAction as $getThenAction) {
+                            if ($getThenAction['set_payee']) {
+                                $response .= ' '.'set payee = '.' '.$getThenAction['set_payee'].'<br>';
+                            }
 
-                        if ($getThenAction['set_payee']) {
-                            $response .= ' '.'set payee = '.' '.$getThenAction['set_payee'].'<br>';
-                        }
+                            if ($getThenAction['set_notes']) {
+                                $response .= ' '.'set notes = '.' '.$getThenAction['set_notes'].'<br>';
+                            }
 
-                        if ($getThenAction['set_notes']) {
-                            $response .= ' '.'set notes = '.' '.$getThenAction['set_notes'].'<br>';
-                        }
+                            if ($getThenAction['category_id']) {
+                                $response .= ' '.'set_category = '.' '.$getThenAction?->category->name.'<br>';
+                            }
 
-                        if ($getThenAction['category_id']) {
-                            $response .= ' '.'set_category = '.' '.$getThenAction?->category->name.'<br>';
-                        }
+                            if ($getThenAction['set_uncategorized']) {
+                                $response .= ' '.'set_uncategorized = '.' '.$getThenAction['set_uncategorized'].'<br>';
+                            }
 
-                        if ($getThenAction['set_uncategorized']) {
-                            $response .= ' '.'set_uncategorized = '.' '.$getThenAction['set_uncategorized'].'<br>';
-                        }
+                            if ($getThenAction['tag_id']) {
+                                $response .= ' '.'add_tag = '.' '.$getThenAction->tag?->name.'<br>';
+                            }
 
-                        if ($getThenAction['tag_id']) {
-                            $response .= ' '.'add_tag = '.' '.$getThenAction->tag?->name.'<br>';
-                        }
+                            if ($getThenAction['delete_transaction']) {
+                                $response .= ' '.'delete_transaction = '.' '.$getThenAction['delete_transaction'].'<br>';
+                            }
 
-                        if ($getThenAction['delete_transaction']) {
-                            $response .= ' '.'delete_transaction = '.' '.$getThenAction['delete_transaction'].'<br>';
-                        }
+                            if ($getThenAction['recurring_item_id']) {
+                                $response .= ' '.'link_to_recurring_item = '.' '.$getThenAction->recurringItem?->name.'<br>';
+                            }
 
-                        if ($getThenAction['recurring_item_id']) {
-                            $response .= ' '.'link_to_recurring_item = '.' '.$getThenAction->recurringItem?->name.'<br>';
-                        }
+                            if ($getThenAction['do_not_link_to_recurring_item']) {
+                                $response .= ' '.'do_not_link_to_recurring_item = '.' '.$getThenAction['do_not_link_to_recurring_item'].'<br>';
+                            }
 
-                        if ($getThenAction['do_not_link_to_recurring_item']) {
-                            $response .= ' '.'do_not_link_to_recurring_item = '.' '.$getThenAction['do_not_link_to_recurring_item'].'<br>';
-                        }
+                            if ($getThenAction['do_not_create_rule']) {
+                                $response .= ' '.'do_not_create_rule = '.' '.$getThenAction['do_not_create_rule'].'<br>';
+                            }
 
-                        if ($getThenAction['do_not_create_rule']) {
-                            $response .= ' '.'do_not_create_rule = '.' '.$getThenAction['do_not_create_rule'].'<br>';
-                        }
+                            if ($getThenAction['rule_split_transaction_id']) {
+                                $response .= ' '.'split_transaction = '.' '.$getThenAction->splitTransaction?->day.'<br>';
+                            }
 
-                        if ($getThenAction['rule_split_transaction_id']) {
-                            $response .= ' '.'split_transaction = '.' '.$getThenAction->splitTransaction?->day.'<br>';
-                        }
+                            if ($getThenAction['mark_as_reviewed']) {
+                                $response .= ' '.'mark_as_reviewed = '.' '.$getThenAction['mark_as_reviewed'].'<br>';
+                            }
 
-                        if ($getThenAction['mark_as_reviewed']) {
-                            $response .= ' '.'mark_as_reviewed = '.' '.$getThenAction['mark_as_reviewed'].'<br>';
-                        }
+                            if ($getThenAction['mark_as_unreviewed']) {
+                                $response .= ' '.'mark_as_unreviewed = '.' '.$getThenAction['mark_as_unreviewed'].'<br>';
+                            }
 
-                        if ($getThenAction['mark_as_unreviewed']) {
-                            $response .= ' '.'mark_as_unreviewed = '.' '.$getThenAction['mark_as_unreviewed'].'<br>';
-                        }
-
-                        if ($getThenAction['send_me_email']) {
-                            $response .= ' '.'send_me_email = '.' '.$getThenAction['send_me_email'].'<br>';
+                            if ($getThenAction['send_me_email']) {
+                                $response .= ' '.'send_me_email = '.' '.$getThenAction['send_me_email'].'<br>';
+                            }
                         }
 
                         return $response;
