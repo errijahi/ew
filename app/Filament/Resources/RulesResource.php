@@ -101,7 +101,7 @@ class RulesResource extends Resource
                                 ],
                                 'in_account' => [
                                     Select::make('type')
-                                        ->options(Account::where('team_id', $teamId)->pluck('account_name', 'id')->toArray())
+                                        ->options(Account::where('team_id', $teamId)->pluck('name', 'id')->toArray())
                                         ->reactive(),
                                 ],
                                 default => [],
@@ -312,7 +312,7 @@ class RulesResource extends Resource
                             }
 
                             if ($getIfAction['account_id']) {
-                                $response .= ' '.'in account = '.' '.$getIfAction->account?->account_name.'<br>';
+                                $response .= ' '.'in account = '.' '.$getIfAction->account?->name.'<br>';
                             }
 
                             if ($getIfAction['amount_id']) {
