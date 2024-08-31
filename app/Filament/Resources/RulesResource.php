@@ -296,7 +296,6 @@ class RulesResource extends Resource
 
                         foreach ($record->ifAction as $getIfAction) {
                             if ($getIfAction['payee_filter_id']) {
-                                //                                dd($getIfAction->payee);
                                 $response .= ' '.'payee name = '.' '.$getIfAction->payee?->name.'<br>';
                             }
 
