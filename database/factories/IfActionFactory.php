@@ -17,7 +17,7 @@ class IfActionFactory extends Factory
     public function definition(): array
     {
         return [
-            'rule_id' => $this->faker->numberBetween(1, 20),
+            'rule_id' => $this->faker->unique()->numberBetween(2, 20),
             'category_id' => $this->faker->numberBetween(1, 20),
         ];
     }

@@ -33,7 +33,7 @@ class RuleSeeder extends Seeder
         ]);
 
         Rule::factory()->count(20)->create();
-        IfAction::factory()->count(20)->create();
+        IfAction::factory()->count(19)->create();
         ThenAction::factory()->count(20)->create();
     }
 }
