@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('payee_filters', function (Blueprint $table) {
             $table->id();
-            $table->string('name', length: 300);
+            $table->foreignId('payee_id');
             $table->enum('filter', TextMatchType::values());
             $table->timestamps();
         });
