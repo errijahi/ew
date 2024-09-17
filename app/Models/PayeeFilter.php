@@ -10,12 +10,21 @@ class PayeeFilter extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
         'filter',
+        'payee_id',
+    ];
+
+    protected $with = [
+        'payeeName',
     ];
 
     public function ifAction()
     {
         return $this->hasMany(IfAction::class);
+    }
+
+    public function payeeName()
+    {
+        return $this->belongsTo(Payee::class, 'payee_id');
     }
 }

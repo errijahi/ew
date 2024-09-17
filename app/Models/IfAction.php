@@ -19,6 +19,12 @@ class IfAction extends Model
         'account_id',
     ];
 
+    protected $with = [
+        'category',
+        'amount',
+        'day',
+    ];
+
     public function note()
     {
         return $this->belongsTo(Note::class);
@@ -26,7 +32,7 @@ class IfAction extends Model
 
     public function category()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class, 'category_id');
     }
 
     public function day()
@@ -52,5 +58,23 @@ class IfAction extends Model
     public function rule()
     {
         return $this->belongsTo(Rule::class);
+    }
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::deleting(static function ($model) {
+
+            if ($model->payee_filter_id !== null) {
+                PayeeFilter::destroy($model->payee_filter_id);
+            } elseif ($model->note_id !== null) {
+                Note::destroy($model->note_id);
+            } elseif ($model->amount_id !== null) {
+                Amount::destroy($model->amount_id);
+            } elseif ($model->day_id) {
+                Day::destroy($model->day_id);
+            }
+        });
     }
 }

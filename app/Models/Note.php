@@ -12,6 +12,11 @@ class Note extends Model
     protected $fillable = [
         'note',
         'filter',
+        'if_action_id',
+    ];
+
+    protected $with = [
+        'ifAction',
     ];
 
     public function ifAction()

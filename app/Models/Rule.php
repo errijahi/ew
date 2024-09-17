@@ -17,6 +17,10 @@ class Rule extends Model
         'team_id',
     ];
 
+    protected $with = [
+        'ifAction',
+    ];
+
     public function team()
     {
         return $this->belongsTo(Team::class);

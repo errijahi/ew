@@ -8,7 +8,6 @@ use App\Enums\NumberComparisonType;
 use App\Enums\Priority;
 use App\Enums\TextMatchType;
 use App\Filament\Resources\RulesResource\Pages;
-use App\Models\Account;
 use App\Models\Category;
 use App\Models\RecurringItem;
 use App\Models\Rule;
@@ -48,9 +47,11 @@ class RulesResource extends Resource
                 Toggle::make('delete_this_rule_after_use'),
                 Toggle::make('rule_on_transaction_update'),
 
-                Repeater::make('if_actions')
+                Repeater::make('ifAction')
+                    ->label('Trigger')
+                    ->relationship('ifAction')
                     ->schema([
-                        Select::make('if')
+                        Select::make('condition_type')
                             ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                             ->options(
                                 [
@@ -61,52 +62,117 @@ class RulesResource extends Resource
                                     'matches_day' => 'Matches day',
                                     'in_account' => 'In account',
                                 ]
-                            )
-                            ->reactive(),
-                        Grid::make(2)
-                            ->schema(fn (Get $get): array => match ($get('if')) {
-                                'matches_payee_name' => [
-                                    TextInput::make('name'),
-                                    Select::make('filter')
-                                        ->options(TextMatchType::values())
-                                        ->reactive(),
-                                ],
-                                'matches_category' => [
-                                    Select::make('category')
-                                        ->options(Category::where('team_id', $teamId)->pluck('name', 'id')->toArray())
-                                        ->reactive(),
-                                ],
-                                'matches_notes' => [
-                                    TextInput::make('note'),
-                                    Select::make('filter')
-                                        ->options(TextMatchType::values())
-                                        ->reactive(),
-                                ],
-                                'matches_amount' => [
-                                    TextInput::make('amount'),
-                                    Select::make('type')
-                                        ->options(AccountType::values())
-                                        ->reactive(),
-                                    Select::make('filter')
-                                        ->options(NumberComparisonType::values())
-                                        ->reactive(),
-                                ],
-                                'matches_day' => [
-                                    Select::make('day')
-                                        ->options(Days::values())
-                                        ->reactive(),
-                                    Select::make('filter')
-                                        ->options(NumberComparisonType::values())
-                                        ->reactive(),
-                                ],
-                                'in_account' => [
-                                    Select::make('type')
-                                        ->options(Account::where('team_id', $teamId)->pluck('name', 'id')->toArray())
-                                        ->reactive(),
-                                ],
-                                default => [],
+                            )->reactive()
+                            ->afterStateHydrated(function ($state, callable $set, callable $get) {
+                                // If condition_type is not set, check if category_id exists and set the default value accordingly
+                                if (! $state && $get('payee_filter_id')) {
+                                    $set('condition_type', 'matches_payee_name');
+                                }
+                                if (! $state && $get('category_id')) {
+                                    $set('condition_type', 'matches_category');
+                                }
+                                if (! $state && $get('note_id')) {
+                                    $set('condition_type', 'matches_notes');
+                                }
+                                if (! $state && $get('amount_id')) {
+                                    $set('condition_type', 'matches_amount');
+                                }
+                                if (! $state && $get('day_id')) {
+                                    $set('condition_type', 'matches_day');
+                                }
+                                if (! $state && $get('account_id')) {
+                                    $set('condition_type', 'in_account');
+                                }
+                            })
+                            ->afterStateUpdated(function ($state, callable $set) {
+                                // Clear related fields when condition type changes
+                                $set('matches_payee_name', null);
+                                $set('matches_category', null);
+                                $set('matches_notes', null);
+                                $set('matches_amount', null);
+                                $set('matches_day', null);
+                                $set('in_account', null);
                             }),
-                    ])->reorderable(false)->maxItems(6),
+                        Grid::make(2)
+                            ->schema(function (callable $get) {
+                                return match ($get('condition_type')) {
+                                    'matches_payee_name' => [
+                                        Grid::make(2)
+                                            ->relationship('payee')
+                                            ->schema([
+                                                Select::make('payee_id')
+                                                    ->label('Payee')
+                                                    ->relationship('payeeName', 'name')
+                                                    // searchable() for some reason this doesn't work
+//                                                    ->searchable()
+                                                    ->preload()
+                                                    ->createOptionForm([
+                                                        TextInput::make('name')
+                                                            ->required()
+                                                            ->label('Payee Name'),
+                                                    ]),
+                                                Select::make('filter')
+                                                    ->options(TextMatchType::values())
+                                                    ->reactive(),
+                                            ]),
+                                    ],
+                                    'matches_category' => [
+                                        Select::make('category_id')
+                                            ->label('Category')
+                                            ->relationship('category', 'name')
+                                            ->reactive(),
+                                    ],
+                                    'matches_notes' => [
+                                        Grid::make(2)->relationship('note')
+                                            ->schema([
+                                                TextInput::make('note'),
+                                                Select::make('filter')
+                                                    ->options(TextMatchType::values())
+                                                    ->reactive(),
+                                            ]),
+                                    ],
+                                    'matches_amount' => [
+                                        Grid::make(2)->relationship('amount')
+                                            ->schema([
+                                                TextInput::make('amount')
+                                                    ->label('Amount')
+                                                    ->numeric()
+                                                    ->columnSpan(1),
+                                                Select::make('type')
+                                                    ->options(AccountType::values())
+                                                    ->reactive()
+                                                    ->label('Type')
+                                                    ->columnSpan(1),
+                                                Select::make('filter')
+                                                    ->options(NumberComparisonType::values())
+                                                    ->reactive()
+                                                    ->label('Filter')
+                                                    ->columnSpan(2),
+                                            ]),
+                                    ],
+                                    'matches_day' => [
+                                        Grid::make(2)->relationship('day')
+                                            ->schema([
+                                                Select::make('day')
+                                                    ->options(Days::values())
+                                                    ->reactive(),
+                                                Select::make('filter')
+                                                    ->options(NumberComparisonType::values())
+                                                    ->reactive(),
+                                            ]),
+                                    ],
+                                    'in_account' => [
+                                        Select::make('account_id')
+                                            ->label('Account')
+                                            ->relationship('account', 'name')
+                                            ->reactive(),
+                                    ],
+                                    default => [],
+                                };
+                            }),
+                    ])
+                    ->reorderable(false)
+                    ->maxItems(6),
 
                 Repeater::make('then_actions')
                     ->schema([
@@ -295,33 +361,34 @@ class RulesResource extends Resource
                         $response = '';
 
                         foreach ($record->ifAction as $getIfAction) {
-                            if ($getIfAction['payee_filter_id']) {
-                                $response .= ' '.'payee name = '.' '.$getIfAction->payee?->name.'<br>';
+                            if ($getIfAction?->payee) {
+                                $response .= ' payee name = '.$getIfAction->payee->payeeName->name.'<br>';
                             }
 
-                            if ($getIfAction['category_id']) {
-                                $response .= ' '.'matches category = '.' '.$getIfAction->category?->name.'<br>';
+                            if ($getIfAction?->category) {
+                                $response .= ' matches category = '.$getIfAction->category->name.'<br>';
                             }
 
-                            if ($getIfAction['note_id']) {
-                                $response .= ' '.'matches notes = '.' '.$getIfAction->note?->note.'<br>';
+                            if ($getIfAction?->note) {
+                                $response .= ' matches notes = '.$getIfAction->note->note.'<br>';
                             }
 
-                            if ($getIfAction['day_id']) {
-                                $response .= ' '.'matches day = '.' '.$getIfAction->day?->day.'<br>';
+                            if ($getIfAction?->day) {
+                                $response .= ' matches day = '.$getIfAction->day->day.'<br>';
                             }
 
-                            if ($getIfAction['account_id']) {
-                                $response .= ' '.'in account = '.' '.$getIfAction->account?->name.'<br>';
+                            if ($getIfAction?->account) {
+                                $response .= ' in account = '.$getIfAction->account->name.'<br>';
                             }
 
-                            if ($getIfAction['amount_id']) {
-                                $response .= ' '.'amount = '.' '.$getIfAction->amount?->amount.'<br>';
+                            if ($getIfAction?->amount) {
+                                $response .= ' amount = '.$getIfAction->amount->amount.'<br>';
                             }
                         }
 
                         return $response;
-                    })->html(),
+                    })
+                    ->html(),
                 TextColumn::make('rule_effect')
                     ->getStateUsing(function ($record) {
                         $response = '';

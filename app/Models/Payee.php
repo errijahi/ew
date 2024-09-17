@@ -17,4 +17,9 @@ class Payee extends Model
     {
         return $this->hasMany(Transaction::class);
     }
+
+    public function payeeFilter()
+    {
+        return $this->hasMany(PayeeFilter::class);
+    }
 }
