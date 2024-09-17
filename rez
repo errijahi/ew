@@ -1,0 +1,139 @@
+Repeater::make('ifAction')
+                    ->label('Trigger')
+                    ->relationship('ifAction')
+                    ->schema([
+                        Select::make('condition_type')
+                            ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                            ->options(
+                                [
+                                    'matches_payee_name' => 'Matches payee name',
+                                    'matches_category' => 'Matches category',
+                                    'matches_notes' => 'Matches notes',
+                                    'matches_amount' => 'Matches amount',
+                                    'matches_day' => 'Matches day',
+                                    'in_account' => 'In account',
+                                ]
+                            )->reactive()
+                            ->afterStateHydrated(function ($state, callable $set, callable $get) {
+                                // If condition_type is not set, check if category_id exists and set the default value accordingly
+                                if (!$state && $get('payee_filter_id')) {
+                                    $set('condition_type', 'matches_payee_name');
+                                }
+                                if (!$state && $get('category_id')) {
+                                    $set('condition_type', 'matches_category');
+                                }
+                                if (!$state && $get('note_id')) {
+                                    $set('condition_type', 'matches_notes');
+                                }
+                                if (!$state && $get('amount_id')) {
+                                    $set('condition_type', 'matches_amount');
+                                }
+                                if (!$state && $get('day_id')) {
+                                    $set('condition_type', 'matches_day');
+                                }
+                                if (!$state && $get('account_id')) {
+                                    $set('condition_type', 'in_account');
+                                }
+                            })
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        // Clear related fields when condition type changes
+                        $set('matches_payee_name', null);
+                        $set('matches_category', null);
+                        $set('matches_notes', null);
+                        $set('matches_amount', null);
+                        $set('matches_day', null);
+                        $set('in_account', null);
+                    }),
+                        Grid::make(2)
+                            ->schema(function (callable $get) use($teamId){
+                                return match ($get('condition_type')) {
+                                    'matches_payee_name' => [
+                                        TextInput::make('nameValue')->afterStateHydrated(function ($state, callable $set, callable $get) {
+                                            $amount = PayeeFilter::where('id', $get('payee_filter_id'))->value('name');
+                                            if (!$state) {
+                                                $set('nameValue', $amount);
+                                            }
+                                        }),
+                                        Select::make('filterValue')->afterStateHydrated(function ($state, callable $set, callable $get) {
+                                            $amount = PayeeFilter::where('id', $get('payee_filter_id'))->value('filter');
+                                            if (!$state) {
+                                                $set('filterValue', $amount);
+                                            }
+                                        })
+                                            ->options(TextMatchType::values())
+                                            ->reactive(),
+                                    ],
+                                    'matches_category' => [
+                                        Select::make('category_id')
+                                            ->options(Category::where('team_id', $teamId)->pluck('name', 'id')->toArray())
+                                            ->reactive(),
+                                    ],
+                                    'matches_notes' => [
+                                        TextInput::make('noteValue')->afterStateHydrated(function ($state, callable $set, callable $get) {
+                                            $amount = Note::where('id', $get('note_id'))->value('note');
+                                            if (!$state) {
+                                                $set('noteValue', $amount);
+                                            }
+                                        }),
+                                        Select::make('filterValue')->afterStateHydrated(function ($state, callable $set, callable $get) {
+                                            $amount = Note::where('id', $get('note_id'))->value('filter');
+                                            if (!$state) {
+                                                $set('filterValue', $amount);
+                                            }
+                                        })
+                                            ->options(TextMatchType::values())
+                                            ->reactive(),
+                                    ],
+                                    'matches_amount' => [
+                                        TextInput::make('amountValue')->afterStateHydrated(function ($state, callable $set, callable $get) {
+                                            $amount = Amount::where('id', $get('amount_id'))->value('amount');
+                                            if (!$state) {
+                                                $set('amountValue', $amount);
+                                            }
+                                        }),
+                                        Select::make('typeValue')->afterStateHydrated(function ($state, callable $set, callable $get) {
+                                            $amount = Amount::where('id', $get('amount_id'))->value('type');
+                                            if (!$state) {
+                                                $set('typeValue', $amount);
+                                            }
+                                        })
+                                            ->options(AccountType::values())
+                                            ->reactive(),
+                                        Select::make('filterValue')->afterStateHydrated(function ($state, callable $set, callable $get) {
+                                            $amount = Amount::where('id', $get('amount_id'))->value('filter');
+                                            if (!$state) {
+                                                $set('filterValue', $amount);
+                                            }
+                                        })
+                                            ->options(NumberComparisonType::values())
+                                            ->reactive(),
+                                    ],
+                                    'matches_day' => [
+                                        Select::make('dayValue')->afterStateHydrated(function ($state, callable $set, callable $get) {
+                                            $amount = Day::where('id', $get('day_id'))->value('day');
+                                            if (!$state) {
+                                                $set('dayValue', $amount);
+                                            }
+                                        })
+                                            ->options(Days::values())
+                                            ->reactive(),
+                                        Select::make('filterValue')->afterStateHydrated(function ($state, callable $set, callable $get) {
+                                            $amount = Day::where('id', $get('day_id'))->value('filter');
+                                            if (!$state) {
+                                                $set('filterValue', $amount);
+                                            }
+                                        })
+                                            ->options(NumberComparisonType::values())
+                                            ->reactive(),
+                                    ],
+                                    'in_account' => [
+                                        Select::make('account_id')
+                                            ->options(Account::where('team_id', $teamId)->pluck('name', 'id')->toArray())
+                                            ->reactive(),
+                                    ],
+                                    default => [],
+                                };
+                            }),
+                    ])
+                    ->reorderable(false)
+                    ->maxItems(6),
