@@ -9,9 +9,8 @@ use App\Enums\Priority;
 use App\Enums\TextMatchType;
 use App\Filament\Resources\RulesResource\Pages;
 use App\Models\Category;
-use App\Models\RecurringItem;
 use App\Models\Rule;
-use App\Models\Tag;
+use App\Models\SplitTransaction;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -19,7 +18,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -174,179 +172,235 @@ class RulesResource extends Resource
                     ->reorderable(false)
                     ->maxItems(6),
 
-                Repeater::make('then_actions')
+                Repeater::make('thenActions')
+                    ->relationship('thenAction')
+                    ->label('Effect')
                     ->schema([
-                        Select::make('then')
+                        Select::make('condition_type')
                             ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                            ->options(
-                                [
-                                    'set_payee' => 'set payee',
-                                    'set_notes' => 'set notes',
-                                    'set_category' => 'set category',
-                                    'set_uncategorized' => 'set uncategorized',
-                                    'add_tags' => 'add tags',
-                                    'delete_transaction' => 'delete transaction',
-                                    'link_to_recurring_item' => 'link to recurring item',
-                                    'do_not_link_to_recurring_item' => 'do not link to recurring item',
-                                    'do_not_create_rule' => 'do not create a rule',
-                                    'split_transaction' => 'split transaction',
-                                    'mark_as_reviewed' => 'mark as reviewed',
-                                    'mark_as_unreviewed' => 'mark as unreviewed',
-                                    'send_me_email' => 'send me an email',
-                                ]
-                            )
-                            ->reactive(),
+                            ->options([
+                                'set_payee' => 'Set Payee',
+                                'set_notes' => 'Set Notes',
+                                'set_category' => 'Set Category',
+                                'set_uncategorized' => 'Set Uncategorized',
+                                'add_tags' => 'Add Tags',
+                                'delete_transaction' => 'Delete Transaction',
+                                'link_to_recurring_item' => 'Link to Recurring Item',
+                                'do_not_link_to_recurring_item' => 'Do Not Link to Recurring Item',
+                                'do_not_create_rule' => 'Do Not Create a Rule',
+                                'split_transaction' => 'Split Transaction',
+                                'reviewed' => 'Reviewed',
+                                'send_me_email' => 'Send Me an Email',
+                            ])
+                            ->reactive()
+                            ->afterStateHydrated(function ($state, callable $set, callable $get, $record) {
+                                //                                dd($record->splitTransaction);
+                                // If condition_type is not set, check if category_id exists and set the default value accordingly
+                                if (! $state && $get('tag_id')) {
+                                    $set('condition_type', 'add_tags');
+                                }
+                                if (! $state && $get('category_id')) {
+                                    $set('condition_type', 'set_category');
+                                }
+                                if (! $state && $get('recurring_item_id')) {
+                                    $set('condition_type', 'link_to_recurring_item');
+                                }
+                                if (! $state && $record?->splitTransaction->isNotEmpty()) {
+                                    $set('condition_type', 'split_transaction');
+                                }
+                                if (! $state && $get('payee_id')) {
+                                    $set('condition_type', 'set_payee');
+                                }
+                                if (! $state && $get('set_notes')) {
+                                    $set('condition_type', 'set_notes');
+                                }
+                                if (! $state && $get('set_uncategorized')) {
+                                    $set('condition_type', 'set_uncategorized');
+                                }
+                                if (! $state && $get('delete_transaction')) {
+                                    $set('condition_type', 'delete_transaction');
+                                }
+                                if (! $state && $get('do_not_link_to_recurring_item')) {
+                                    $set('condition_type', 'do_not_link_to_recurring_item');
+                                }
+                                if (! $state && $get('do_not_create_rule')) {
+                                    $set('condition_type', 'do_not_create_rule');
+                                }
+                                if (! $state && $get('reviewed')) {
+                                    $set('condition_type', 'reviewed');
+                                }
+                                if (! $state && $get('send_me_email')) {
+                                    $set('condition_type', 'send_me_email');
+                                }
+                            })
+                            ->afterStateUpdated(function ($state, callable $set) {
+                                // Clear related fields when condition type changes
+                                $set('set_payee', null);
+                                $set('set_notes', null);
+                                $set('set_category', null);
+                                $set('set_uncategorized', null);
+                                $set('add_tags', null);
+                                $set('delete_transaction', null);
+                                $set('link_to_recurring_item', null);
+                                $set('do_not_link_to_recurring_item', null);
+                                $set('do_not_create_rule', null);
+                                $set('split_transaction', null);
+                                $set('reviewed', null);
+                                $set('send_me_email', null);
+                            }),
                         Grid::make(2)
-                            ->schema(fn (Get $get): array => match ($get('then')) {
-                                'set_payee' => [
-                                    TextInput::make('set_payee'),
-                                ],
-                                'set_notes' => [
-                                    TextInput::make('set_notes'),
-                                ],
-                                'set_category' => [
-                                    Select::make('set_category')
-                                        ->options(Category::where('team_id', $teamId)->pluck('name', 'id')->toArray())
-                                        ->reactive(),
-                                ],
-                                'set_uncategorized' => [
-                                    TextInput::make('set_uncategorized')
-                                        ->label('')
-                                        ->placeholder('Set uncategorized')
-                                        ->disabled(),
-                                ],
-                                'add_tags' => [
-                                    Select::make('add_tags')
-                                        ->options(Tag::where('team_id', $teamId)->pluck('name', 'id')->toArray())
-                                        ->reactive(),
-                                ],
-                                'delete_transaction' => [
-                                    TextInput::make('delete_transaction')
-                                        ->label('')
-                                        ->placeholder('Delete transaction')
-                                        ->disabled(),
-                                ],
-                                'link_to_recurring_item' => [
-                                    Select::make('link_to_recurring_item')
-                                        ->options(RecurringItem::where('team_id', $teamId)->pluck('name', 'id')->toArray())
-                                        ->reactive(),
-                                ],
-                                'do_not_link_to_recurring_item' => [
-                                    TextInput::make('do_not_link_to_recurring_item')
-                                        ->label('')
-                                        ->placeholder('Do not link to recurring item')
-                                        ->disabled(),
-                                ],
-                                'do_not_create_rule' => [
-                                    TextInput::make('do_not_create_rule')
-                                        ->label('')
-                                        ->placeholder('Do not create a rule')
-                                        ->disabled(),
-                                ],
-                                'split_transaction' => [
-                                    Repeater::make('split_transaction_repeater')
-                                        ->schema([
-                                            Grid::make(1)
-                                                ->schema(fn (Get $get): array => [
-                                                    TextInput::make('amount_percentages')
-                                                        ->label('amount')
-                                                        ->placeholder('Enter value in percentages'),
-                                                    Toggle::make('mark_as_reviewed')
-                                                        ->reactive(),
-                                                    Toggle::make('run_split_transaction_trough_rules'),
-
-                                                    Grid::make(4)
-                                                        ->schema(function (Get $get) use ($teamId): array {
+                            ->schema(function (callable $get) {
+                                return match ($get('condition_type')) {
+                                    'set_payee' => [
+                                        Select::make('payee_id')
+                                            ->relationship('payee', 'name')
+                                            ->preload(),
+                                    ],
+                                    'set_notes' => [
+                                        TextInput::make('set_notes')
+                                            ->label('Notes')
+                                            ->placeholder('Enter notes'),
+                                    ],
+                                    'set_category' => [
+                                        Select::make('set_category')
+                                            ->relationship('category', 'name')
+                                            ->label('Category')
+                                            ->reactive(),
+                                    ],
+                                    'set_uncategorized' => [
+                                        ToggleButtons::make('set_uncategorized')
+                                            ->label('Uncategorized')
+                                            ->options([
+                                                'true' => 'Yes',
+                                                'false' => 'No',
+                                            ])
+                                            ->inline(),
+                                    ],
+                                    'add_tags' => [
+                                        Select::make('add_tags')
+                                            ->relationship('tag', 'name')
+                                            ->label('Tags')
+                                            ->reactive(),
+                                    ],
+                                    'delete_transaction' => [
+                                        ToggleButtons::make('delete_transaction')
+                                            ->label('Delete transaction')
+                                            ->options([
+                                                'true' => 'Yes',
+                                                'false' => 'No',
+                                            ])
+                                            ->inline(),
+                                    ],
+                                    'link_to_recurring_item' => [
+                                        Select::make('link_to_recurring_item')
+                                            ->relationship('recurringItem', 'name')
+                                            ->label('Recurring Item')
+                                            ->reactive(),
+                                    ],
+                                    'do_not_link_to_recurring_item' => [
+                                        ToggleButtons::make('do_not_link_to_recurring_item')
+                                            ->label('Do not link to recurring item')
+                                            ->options([
+                                                'true' => 'Yes',
+                                                'false' => 'No',
+                                            ])
+                                            ->inline(),
+                                    ],
+                                    'do_not_create_rule' => [
+                                        ToggleButtons::make('do_not_create_rule')
+                                            ->label('Do not create a rule')
+                                            ->options([
+                                                'true' => 'Yes',
+                                                'false' => 'No',
+                                            ])
+                                            ->inline(),
+                                    ],
+                                    'split_transaction' => [
+                                        Repeater::make('split_transaction_repeater')
+                                            ->relationship('splitTransaction')
+                                            ->columnSpan(2)
+                                            ->schema([
+                                                TextInput::make('amount')
+                                                    ->label('Amount (%)')
+                                                    ->placeholder('Enter percentage'),
+                                                Toggle::make('reviewed')->label('Mark as Reviewed')->reactive(),
+                                                Toggle::make('run_through_rules')->label('Run Through Rules')->reactive(),
+                                                Grid::make(4)->schema(function (callable $get): array {
+                                                    return [
+                                                        ToggleButtons::make('category_button')
+                                                            ->multiple()
+                                                            ->label('Category')
+                                                            ->options(['category' => 'Category'])
+                                                            ->reactive(),
+                                                        ToggleButtons::make('payee_button')
+                                                            ->multiple()
+                                                            ->label('Payee')
+                                                            ->options(['payee' => 'Payee'])
+                                                            ->reactive(),
+                                                        ToggleButtons::make('note_button')
+                                                            ->multiple()
+                                                            ->label('Notes')
+                                                            ->options(['notes' => 'Notes'])
+                                                            ->reactive(),
+                                                        ToggleButtons::make('tag_button')
+                                                            ->multiple()
+                                                            ->label('Tags')
+                                                            ->options(['tags' => 'Tags'])
+                                                            ->reactive(),
+                                                        Grid::make(2)->schema(function (callable $get, $record): array {
                                                             return [
-                                                                ToggleButtons::make('category_button')
-                                                                    ->multiple()
-                                                                    ->label('')
-                                                                    ->options([
-                                                                        'category' => 'Category',
-                                                                    ])
-                                                                    ->reactive(),
-
-                                                                ToggleButtons::make('payee_button')
-                                                                    ->multiple()
-                                                                    ->label('')
-                                                                    ->options([
-                                                                        'payee' => 'Payee',
-                                                                    ])
-                                                                    ->reactive(),
-
-                                                                ToggleButtons::make('note_button')
-                                                                    ->multiple()
-                                                                    ->label('')
-                                                                    ->options([
-                                                                        'notes' => 'Notes',
-                                                                    ])
-                                                                    ->reactive(),
-
-                                                                ToggleButtons::make('tag_button')
-                                                                    ->multiple()
-                                                                    ->label('')
-                                                                    ->options([
-                                                                        'tags' => 'Tags',
-                                                                    ])
-                                                                    ->reactive(),
-
-                                                                Grid::make(2)
-                                                                    ->schema(function (Get $get) use ($teamId): array {
-                                                                        return [
-
-                                                                            ...($get('category_button') === ['category'] ? [
-                                                                                Select::make('set_category_split_transaction')
-                                                                                    ->options(Category::where('team_id', $teamId)
-                                                                                        ->pluck('name', 'id')
-                                                                                        ->toArray())
-                                                                                    ->reactive(),
-                                                                            ] : []),
-
-                                                                            ...($get('payee_button') === ['payee'] ? [
-                                                                                TextInput::make('set_payee_split_transaction')
-                                                                                    ->label('payee'),
-                                                                            ] : []),
-
-                                                                            ...($get('note_button') === ['notes'] ? [
-                                                                                TextInput::make('set_note_split_transaction')
-                                                                                    ->label('notes'),
-                                                                            ] : []),
-
-                                                                            ...($get('tag_button') === ['tags'] ? [
-                                                                                Select::make('set_tag_split_transaction')
-                                                                                    ->options(Tag::where('team_id', $teamId)
-                                                                                        ->pluck('name', 'id')
-                                                                                        ->toArray())
-                                                                                    ->reactive(),
-                                                                            ] : []),
-                                                                        ];
-                                                                    }),
+                                                                ...($get('category_button') === ['category']) ? [
+                                                                    Select::make('category_id')
+                                                                        ->relationship('category', 'name')
+                                                                        ->placeholder('No category selected')
+                                                                        ->reactive(),
+                                                                ] : [],
+                                                                ...($get('payee_button') === ['payee'] ? [
+                                                                    Select::make('payee_id')
+                                                                        ->relationship('payee', 'name')
+                                                                        ->placeholder('No payee selected')
+                                                                        ->label('Payee'),
+                                                                ] : []),
+                                                                ...($get('note_button') === ['notes'] ? [
+                                                                    TextInput::make('notes')
+                                                                        ->label('Notes'),
+                                                                ] : []),
+                                                                ...($get('tag_button') === ['tags'] ? [
+                                                                    Select::make('tag_id')
+                                                                        ->relationship('tag', 'name')
+                                                                        ->placeholder('No tag selected')
+                                                                        ->reactive(),
+                                                                ] : []),
                                                             ];
                                                         }),
-                                                ]),
-                                        ])->reorderable(false)->columnSpan(2),
-                                ],
-                                'mark_as_reviewed' => [
-                                    TextInput::make('mark_as_reviewed')
-                                        ->label('')
-                                        ->placeholder('Mark as reviewed')
-                                        ->disabled(),
-                                ],
-                                'mark_as_unreviewed' => [
-                                    TextInput::make('mark_as_unreviewed')
-                                        ->label('')
-                                        ->placeholder('Mark as unreviewed')
-                                        ->disabled(),
-                                ],
-                                'send_me_email' => [
-                                    TextInput::make('send_me_email')
-                                        ->label('')
-                                        ->placeholder('Send me an email')
-                                        ->disabled(),
-                                ],
-                                default => [],
+                                                    ];
+                                                }),
+                                            ])->reorderable(false),
+                                    ],
+                                    'reviewed' => [
+                                        ToggleButtons::make('reviewed')
+                                            ->label('Reviewed')
+                                            ->options([
+                                                'true' => 'Yes',
+                                                'false' => 'No',
+                                            ])
+                                            ->inline(),
+                                    ],
+                                    'send_me_email' => [
+                                        ToggleButtons::make('send_me_email')
+                                            ->label('Enter email')
+                                            ->options([
+                                                'true' => 'Yes',
+                                                'false' => 'No',
+                                            ])
+                                            ->inline(),
+                                    ],
+                                    default => [],
+                                };
                             }),
-                    ])->reorderable(false)->maxItems(13),
+                    ])
+                    ->reorderable(false)
+                    ->maxItems(13),
             ]);
     }
 
@@ -433,12 +487,8 @@ class RulesResource extends Resource
                                 $response .= ' '.'split_transaction = '.' '.$getThenAction->splitTransaction?->day.'<br>';
                             }
 
-                            if ($getThenAction['mark_as_reviewed']) {
-                                $response .= ' '.'mark_as_reviewed = '.' '.$getThenAction['mark_as_reviewed'].'<br>';
-                            }
-
-                            if ($getThenAction['mark_as_unreviewed']) {
-                                $response .= ' '.'mark_as_unreviewed = '.' '.$getThenAction['mark_as_unreviewed'].'<br>';
+                            if ($getThenAction['reviewed']) {
+                                $response .= ' '.'reviewed = '.' '.$getThenAction['reviewed'].'<br>';
                             }
 
                             if ($getThenAction['send_me_email']) {

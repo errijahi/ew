@@ -19,6 +19,7 @@ class Rule extends Model
 
     protected $with = [
         'ifAction',
+        'thenAction',
     ];
 
     public function team()

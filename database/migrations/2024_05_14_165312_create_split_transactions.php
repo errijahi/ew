@@ -13,12 +13,15 @@ return new class extends Migration
     {
         Schema::create('split_transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('amount');
-            $table->string('payee')->nullable();
-            $table->string('notes')->nullable();
-            $table->foreignId('team_id')->constrained();
-            $table->foreignId('category_id')->nullable()->constrained();
             $table->foreignId('tag_id')->nullable()->constrained();
+            $table->foreignId('category_id')->nullable()->constrained();
+            $table->foreignId('then_action_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->string('amount');
+            $table->string('payee_id')->nullable();
+            $table->string('notes')->nullable();
+            $table->boolean('reviewed')->nullable();
+            $table->boolean('run_through_rules')->nullable();
+
             $table->timestamps();
         });
     }

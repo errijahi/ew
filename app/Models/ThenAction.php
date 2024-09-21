@@ -20,14 +20,22 @@ class ThenAction extends Model
         'do_not_link_to_recurring_item',
         'do_not_create_rule',
         'rule_split_transaction_id',
-        'mark_as_reviewed',
-        'mark_as_unreviewed',
+        'reviewed',
         'send_me_email',
+    ];
+
+    protected $with = [
+        'splitTransaction',
     ];
 
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function payee()
+    {
+        return $this->belongsTo(Payee::class);
     }
 
     public function tag()
@@ -40,8 +48,13 @@ class ThenAction extends Model
         return $this->belongsTo(RecurringItem::class);
     }
 
-    public function RuleSplitTransaction()
+    public function splitTransaction()
     {
-        return $this->hasOne(RuleSplitTransaction::class);
+        return $this->hasMany(SplitTransaction::class);
+    }
+
+    public function rule()
+    {
+        return $this->belongsTo(Rule::class);
     }
 }

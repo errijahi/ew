@@ -13,20 +13,18 @@ return new class extends Migration
     {
         Schema::create('then_actions', function (Blueprint $table) {
             $table->id();
-            $table->string('set_payee')->nullable();
-            $table->string('set_notes')->nullable();
-            $table->foreignId('category_id')->nullable()->constrained();
-            $table->boolean('set_uncategorized')->nullable();
-            $table->foreignId('tag_id')->nullable()->constrained();
-            $table->boolean('delete_transaction')->nullable();
-            $table->foreignId('recurring_item_id')->nullable()->constrained();
-            $table->boolean('do_not_link_to_recurring_item')->nullable();
-            $table->boolean('do_not_create_rule')->nullable();
-            $table->boolean('mark_as_reviewed')->nullable();
-            $table->boolean('mark_as_unreviewed')->nullable();
-            $table->boolean('send_me_email')->nullable();
-            $table->foreignId('rule_split_transaction_id')->nullable()->constrained('rule_split_transaction');
             $table->foreignId('rule_id');
+            $table->foreignId('tag_id')->nullable()->constrained();
+            $table->foreignId('payee_id')->nullable()->constrained();
+            $table->foreignId('category_id')->nullable()->constrained();
+            $table->foreignId('recurring_item_id')->nullable()->constrained();
+            $table->string('set_notes')->nullable();
+            $table->string('set_uncategorized')->nullable();
+            $table->string('delete_transaction')->nullable();
+            $table->string('do_not_link_to_recurring_item')->nullable();
+            $table->string('do_not_create_rule')->nullable();
+            $table->string('reviewed')->nullable();
+            $table->string('send_me_email')->nullable();
             $table->timestamps();
         });
     }
