@@ -1,14 +1,15 @@
 includes:
     - vendor/larastan/larastan/extension.neon
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon
 
 parameters:
-    paths:
-        - app/
-        - bootstrap/app.php
-        - bootstrap/providers.php
-        - routes/
+    checkMissingIterableValueType: true
 
     level: max
 
-    ignoreErrors:
-        - '#.* no value type specified in iterable type array#'
+    paths:
+        - app
+        - config
+        - bootstrap
+        - database/factories
+        - routes
