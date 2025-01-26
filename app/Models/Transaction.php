@@ -162,11 +162,11 @@ class Transaction extends Model
     {
         parent::boot();
 
-        static::creating(function ($model) {
+        static::creating(function ($model): void {
             self::applyRules($model);
         });
 
-        static::updating(function ($model) {
+        static::updating(function ($model): void {
             self::applyRules($model);
         });
     }

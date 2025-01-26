@@ -33,7 +33,7 @@ class BudgetResource extends Resource
             ->columns([
                 TextColumn::make('name'),
                 TextInputColumn::make('budget')->label("This period's budget")->rules(['numeric'])
-                    ->beforeStateUpdated(function ($state, Category $record) {
+                    ->beforeStateUpdated(function ($state, Category $record): void {
 
                         $year = session('selected_year');
                         $month = session('selected_month');
@@ -49,7 +49,7 @@ class BudgetResource extends Resource
                             $attributes,
                             ['budget' => $state]
                         );
-                    })->updateStateUsing(function (&$state) {
+                    })->updateStateUsing(function (&$state): void {
                         $state = null;
                     }),
                 TextColumn::make('transactions_sum_amount')->sum([

@@ -33,7 +33,7 @@ class DeleteUser implements DeletesUsers
      */
     public function delete($user)
     {
-        DB::transaction(function () use ($user) {
+        DB::transaction(function () use ($user): void {
             $this->deleteTeams($user);
             $user->deleteProfilePhoto();
             $user->connectedAccounts->each->delete();
@@ -52,7 +52,7 @@ class DeleteUser implements DeletesUsers
     {
         $user->teams()->detach();
 
-        $user->ownedTeams->each(function ($team) {
+        $user->ownedTeams->each(function ($team): void {
             $this->deletesTeams->delete($team);
         });
     }

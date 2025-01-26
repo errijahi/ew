@@ -61,7 +61,7 @@ class RulesResource extends Resource
                                     'in_account' => 'In account',
                                 ]
                             )->reactive()
-                            ->afterStateHydrated(function ($state, callable $set, callable $get) {
+                            ->afterStateHydrated(function ($state, callable $set, callable $get): void {
                                 // If condition_type is not set, check if category_id exists and set the default value accordingly
                                 if (! $state && $get('payee_filter_id')) {
                                     $set('condition_type', 'matches_payee_name');
@@ -82,7 +82,7 @@ class RulesResource extends Resource
                                     $set('condition_type', 'in_account');
                                 }
                             })
-                            ->afterStateUpdated(function ($state, callable $set) {
+                            ->afterStateUpdated(function ($state, callable $set): void {
                                 // Clear related fields when condition type changes
                                 $set('matches_payee_name', null);
                                 $set('matches_category', null);
@@ -193,7 +193,7 @@ class RulesResource extends Resource
                                 'send_me_email' => 'Send Me an Email',
                             ])
                             ->reactive()
-                            ->afterStateHydrated(function ($state, callable $set, callable $get, $record) {
+                            ->afterStateHydrated(function ($state, callable $set, callable $get, $record): void {
                                 //                                dd($record->splitTransaction);
                                 // If condition_type is not set, check if category_id exists and set the default value accordingly
                                 if (! $state && $get('tag_id')) {
@@ -233,7 +233,7 @@ class RulesResource extends Resource
                                     $set('condition_type', 'send_me_email');
                                 }
                             })
-                            ->afterStateUpdated(function ($state, callable $set) {
+                            ->afterStateUpdated(function ($state, callable $set): void {
                                 // Clear related fields when condition type changes
                                 $set('set_payee', null);
                                 $set('set_notes', null);

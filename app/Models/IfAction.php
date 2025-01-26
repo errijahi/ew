@@ -64,7 +64,7 @@ class IfAction extends Model
     {
         parent::boot();
 
-        static::deleting(static function ($model) {
+        static::deleting(static function ($model): void {
 
             if ($model->payee_filter_id !== null) {
                 PayeeFilter::destroy($model->payee_filter_id);
