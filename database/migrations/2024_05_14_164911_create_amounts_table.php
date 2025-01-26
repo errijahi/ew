@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Enums\AccountType;
 use App\Enums\NumberComparisonType;
 use Illuminate\Database\Migrations\Migration;
