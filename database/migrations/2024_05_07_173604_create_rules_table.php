@@ -14,7 +14,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rules', function (Blueprint $table) {
+        Schema::create('rules', static function (Blueprint $table) {
             $table->id();
             $table->foreignId('team_id')->constrained();
             $table->enum('priority', Priority::values());

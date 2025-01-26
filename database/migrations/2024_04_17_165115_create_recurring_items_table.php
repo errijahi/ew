@@ -14,7 +14,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('recurring_items', function (Blueprint $table) {
+        Schema::create('recurring_items', static function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
             $table->string('billing_date');

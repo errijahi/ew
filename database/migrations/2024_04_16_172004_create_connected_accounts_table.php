@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('connected_accounts', function (Blueprint $table) {
+        Schema::create('connected_accounts', static function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
             $table->string('provider');

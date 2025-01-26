@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transactions', function (Blueprint $table) {
+        Schema::create('transactions', static function (Blueprint $table) {
             $table->id();
             $table->string('amount');
             $table->foreignId('payee_id')->constrained();

@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('super_admin_panels', function (Blueprint $table) {
+        Schema::create('super_admin_panels', static function (Blueprint $table) {
             $table->id();
             $table->foreignId('team_id')->nullable()->constrained();
             $table->timestamps();

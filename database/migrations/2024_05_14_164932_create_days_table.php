@@ -14,7 +14,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('days', function (Blueprint $table) {
+        Schema::create('days', static function (Blueprint $table) {
             $table->id();
             $table->integer('day');
             $table->enum('filter', NumberComparisonType::values());

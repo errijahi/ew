@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('split_transactions', function (Blueprint $table) {
+        Schema::create('split_transactions', static function (Blueprint $table) {
             $table->id();
             $table->foreignId('tag_id')->nullable()->constrained();
             $table->foreignId('category_id')->nullable()->constrained();

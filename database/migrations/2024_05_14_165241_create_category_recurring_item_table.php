@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('category_recurring_item', function (Blueprint $table) {
+        Schema::create('category_recurring_item', static function (Blueprint $table) {
             $table->id();
             $table->foreignId('category_id')->constrained();
             $table->foreignId('recurring_item_id')->constrained();

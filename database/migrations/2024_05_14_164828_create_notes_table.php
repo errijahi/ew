@@ -14,7 +14,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notes', function (Blueprint $table) {
+        Schema::create('notes', static function (Blueprint $table) {
             $table->id();
             $table->string('note', length: 300);
             $table->enum('filter', TextMatchType::values());

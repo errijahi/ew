@@ -14,7 +14,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('payee_filters', function (Blueprint $table) {
+        Schema::create('payee_filters', static function (Blueprint $table) {
             $table->id();
             $table->foreignId('payee_id');
             $table->enum('filter', TextMatchType::values());

@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('if_actions', function (Blueprint $table) {
+        Schema::create('if_actions', static function (Blueprint $table) {
             $table->id();
             $table->foreignId('rule_id')->constrained();
             $table->foreignId('payee_filter_id')->nullable()->constrained();
