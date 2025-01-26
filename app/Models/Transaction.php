@@ -19,6 +19,8 @@ class Transaction extends Model
         'transaction_source',
         'team_id',
         'account_id',
+        'tag_id',
+        'category_id',
     ];
 
     protected $with = ['payee'];
@@ -154,5 +156,42 @@ class Transaction extends Model
         }
 
         return ['ModelValues' => $ModelValues, 'SearchBy' => $SearchBy];
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            self::applyRules($model);
+        });
+
+        static::updating(function ($model) {
+            self::applyRules($model);
+        });
+    }
+
+    public static function applyRules($model)
+    {
+        // Check if category_id exists in ifAction and matches the model's category_id
+        if ((int) ifAction::where('category_id', $model->category_id)->pluck('category_id')->first() === (int) $model->category_id) {
+
+            // Retrieve the rule_id from ifAction
+            $ruleId = ifAction::where('category_id', $model->category_id)->pluck('rule_id')->first();
+
+            // Retrieve all entries from thenAction with the matched rule_id
+            $actions = thenAction::where('rule_id', $ruleId)->get();
+
+            // Loop through the entries to check if tag_id has any value
+            foreach ($actions as $action) {
+                if (! empty($action->tag_id)) {
+                    // You can perform your desired operations here
+                    dd('Found tag_id: '.$action->tag_id, $action); // Example output for debugging
+                }
+            }
+
+            // If no tag_id was found with a value, you can add any fallback logic here if needed
+            dd('No entries with tag_id found');
+        }
     }
 }

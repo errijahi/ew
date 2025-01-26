@@ -30,6 +30,7 @@ class TransactionResource extends Resource
                 Select::make('payee_id')
                     ->label('Payee')
                     ->relationship('payee', 'name')
+                    ->preload()
                     ->searchable()
                     ->required()
                     ->createOptionForm([
@@ -40,8 +41,19 @@ class TransactionResource extends Resource
                 Select::make('account_id')
                     ->label('Account')
                     ->relationship('account', 'name')
+                    ->preload()
                     ->searchable()
                     ->required(),
+                Select::make('category_id')
+                    ->label('Category')
+                    ->relationship('category', 'name')
+                    ->preload()
+                    ->searchable(),
+                Select::make('tag_id')
+                    ->label('Tag')
+                    ->relationship('tag', 'name')
+                    ->preload()
+                    ->searchable(),
                 TextInput::make('notes'),
                 TextInput::make('transaction_source'),
                 Toggle::make('status'),
