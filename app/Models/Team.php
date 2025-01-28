@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Jetstream\Events\TeamCreated;
 use Laravel\Jetstream\Events\TeamDeleted;
 use Laravel\Jetstream\Events\TeamUpdated;
@@ -48,47 +50,47 @@ class Team extends JetstreamTeam
         ];
     }
 
-    public function members()
+    public function members(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
     }
 
-    public function accounts()
+    public function accounts(): HasMany
     {
         return $this->hasMany(Account::class);
     }
 
-    public function budgets()
+    public function budgets(): HasMany
     {
         return $this->hasMany(Budget::class);
     }
 
-    public function categories()
+    public function categories(): HasMany
     {
         return $this->hasMany(Category::class);
     }
 
-    public function tags()
+    public function tags(): HasMany
     {
         return $this->hasMany(Tag::class);
     }
 
-    public function transactions()
+    public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
     }
 
-    public function rules()
+    public function rules(): HasMany
     {
         return $this->hasMany(Rule::class);
     }
 
-    public function recurringItems()
+    public function recurringItems(): HasMany
     {
         return $this->hasMany(RecurringItem::class);
     }
 
-    public function analyze()
+    public function analyze(): HasMany
     {
         return $this->hasMany(Analyze::class);
     }

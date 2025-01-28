@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class IfAction extends Model
 {
@@ -27,37 +28,37 @@ class IfAction extends Model
         'day',
     ];
 
-    public function note()
+    public function note(): BelongsTo
     {
         return $this->belongsTo(Note::class);
     }
 
-    public function category()
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
 
-    public function day()
+    public function day(): BelongsTo
     {
         return $this->belongsTo(Day::class);
     }
 
-    public function amount()
+    public function amount(): BelongsTo
     {
         return $this->belongsTo(Amount::class);
     }
 
-    public function payee()
+    public function payee(): BelongsTo
     {
         return $this->belongsTo(PayeeFilter::class, 'payee_filter_id');
     }
 
-    public function account()
+    public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
     }
 
-    public function rule()
+    public function rule(): BelongsTo
     {
         return $this->belongsTo(Rule::class);
     }

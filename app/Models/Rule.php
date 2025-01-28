@@ -6,6 +6,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Rule extends Model
 {
@@ -24,22 +26,22 @@ class Rule extends Model
         'thenAction',
     ];
 
-    public function team()
+    public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
     }
 
-    public function ifAction()
+    public function ifAction(): HasMany
     {
         return $this->hasMany(IfAction::class);
     }
 
-    public function thenAction()
+    public function thenAction(): HasMany
     {
         return $this->hasMany(ThenAction::class);
     }
 
-    public function splitTransactions()
+    public function splitTransactions(): HasMany
     {
         return $this->hasMany(SplitTransaction::class);
     }

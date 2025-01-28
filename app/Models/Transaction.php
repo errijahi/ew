@@ -7,6 +7,7 @@ namespace App\Models;
 use http\Exception\InvalidArgumentException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Transaction extends Model
 {
@@ -27,7 +28,7 @@ class Transaction extends Model
 
     protected $with = ['payee'];
 
-    public function team()
+    public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
     }
@@ -37,27 +38,27 @@ class Transaction extends Model
         return Transaction::get();
     }
 
-    public function payee()
+    public function payee(): BelongsTo
     {
         return $this->belongsTo(Payee::class);
     }
 
-    public function account()
+    public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
     }
 
-    public function category()
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
-    public function recurringItem()
+    public function recurringItem(): BelongsTo
     {
         return $this->belongsTo(RecurringItem::class);
     }
 
-    public function tag()
+    public function tag(): BelongsTo
     {
         return $this->belongsTo(Tag::class);
     }
@@ -131,7 +132,7 @@ class Transaction extends Model
         return ['tableValues' => $tableValues, 'searchBy' => $searchBy];
     }
 
-    public static function getSelectedModel($selectedModel, $value)
+    public static function getSelectedModel($selectedModel, $value): array
     {
         $ModelValues = '';
         $SearchBy = '';
@@ -160,7 +161,7 @@ class Transaction extends Model
         return ['ModelValues' => $ModelValues, 'SearchBy' => $SearchBy];
     }
 
-    protected static function boot()
+    protected static function boot(): void
     {
         parent::boot();
 
@@ -173,7 +174,7 @@ class Transaction extends Model
         });
     }
 
-    public static function applyRules($model)
+    public static function applyRules($model): void
     {
         // Check if category_id exists in ifAction and matches the model's category_id
         if ((int) ifAction::where('category_id', $model->category_id)->pluck('category_id')->first() === (int) $model->category_id) {

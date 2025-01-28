@@ -6,6 +6,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SplitTransaction extends Model
 {
@@ -23,22 +25,22 @@ class SplitTransaction extends Model
         'payee_id',
     ];
 
-    public function thenAction()
+    public function thenAction(): BelongsTo
     {
         return $this->belongsTo(ThenAction::class);
     }
 
-    public function tag()
+    public function tag(): BelongsTo
     {
         return $this->belongsTo(Tag::class);
     }
 
-    public function payee()
+    public function payee(): HasMany
     {
         return $this->hasMany(Payee::class);
     }
 
-    public function category()
+    public function category(): HasMany
     {
         return $this->hasMany(Category::class);
     }

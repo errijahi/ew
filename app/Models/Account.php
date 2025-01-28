@@ -6,6 +6,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Account extends Model
 {
@@ -25,37 +28,37 @@ class Account extends Model
         'status' => 'string',
     ];
 
-    public function getStatusAttribute($value)
+    public function getStatusAttribute($value): bool
     {
         return $value === 'true';
     }
 
-    public function setStatusAttribute($value)
+    public function setStatusAttribute($value): void
     {
         $this->attributes['status'] = $value ? 'true' : 'false';
     }
 
-    public function category()
+    public function category(): HasOne
     {
         return $this->hasOne(Category::class, 'id', 'category_id');
     }
 
-    public function team()
+    public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
     }
 
-    public function transactions()
+    public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
     }
 
-    public function accountType()
+    public function accountType(): BelongsTo
     {
         return $this->belongsTo(AccountType::class);
     }
 
-    public function ifAction()
+    public function ifAction(): HasMany
     {
         return $this->hasMany(IfAction::class);
     }

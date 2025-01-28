@@ -6,6 +6,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ThenAction extends Model
 {
@@ -30,32 +32,32 @@ class ThenAction extends Model
         'splitTransaction',
     ];
 
-    public function category()
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
-    public function payee()
+    public function payee(): BelongsTo
     {
         return $this->belongsTo(Payee::class);
     }
 
-    public function tag()
+    public function tag(): BelongsTo
     {
         return $this->belongsTo(Tag::class);
     }
 
-    public function recurringItem()
+    public function recurringItem(): BelongsTo
     {
         return $this->belongsTo(RecurringItem::class);
     }
 
-    public function splitTransaction()
+    public function splitTransaction(): HasMany
     {
         return $this->hasMany(SplitTransaction::class);
     }
 
-    public function rule()
+    public function rule(): BelongsTo
     {
         return $this->belongsTo(Rule::class);
     }

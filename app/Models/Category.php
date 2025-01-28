@@ -6,6 +6,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Category extends Model
 {
@@ -25,17 +29,17 @@ class Category extends Model
 
     protected $with = ['budgets'];
 
-    public function subCategoryGroup()
+    public function subCategoryGroup(): HasMany
     {
         return $this->hasMany(Category::class, 'sub_category_group_id', 'id');
     }
 
-    public function parentCategoryGroup()
+    public function parentCategoryGroup(): HasOne
     {
         return $this->hasOne(Category::class, 'id', 'sub_category_group_id');
     }
 
-    public function team()
+    public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
     }
@@ -50,32 +54,32 @@ class Category extends Model
         return self::get()->keyBy('id')->toArray();
     }
 
-    public function transactions()
+    public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
     }
 
-    public function recurringItems()
+    public function recurringItems(): BelongsToMany
     {
         return $this->belongsToMany(RecurringItem::class);
     }
 
-    public function splitTransactions()
+    public function splitTransactions(): HasMany
     {
         return $this->hasMany(SplitTransaction::class);
     }
 
-    public function ifActions()
+    public function ifActions(): HasMany
     {
         return $this->hasMany(IfAction::class);
     }
 
-    public function thenActions()
+    public function thenActions(): HasMany
     {
         return $this->hasMany(ThenAction::class);
     }
 
-    public function budgets()
+    public function budgets(): HasMany
     {
         return $this->hasMany(Budget::class);
     }

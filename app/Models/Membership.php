@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Laravel\Jetstream\Membership as JetstreamMembership;
 
 class Membership extends JetstreamMembership
@@ -15,7 +16,7 @@ class Membership extends JetstreamMembership
      */
     public $incrementing = true;
 
-    public function team()
+    public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
     }

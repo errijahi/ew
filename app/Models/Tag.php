@@ -6,6 +6,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Tag extends Model
 {
@@ -17,22 +19,22 @@ class Tag extends Model
         'color',
     ];
 
-    public function team()
+    public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
     }
 
-    public function transaction()
+    public function transaction(): HasMany
     {
         return $this->hasMany(Transaction::class);
     }
 
-    public function SplitTransactions()
+    public function SplitTransactions(): HasMany
     {
         return $this->hasMany(SplitTransaction::class);
     }
 
-    public function thenAction()
+    public function thenAction(): HasMany
     {
         return $this->hasMany(ThenAction::class);
     }

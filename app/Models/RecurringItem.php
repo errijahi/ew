@@ -6,6 +6,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class RecurringItem extends Model
 {
@@ -20,22 +23,22 @@ class RecurringItem extends Model
         'end_date',
     ];
 
-    public function team()
+    public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
     }
 
-    public function category()
+    public function category(): BelongsToMany
     {
         return $this->belongsToMany(Category::class);
     }
 
-    public function thenAction()
+    public function thenAction(): HasMany
     {
         return $this->hasMany(ThenAction::class);
     }
 
-    public function transactions()
+    public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
     }

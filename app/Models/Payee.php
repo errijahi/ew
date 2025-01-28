@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Payee extends Model
 {
@@ -15,12 +16,12 @@ class Payee extends Model
         'name',
     ];
 
-    public function transaction()
+    public function transaction(): HasMany
     {
         return $this->hasMany(Transaction::class);
     }
 
-    public function payeeFilter()
+    public function payeeFilter(): HasMany
     {
         return $this->hasMany(PayeeFilter::class);
     }

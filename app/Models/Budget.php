@@ -7,6 +7,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Budget extends Model
 {
@@ -20,18 +21,22 @@ class Budget extends Model
         'month',
     ];
 
-    public function category()
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
-    public function team()
+    public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
     }
 
-    public static function calculateBudgetPeriods($record, $adjustYear = 0, $totalTransaction = false, $lastPeriodDifference = false)
-    {
+    public static function calculateBudgetPeriods(
+        $record,
+        $adjustYear = 0,
+        $totalTransaction = false,
+        $lastPeriodDifference = false
+    ): string {
         $year = session('selected_year');
         $month = session('selected_month') - $adjustYear;
 
