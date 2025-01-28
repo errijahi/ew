@@ -49,7 +49,7 @@ class AdminPanelProvider extends PanelProvider
                         shouldRegisterNavigation: false, // Adds a main navigation item for the My Profile page (default = false)
                         navigationGroup: 'Settings', // Sets the navigation group for the My Profile page (default = null)
                         hasAvatars: false, // Enables the avatar upload form component (default = false)
-                        slug: 'my-profile', // Sets the slug for the profile page (default = 'my-profile')
+                        slug: 'profile-settings', // Sets the slug for the profile page (default = 'my-profile')
                     )
                     ->enableTwoFactorAuthentication(
                         force: false, // force the user to enable 2FA before they can use the application (default = false)
