@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\IfAction;
 use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends Factory<IfAction>
+ */
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\IfAction>

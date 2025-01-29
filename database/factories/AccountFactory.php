@@ -8,6 +8,9 @@ use App\Enums\Status;
 use App\Models\Account;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends Factory<Account>
+ */
 class AccountFactory extends Factory
 {
     protected $model = Account::class;

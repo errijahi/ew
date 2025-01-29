@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Enums\Cadence;
+use App\Models\RecurringItem;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends Factory<RecurringItem>
+ */
 class RecurringItemFactory extends Factory
 {
     /**
