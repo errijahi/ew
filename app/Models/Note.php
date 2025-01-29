@@ -19,6 +19,9 @@ class Note extends Model
         'ifAction',
     ];
 
+    /**
+     * @return HasMany<IfAction, $this>
+     */
     public function ifAction(): HasMany
     {
         return $this->hasMany(IfAction::class);

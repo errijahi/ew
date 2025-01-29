@@ -16,6 +16,9 @@ class Membership extends JetstreamMembership
      */
     public $incrementing = true;
 
+    /**
+     * @return BelongsTo<Team, $this>
+     */
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);

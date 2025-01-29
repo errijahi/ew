@@ -23,11 +23,17 @@ class Budget extends Model
         'month',
     ];
 
+    /**
+     * @return BelongsTo<Category,$this>
+     */
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
+    /**
+     * @return BelongsTo<Team, $this>
+     */
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);

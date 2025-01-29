@@ -19,11 +19,17 @@ class PayeeFilter extends Model
         'payeeName',
     ];
 
+    /**
+     * @return HasMany<IfAction, $this>
+     */
     public function ifAction(): HasMany
     {
         return $this->hasMany(IfAction::class);
     }
 
+    /**
+     * @return BelongsTo<Payee, $this>
+     */
     public function payeeName(): BelongsTo
     {
         return $this->belongsTo(Payee::class, 'payee_id');

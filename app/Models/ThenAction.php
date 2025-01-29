@@ -34,31 +34,49 @@ class ThenAction extends Model
         'splitTransaction',
     ];
 
+    /**
+     * @return BelongsTo<Category, $this>
+     */
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
+    /**
+     * @return BelongsTo<Payee, $this>
+     */
     public function payee(): BelongsTo
     {
         return $this->belongsTo(Payee::class);
     }
 
+    /**
+     * @return BelongsTo<Tag, $this>
+     */
     public function tag(): BelongsTo
     {
         return $this->belongsTo(Tag::class);
     }
 
+    /**
+     * @return BelongsTo<RecurringItem, $this>
+     */
     public function recurringItem(): BelongsTo
     {
         return $this->belongsTo(RecurringItem::class);
     }
 
+    /**
+     * @return HasMany<SplitTransaction, $this>
+     */
     public function splitTransaction(): HasMany
     {
         return $this->hasMany(SplitTransaction::class);
     }
 
+    /**
+     * @return BelongsTo<Rule, $this>
+     */
     public function rule(): BelongsTo
     {
         return $this->belongsTo(Rule::class);

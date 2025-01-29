@@ -30,36 +30,57 @@ class IfAction extends Model
         'day',
     ];
 
+    /**
+     * @return BelongsTo<Note,$this>
+     */
     public function note(): BelongsTo
     {
         return $this->belongsTo(Note::class);
     }
 
+    /**
+     * @return BelongsTo<Category,$this>
+     */
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
 
+    /**
+     * @return BelongsTo<Day,$this>
+     */
     public function day(): BelongsTo
     {
         return $this->belongsTo(Day::class);
     }
 
+    /**
+     * @return BelongsTo<Amount,$this>
+     */
     public function amount(): BelongsTo
     {
         return $this->belongsTo(Amount::class);
     }
 
+    /**
+     * @return BelongsTo<Payee, $this>
+     */
     public function payee(): BelongsTo
     {
         return $this->belongsTo(PayeeFilter::class, 'payee_filter_id');
     }
 
+    /**
+     * @return BelongsTo<Account, $this>
+     */
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
     }
 
+    /**
+     * @return BelongsTo<Rule, $this>
+     */
     public function rule(): BelongsTo
     {
         return $this->belongsTo(Rule::class);

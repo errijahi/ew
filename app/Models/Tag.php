@@ -21,21 +21,33 @@ class Tag extends Model
         'color',
     ];
 
+    /**
+     * @return BelongsTo<Team, $this>
+     */
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
     }
 
+    /**
+     * @return HasMany<Transaction, $this>
+     */
     public function transaction(): HasMany
     {
         return $this->hasMany(Transaction::class);
     }
 
+    /**
+     * @return HasMany<SplitTransaction, $this>
+     */
     public function SplitTransactions(): HasMany
     {
         return $this->hasMany(SplitTransaction::class);
     }
 
+    /**
+     * @return HasMany<ThenAction, $this>
+     */
     public function thenAction(): HasMany
     {
         return $this->hasMany(ThenAction::class);
