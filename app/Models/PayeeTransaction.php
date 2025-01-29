@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PayeeTransaction extends Model
 {
+    /** @use HasFactory<PayeeTransaction> */
     use HasFactory;
 
     protected $table = 'payee_transaction';

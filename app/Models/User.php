@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
@@ -26,7 +27,10 @@ class User extends Authenticatable implements FilamentUser, HasTenants
 {
     use HasApiTokens;
     use HasConnectedAccounts;
+
+    /** @use hasFactory<UserFactory> **/
     use HasFactory;
+
     use HasProfilePhoto {
         HasProfilePhoto::profilePhotoUrl as getPhotoUrl;
     }
