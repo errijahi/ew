@@ -28,33 +28,25 @@ class Rule extends Model
         'thenAction',
     ];
 
-    /**
-     * @return BelongsTo<Team, $this>
-     */
+    /** @return BelongsTo<Team, $this> */
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
     }
 
-    /**
-     * @return HasMany<ifAction, $this>
-     */
+    /** @return HasMany<ifAction, $this> */
     public function ifAction(): HasMany
     {
         return $this->hasMany(IfAction::class);
     }
 
-    /**
-     * @return HasMany<ThenAction, $this>
-     */
+    /** @return HasMany<ThenAction, $this> */
     public function thenAction(): HasMany
     {
         return $this->hasMany(ThenAction::class);
     }
 
-    /**
-     * @return hasMany<SplitTransaction, $this>
-     */
+    /** @return hasMany<SplitTransaction, $this> */
     public function splitTransactions(): HasMany
     {
         return $this->hasMany(SplitTransaction::class);

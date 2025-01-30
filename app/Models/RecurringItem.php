@@ -25,33 +25,25 @@ class RecurringItem extends Model
         'end_date',
     ];
 
-    /**
-     * @return BelongsTo<Team, $this>
-     */
+    /** @return BelongsTo<Team, $this> */
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
     }
 
-    /**
-     * @return BelongsToMany<Category, $this>
-     */
+    /** @return BelongsToMany<Category, $this> */
     public function category(): BelongsToMany
     {
         return $this->belongsToMany(Category::class);
     }
 
-    /**
-     * @return HasMany<ThenAction, $this>
-     */
+    /** @return HasMany<ThenAction, $this> */
     public function thenAction(): HasMany
     {
         return $this->hasMany(ThenAction::class);
     }
 
-    /**
-     * @return HasMany<Transaction, $this>
-     */
+    /** @return HasMany<Transaction, $this> */
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);

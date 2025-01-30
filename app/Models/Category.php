@@ -31,25 +31,19 @@ class Category extends Model
 
     protected $with = ['budgets'];
 
-    /**
-     * @return HasMany<Category, $this>
-     */
+    /** @return HasMany<Category, $this> */
     public function subCategoryGroup(): HasMany
     {
         return $this->hasMany(Category::class, 'sub_category_group_id', 'id');
     }
 
-    /**
-     * @return HasOne<Category, $this>
-     */
+    /** @return HasOne<Category, $this> */
     public function parentCategoryGroup(): HasOne
     {
         return $this->hasOne(Category::class, 'id', 'sub_category_group_id');
     }
 
-    /**
-     * @return BelongsTo<Team, $this>
-     */
+    /** @return BelongsTo<Team, $this> */
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
@@ -65,49 +59,37 @@ class Category extends Model
         return self::get()->keyBy('id')->toArray();
     }
 
-    /**
-     * @return HasMany<Transaction, $this>
-     */
+    /** @return HasMany<Transaction, $this> */
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
     }
 
-    /**
-     * @return BelongsToMany<RecurringItem, $this>
-     */
+    /** @return BelongsToMany<RecurringItem, $this> */
     public function recurringItems(): BelongsToMany
     {
         return $this->belongsToMany(RecurringItem::class);
     }
 
-    /**
-     * @return HasMany<SplitTransaction, $this>
-     */
+    /** @return HasMany<SplitTransaction, $this> */
     public function splitTransactions(): HasMany
     {
         return $this->hasMany(SplitTransaction::class);
     }
 
-    /**
-     * @return HasMany<IfAction, $this>
-     */
+    /** @return HasMany<IfAction, $this> */
     public function ifActions(): HasMany
     {
         return $this->hasMany(IfAction::class);
     }
 
-    /**
-     * @return HasMany<ThenAction, $this>
-     */
+    /** @return HasMany<ThenAction, $this> */
     public function thenActions(): HasMany
     {
         return $this->hasMany(ThenAction::class);
     }
 
-    /**
-     * @return HasMany<Budget, $this>
-     */
+    /** @return HasMany<Budget, $this> */
     public function budgets(): HasMany
     {
         return $this->hasMany(Budget::class);

@@ -40,41 +40,31 @@ class Account extends Model
         $this->attributes['status'] = $value ? 'true' : 'false';
     }
 
-    /**
-     * @return HasOne<Category, $this>
-     */
+    /** @return HasOne<Category, $this> */
     public function category(): HasOne
     {
         return $this->hasOne(Category::class, 'id', 'category_id');
     }
 
-    /**
-     * @return BelongsTo<Team, $this>
-     */
+    /** @return BelongsTo<Team, $this> */
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
     }
 
-    /**
-     * @return HasMany<Transaction, $this>
-     */
+    /** @return HasMany<Transaction, $this> */
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
     }
 
-    /**
-     * @return BelongsTo<AccountType, $this>
-     */
+    /** @return BelongsTo<AccountType, $this> */
     public function accountType(): BelongsTo
     {
         return $this->belongsTo(AccountType::class);
     }
 
-    /**
-     * @return HasMany<IfAction, $this>
-     */
+    /** @return HasMany<IfAction, $this> */
     public function ifAction(): HasMany
     {
         return $this->hasMany(IfAction::class);

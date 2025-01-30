@@ -22,33 +22,25 @@ class SplitTransaction extends Model
         'payee_id',
     ];
 
-    /**
-     * @return BelongsTo<ThenACtion, $this>
-     */
+    /** @return BelongsTo<ThenACtion, $this> */
     public function thenAction(): BelongsTo
     {
         return $this->belongsTo(ThenAction::class);
     }
 
-    /**
-     * @return BelongsTo<ThenACtion, $this>
-     */
+    /** @return BelongsTo<ThenACtion, $this> */
     public function tag(): BelongsTo
     {
         return $this->belongsTo(Tag::class);
     }
 
-    /**
-     * @return HasMany<Payee, $this>
-     */
+    /** @return HasMany<Payee, $this> */
     public function payee(): HasMany
     {
         return $this->hasMany(Payee::class);
     }
 
-    /**
-     * @return HasMany<Payee, $this>
-     */
+    /** @return HasMany<Payee, $this> */
     public function category(): HasMany
     {
         return $this->hasMany(Category::class);

@@ -30,9 +30,7 @@ class Transaction extends Model
 
     protected $with = ['payee'];
 
-    /**
-     * @return BelongsTo<Team, $this>
-     */
+    /** @return BelongsTo<Team, $this> */
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
@@ -43,41 +41,31 @@ class Transaction extends Model
         return Transaction::get();
     }
 
-    /**
-     * @return BelongsTo<Payee, $this>
-     */
+    /** @return BelongsTo<Payee, $this> */
     public function payee(): BelongsTo
     {
         return $this->belongsTo(Payee::class);
     }
 
-    /**
-     * @return BelongsTo<Account, $this>
-     */
+    /** @return BelongsTo<Account, $this> */
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
     }
 
-    /**
-     * @return BelongsTo<Category, $this>
-     */
+    /** @return BelongsTo<Category, $this> */
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
-    /**
-     * @return BelongsTo<RecurringItem, $this>
-     */
+    /** @return BelongsTo<RecurringItem, $this> */
     public function recurringItem(): BelongsTo
     {
         return $this->belongsTo(RecurringItem::class);
     }
 
-    /**
-     * @return BelongsTo<Tag, $this>
-     */
+    /** @return BelongsTo<Tag, $this> */
     public function tag(): BelongsTo
     {
         return $this->belongsTo(Tag::class);

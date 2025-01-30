@@ -16,9 +16,7 @@ class TeamUser extends Model
         'user_id',
     ];
 
-    /**
-     * @return BelongsToMany<User, $this>
-     */
+    /** @return BelongsToMany<User, $this> */
     public function members(): BelongsToMany
     {
         return $this->belongsToMany(User::class);

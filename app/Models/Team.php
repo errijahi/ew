@@ -52,73 +52,55 @@ class Team extends JetstreamTeam
         ];
     }
 
-    /**
-     * @return BelongsToMany<User, $this>
-     */
+    /** @return BelongsToMany<User, $this> */
     public function members(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
     }
 
-    /**
-     * @return HasMany<Account, $this>
-     */
+    /** @return HasMany<Account, $this> */
     public function accounts(): HasMany
     {
         return $this->hasMany(Account::class);
     }
 
-    /**
-     * @return HasMany<Budget, $this>
-     */
+    /** @return HasMany<Budget, $this> */
     public function budgets(): HasMany
     {
         return $this->hasMany(Budget::class);
     }
 
-    /**
-     * @return HasMany<Category, $this>
-     */
+    /** @return HasMany<Category, $this> */
     public function categories(): HasMany
     {
         return $this->hasMany(Category::class);
     }
 
-    /**
-     * @return HasMany<Tag, $this>
-     */
+    /** @return HasMany<Tag, $this> */
     public function tags(): HasMany
     {
         return $this->hasMany(Tag::class);
     }
 
-    /**
-     * @return HasMany<Transaction, $this>
-     */
+    /** @return HasMany<Transaction, $this> */
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
     }
 
-    /**
-     * @return HasMany<Rule, $this>
-     */
+    /** @return HasMany<Rule, $this> */
     public function rules(): HasMany
     {
         return $this->hasMany(Rule::class);
     }
 
-    /**
-     * @return HasMany<RecurringItem, $this>
-     */
+    /** @return HasMany<RecurringItem, $this> */
     public function recurringItems(): HasMany
     {
         return $this->hasMany(RecurringItem::class);
     }
 
-    /**
-     * @return HasMany<Analyze, $this>
-     */
+    /** @return HasMany<Analyze, $this> */
     public function analyze(): HasMany
     {
         return $this->hasMany(Analyze::class);

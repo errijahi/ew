@@ -9,9 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class AccountType extends Model
 {
-    /**
-     * @return HasMany<Account,$this>
-     */
+    /** @return HasMany<Account,$this> */
     public function accounts(): HasMany
     {
         return $this->hasMany(Account::class);

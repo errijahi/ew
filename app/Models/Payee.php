@@ -18,17 +18,13 @@ class Payee extends Model
         'name',
     ];
 
-    /**
-     * @return HasMany<Transaction, $this>
-     */
+    /** @return HasMany<Transaction, $this> */
     public function transaction(): HasMany
     {
         return $this->hasMany(Transaction::class);
     }
 
-    /**
-     * @return HasMany<PayeeFilter, $this>
-     */
+    /** @return HasMany<PayeeFilter, $this> */
     public function payeeFilter(): HasMany
     {
         return $this->hasMany(PayeeFilter::class);

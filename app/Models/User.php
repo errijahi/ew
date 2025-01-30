@@ -95,9 +95,7 @@ class User extends Authenticatable implements FilamentUser, HasTenants
         return true;
     }
 
-    /**
-     * @return BelongsToMany<Team, $this>
-     */
+    /** @return BelongsToMany<Team, $this> */
     public function teams(): BelongsToMany
     {
         return $this->belongsToMany(Team::class);
