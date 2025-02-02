@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Database\Factories\TransactionFactory;
 use http\Exception\InvalidArgumentException;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -36,9 +37,10 @@ class Transaction extends Model
         return $this->belongsTo(Team::class);
     }
 
-    public static function getMonthlyData($month, $year)
+    /** @return Collection<int, Transaction> */
+    public static function getMonthlyData(string $month, string $year): Collection
     {
-        return Transaction::get();
+        return self::get();
     }
 
     /** @return BelongsTo<Payee, $this> */
@@ -71,8 +73,16 @@ class Transaction extends Model
         return $this->belongsTo(Tag::class);
     }
 
-    public static function aggregateTransactionValues($transactionValues, $selectedModel, $period)
-    {
+    /**
+     * @param  array<int, Transaction>  $transactionValues
+     * @param  Collection<int, Transaction>  $selectedModel
+     * @return array<string, mixed>
+     */
+    public static function aggregateTransactionValues(
+        array $transactionValues,
+        Collection $selectedModel,
+        string $period
+    ): array {
         $tableValues = [];
         $searchBy = '';
 
@@ -140,7 +150,11 @@ class Transaction extends Model
         return ['tableValues' => $tableValues, 'searchBy' => $searchBy];
     }
 
-    public static function getSelectedModel($selectedModel, $value): array
+    /**
+     * @param  Collection<int, Transaction>  $selectedModel
+     * @return array<string,int|string|null>
+     */
+    public static function getSelectedModel(Collection $selectedModel, Transaction $value): array
     {
         $ModelValues = '';
         $SearchBy = '';
@@ -182,16 +196,16 @@ class Transaction extends Model
         });
     }
 
-    public static function applyRules($model): void
+    public static function applyRules(Transaction $model): void
     {
         // Check if category_id exists in ifAction and matches the model's category_id
-        if ((int) ifAction::where('category_id', $model->category_id)->pluck('category_id')->first() === (int) $model->category_id) {
+        if ((int) IfAction::where('category_id', $model->category_id)->pluck('category_id')->first() === (int) $model->category_id) {
 
             // Retrieve the rule_id from ifAction
-            $ruleId = ifAction::where('category_id', $model->category_id)->pluck('rule_id')->first();
+            $ruleId = IfAction::where('category_id', $model->category_id)->pluck('rule_id')->first();
 
             // Retrieve all entries from thenAction with the matched rule_id
-            $actions = thenAction::where('rule_id', $ruleId)->get();
+            $actions = ThenAction::where('rule_id', $ruleId)->get();
 
             // Loop through the entries to check if tag_id has any value
             foreach ($actions as $action) {
