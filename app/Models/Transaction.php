@@ -199,10 +199,10 @@ class Transaction extends Model
     public static function applyRules(Transaction $model): void
     {
         // Check if category_id exists in ifAction and matches the model's category_id
-        if ((int) IfAction::where('category_id', $model->category_id)->pluck('category_id')->first() === (int) $model->category_id) {
+        if (IfAction::where('category_id', $model->category_id)->value('category_id') === (int) $model->category_id) {
 
             // Retrieve the rule_id from ifAction
-            $ruleId = IfAction::where('category_id', $model->category_id)->pluck('rule_id')->first();
+            $ruleId = IfAction::where('category_id', $model->category_id)->value('rule_id');
 
             // Retrieve all entries from thenAction with the matched rule_id
             $actions = ThenAction::where('rule_id', $ruleId)->get();
