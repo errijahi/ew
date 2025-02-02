@@ -104,7 +104,7 @@ class Transaction extends Model
             switch ($period) {
                 case 'year':
                     if (isset($tableValues[$modelId][$yearKey])) {
-                        $tableValues[$modelId][$yearKey]['amount'] = (string) ($tableValues[$modelId][$yearKey]['amount'] + $transactionValue->amount);
+                        $tableValues[$modelId][$yearKey]['amount'] += $transactionValue->amount;
                     } else {
                         $tableValues[$modelId][$yearKey] = [
                             'amount' => $amount,
@@ -114,7 +114,7 @@ class Transaction extends Model
 
                 case 'month':
                     if (isset($tableValues[$modelId][$yearKey][$monthKey])) {
-                        $tableValues[$modelId][$yearKey][$monthKey]['amount'] = (string) ($tableValues[$modelId][$yearKey][$monthKey]['amount'] + $transactionValue->amount);
+                        $tableValues[$modelId][$yearKey][$monthKey]['amount'] += $transactionValue->amount;
                     } else {
                         $tableValues[$modelId][$yearKey][$monthKey] = [
                             'amount' => $amount,
@@ -124,7 +124,7 @@ class Transaction extends Model
 
                 case 'week':
                     if (isset($tableValues[$modelId][$yearKey][$weekKey])) {
-                        $tableValues[$modelId][$yearKey][$weekKey]['amount'] = (string) ($tableValues[$modelId][$yearKey][$weekKey]['amount'] + $transactionValue->amount);
+                        $tableValues[$modelId][$yearKey][$weekKey]['amount'] += $transactionValue->amount;
                     } else {
                         $tableValues[$modelId][$yearKey][$weekKey] = [
                             'amount' => $amount,
@@ -134,7 +134,7 @@ class Transaction extends Model
 
                 case 'day':
                     if (isset($tableValues[$modelId][$yearKey][$monthKey][$dayKey])) {
-                        $tableValues[$modelId][$yearKey][$monthKey][$dayKey]['amount'] = (string) ($tableValues[$modelId][$yearKey][$monthKey][$dayKey]['amount'] + $transactionValue->amount);
+                        $tableValues[$modelId][$yearKey][$monthKey][$dayKey]['amount'] += $transactionValue->amount;
                     } else {
                         $tableValues[$modelId][$yearKey][$monthKey][$dayKey] = [
                             'amount' => $amount,
