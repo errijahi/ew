@@ -89,10 +89,10 @@ class Transaction extends Model
         foreach ($transactionValues as $transactionValue) {
             $modelData = self::getSelectedModel($selectedModel, $transactionValue);
             $modelId = $modelData['ModelValues'];
-            $yearKey = $transactionValue->created_at->year;
-            $monthKey = $transactionValue->created_at->format('F');
-            $weekKey = $transactionValue->created_at->week;
-            $dayKey = $transactionValue->created_at->day;
+            $yearKey = $transactionValue->created_at?->year;
+            $monthKey = $transactionValue->created_at?->format('F');
+            $weekKey = $transactionValue->created_at?->week;
+            $dayKey = $transactionValue->created_at?->day;
             $searchBy = $modelData['SearchBy'];
 
             if (empty($modelId)) {
@@ -159,24 +159,24 @@ class Transaction extends Model
         $ModelValues = '';
         $SearchBy = '';
 
-        if ($selectedModel[0]->getTable() === 'tags') {
+        if ($selectedModel[0]?->getTable() === 'tags') {
             $ModelValues = $value->tag_id;
             $SearchBy = 'tag_id';
         }
-        if ($selectedModel[0]->getTable() === 'categories') {
+        if ($selectedModel[0]?->getTable() === 'categories') {
             $ModelValues = $value->category_id;
             $SearchBy = 'category_id';
         }
-        if ($selectedModel[0]->getTable() === 'accounts') {
-            $ModelValues = $value->account->id;
+        if ($selectedModel[0]?->getTable() === 'accounts') {
+            $ModelValues = $value->account?->id;
             $SearchBy = 'account_id';
         }
-        if ($selectedModel[0]->getTable() === 'recurring_items') {
-            $ModelValues = $value->recurringItem->id ?? '0';
+        if ($selectedModel[0]?->getTable() === 'recurring_items') {
+            $ModelValues = $value->recurringItem?->id;
             $SearchBy = 'recurring_item_id';
         }
-        if ($selectedModel[0]->getTable() === 'payees') {
-            $ModelValues = $value->payee->id ?? '0';
+        if ($selectedModel[0]?->getTable() === 'payees') {
+            $ModelValues = $value->payee?->id;
             $SearchBy = 'payee_id';
         }
 
