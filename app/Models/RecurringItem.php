@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Database\Factories\RecurringItemFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -49,7 +50,8 @@ class RecurringItem extends Model
         return $this->hasMany(Transaction::class);
     }
 
-    public static function getMonthlyData($month, $year)
+    /** @return Collection<int, Transaction> */
+    public static function getMonthlyData(string $month, string $year): Collection
     {
         return Transaction::get();
     }

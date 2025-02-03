@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Database\Factories\TagFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -45,7 +46,8 @@ class Tag extends Model
         return $this->hasMany(ThenAction::class);
     }
 
-    public static function getMonthlyData()
+    /** @return  Collection<int, Transaction> */
+    public static function getMonthlyData(): Collection
     {
         return Transaction::get();
     }

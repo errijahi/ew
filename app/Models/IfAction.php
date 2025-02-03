@@ -54,7 +54,7 @@ class IfAction extends Model
         return $this->belongsTo(Amount::class);
     }
 
-    /** @return BelongsTo<Payee, $this> */
+    /** @return BelongsTo<PayeeFilter, $this> */
     public function payee(): BelongsTo
     {
         return $this->belongsTo(PayeeFilter::class, 'payee_filter_id');
