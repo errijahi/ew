@@ -39,11 +39,7 @@ class Budget extends Model
     }
 
     /**
-     * @param Collection<int, Budget> $record
-     * @param int $adjustYear
-     * @param bool $totalTransaction
-     * @param bool $lastPeriodDifference
-     * @return string
+     * @param  Collection<int, Budget>  $record
      */
     public static function calculateBudgetPeriods(
         Collection $record,
@@ -82,17 +78,13 @@ class Budget extends Model
     }
 
     /**
-     * @param Collection<int, Budget> $record
-     * @param int $year
-     * @param float|int $month
-     * @return float|int
+     * @param  Collection<int, Budget>  $record
      */
     private static function calculateBudgetWhereYearMonth(
         Collection $record,
         int $year,
         float|int $month
-    ): float|int
-    {
+    ): float|int {
         return self::where('category_id', $record->id)
             ->where('team_id', $record->team_id)
             ->where('year', $year)
@@ -101,17 +93,13 @@ class Budget extends Model
     }
 
     /**
-     * @param Collection<int, Budget> $record
-     * @param int $year
-     * @param int|null $month
-     * @return float|int|string
+     * @param  Collection<int, Budget>  $record
      */
     private static function calculateBudgetWhereInBetweenYearMonth(
         Collection $record,
         int $year,
-        int|null $month
-    ): float|int|string
-    {
+        ?int $month
+    ): float|int|string {
         return Transaction::where('category_id', $record->id)
             ->where('team_id', $record->team_id)
             ->whereBetween('created_at', [
