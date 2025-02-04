@@ -22,10 +22,11 @@ class RecurringItemFactory extends Factory
     {
         $startDate = $this->faker->dateTimeBetween('-1 month', '+1 month');
         $endDate = $this->faker->dateTimeBetween($startDate, '+1 year');
+        $cadence = $this->faker->randomElement(Cadence::cases());
 
         return [
             'name' => $this->faker->unique()->word.' recurring item',
-            'repeating_cadence' => $this->faker->randomElement(Cadence::cases())->value,
+            'repeating_cadence' => $cadence instanceof Cadence ? $cadence->value : Cadence::cases()[0]->value, // Ensuring it's an enum
             'description' => 'Recurring item description '.$this->faker->text(50),
             'billing_date' => 'every day',
             'start_date' => $startDate,

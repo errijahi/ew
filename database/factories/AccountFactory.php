@@ -22,11 +22,11 @@ class AccountFactory extends Factory
      */
     public function definition(): array
     {
+        $status = $this->faker->randomElement(Status::cases());
         return [
             'name' => $this->faker->unique()->company.' account',
             'balance' => $this->faker->randomNumber(),
-            'status' => $this->faker->randomElement(Status::cases())->value,
-            'team_id' => 1,
+            'status' => $status instanceof Status ? $status->value : Status::cases()[0]->value, // Ensuring a valid enum value
             'category_id' => $this->faker->numberBetween(1, 20),
         ];
     }
