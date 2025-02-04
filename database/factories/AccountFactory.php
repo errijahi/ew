@@ -23,6 +23,7 @@ class AccountFactory extends Factory
     public function definition(): array
     {
         $status = $this->faker->randomElement(Status::cases());
+
         return [
             'name' => $this->faker->unique()->company.' account',
             'balance' => $this->faker->randomNumber(),
