@@ -17,6 +17,7 @@ enum IfActions: string
     case MATCHES_DAY = 'matches day';
     case In_ACCOUNT = 'in account';
 
+    /** @return array<string, string> */
     public static function values(): array
     {
         return array_column(self::cases(), 'value', 'value');

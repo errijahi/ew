@@ -19,6 +19,7 @@ enum Cadence: string
     case TWICE_A_YEAR = 'Twice_a_year';
     case YEARLY = 'Yearly';
 
+    /** @return array<string, string> */
     public static function values(): array
     {
         return array_column(self::cases(), 'value', 'value');
