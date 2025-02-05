@@ -30,12 +30,12 @@ class Account extends Model
         'status' => 'string',
     ];
 
-    public function getStatusAttribute($value): bool
+    public function getStatusAttribute(string $value): bool
     {
         return $value === 'true';
     }
 
-    public function setStatusAttribute($value): void
+    public function setStatusAttribute(string $value): void
     {
         $this->attributes['status'] = $value ? 'true' : 'false';
     }
