@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\StatsResource\Pages;
-use App\Models\Stats;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -13,7 +12,7 @@ use Filament\Tables\Table;
 
 class StatsResource extends Resource
 {
-    protected static ?string $model = Stats::class;
+    //    protected static ?string $model = Stats::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 

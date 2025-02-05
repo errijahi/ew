@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TrendsResource\Pages;
-use App\Models\Trends;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -13,7 +12,7 @@ use Filament\Tables\Table;
 
 class TrendsResource extends Resource
 {
-    protected static ?string $model = Trends::class;
+    //    protected static ?string $model = Trends::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 

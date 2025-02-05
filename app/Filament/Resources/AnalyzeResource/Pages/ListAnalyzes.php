@@ -13,7 +13,6 @@ use App\Models\Transaction;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\Session;
-use JetBrains\PhpStorm\NoReturn;
 
 class ListAnalyzes extends ListRecords
 {
@@ -86,21 +85,18 @@ class ListAnalyzes extends ListRecords
         return $tabs;
     }
 
-    #[NoReturn]
     public function changeViewType(): void
     {
         session(['viewType' => $this->viewType ?? 'table']);
         session(['reloadPage' => 'true']);
     }
 
-    #[NoReturn]
     public function createTimeRange(): void
     {
         session(['timeRange' => $this->timeRange ?? 'last 7 days']);
         session(['reloadPage' => 'true']);
     }
 
-    #[NoReturn]
     public function create(): void
     {
         session(['status' => $this->status ?? 'year']);
@@ -113,7 +109,6 @@ class ListAnalyzes extends ListRecords
         session(['reloadPage' => 'true']);
     }
 
-    #[NoReturn]
     public function searchByDateRange(): void
     {
         session(['startDate' => $this->startDate ?? null]);

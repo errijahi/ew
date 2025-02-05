@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\OverviewResource\Pages;
-use App\Models\Overview;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -13,7 +12,7 @@ use Filament\Tables\Table;
 
 class OverviewResource extends Resource
 {
-    protected static ?string $model = Overview::class;
+    //    protected static ?string $model = Overview::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
