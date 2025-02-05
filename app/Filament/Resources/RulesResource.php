@@ -35,7 +35,7 @@ class RulesResource extends Resource
 
     public static function form(Form $form): Form
     {
-        $teamId = auth()->user()->teams[0]->id;
+        $teamId = auth()->user()?->teams[0]?->id;
 
         return $form
             ->schema([

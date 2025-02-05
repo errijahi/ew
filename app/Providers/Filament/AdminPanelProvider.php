@@ -38,7 +38,7 @@ class AdminPanelProvider extends PanelProvider
             ->tenant(Team::class)
             ->tenantRegistration(RegisterTeam::class)
             // ->tenantProfile(EditTeamProfile::class)
-            ->tenantMenu(fn (): bool => auth()->user()->teams->count() > 10)
+            ->tenantMenu(fn (): bool => auth()->user()?->teams->count() > 10)
 
             ->passwordReset()
             ->registration(Register::class)

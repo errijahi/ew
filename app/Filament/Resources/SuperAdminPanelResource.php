@@ -65,8 +65,8 @@ class SuperAdminPanelResource extends Resource
 
     public static function canViewAny(): bool
     {
-        $getRole = TeamUser::where('user_id', auth()->user()->id)->first();
+        $getRole = TeamUser::where('user_id', auth()->user()?->id)->first();
 
-        return $getRole->role === 'super_admin';
+        return $getRole?->role === 'super_admin';
     }
 }

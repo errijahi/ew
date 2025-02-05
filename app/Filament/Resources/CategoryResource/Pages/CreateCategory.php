@@ -15,7 +15,7 @@ class CreateCategory extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
-        $teamId = auth()->user()->teams[0]->id;
+        $teamId = auth()->user()?->teams[0]?->id;
         $data['team_id'] = $teamId;
         $record = $this->getModel()::create($data);
 
