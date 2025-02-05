@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Database\Factories\AccountFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -70,9 +71,12 @@ class Account extends Model
         return $this->hasMany(IfAction::class);
     }
 
-    public static function getMonthlyData($month, $year)
+    /**
+     * @return Collection<int, Transaction>
+     */
+    public static function getMonthlyData(string $month, string $year): Collection
     {
-        //        TODO: I will need to add by months and yeard and stuff because this will get all the data might be too much
+        // TODO: I will need to add by months and yeard and stuff because this will get all the data might be too much
         return Transaction::get();
     }
 }
