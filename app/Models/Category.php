@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Database\Factories\CategoryFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -49,12 +50,14 @@ class Category extends Model
         return $this->belongsTo(Team::class);
     }
 
-    public static function getMonthlyData($month, $year)
+    /** @return Collection<int, Transaction> */
+    public static function getMonthlyData(string $month, string $year): Collection
     {
         return Transaction::get();
     }
 
-    public static function getTableValues()
+    /** @return array<int,int> */
+    public static function getTableValues(): array
     {
         return self::get()->keyBy('id')->toArray();
     }

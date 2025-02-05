@@ -41,7 +41,7 @@ enum Days: int
     case D30 = 30;
     case D31 = 31;
 
-    /** @return array<string, string> */
+    /** @return array<int, int> */
     public static function values(): array
     {
         return array_column(self::cases(), 'value', 'value');

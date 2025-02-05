@@ -30,7 +30,7 @@ enum Priority: int
     case P19 = 19;
     case P20 = 20;
 
-    /** @return array<string, string> */
+    /** @return array<int, int> */
     public static function values(): array
     {
         return array_column(self::cases(), 'value', 'value');
