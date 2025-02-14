@@ -18,11 +18,6 @@ class Team extends JetstreamTeam
     /** @use HasFactory<TeamFactory> */
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'personal_team',
