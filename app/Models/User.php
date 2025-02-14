@@ -82,6 +82,8 @@ class User extends Authenticatable implements FilamentUser, HasTenants
 
     /**
      * Get the URL to the user's profile photo.
+     *
+     * @return Attribute<int, string>
      */
     public function profilePhotoUrl(): Attribute
     {
@@ -101,6 +103,9 @@ class User extends Authenticatable implements FilamentUser, HasTenants
         return $this->belongsToMany(Team::class);
     }
 
+    /**
+     * @return Collection<int, Team>
+     */
     public function getTenants(Panel $panel): Collection
     {
         return $this->teams;
