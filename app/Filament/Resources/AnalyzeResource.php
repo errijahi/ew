@@ -68,11 +68,11 @@ class AnalyzeResource extends Resource
             }
 
             if ($startDateRange) {
-                $startYear = Carbon::createFromFormat('Y-m-d', $startDateRange)->year;
+                $startYear = Carbon::createFromFormat('Y-m-d', $startDateRange)?->year;
             }
 
             if ($endDateRange) {
-                $currentYear = Carbon::createFromFormat('Y-m-d', $endDateRange)->year;
+                $currentYear = Carbon::createFromFormat('Y-m-d', $endDateRange)?->year;
             }
 
             for ($year = $startYear; $year <= $currentYear; $year++) {

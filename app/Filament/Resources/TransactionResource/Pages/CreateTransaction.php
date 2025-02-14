@@ -13,6 +13,9 @@ class CreateTransaction extends CreateRecord
 {
     protected static string $resource = TransactionResource::class;
 
+    /**
+     * @param  array<string, string>  $data
+     */
     protected function handleRecordCreation(array $data): Model
     {
         $teamId = auth()->user()?->teams[0]?->id;
@@ -21,7 +24,7 @@ class CreateTransaction extends CreateRecord
 
         PayeeTransaction::create([
             'payee_id' => $data['payee_id'],
-            'transaction_id' => $transactionRecord->id,
+            'transaction_id' => $transactionRecord->getKey(),
         ]);
 
         return $transactionRecord;

@@ -34,13 +34,20 @@ class ListAnalyzes extends ListRecords
 
     public function getTabs(): array
     {
-        $this->status = session('status', 'year');
-        $this->viewType = session('viewType', 'table');
-        $this->perPage = session('perPage', 5);
-        $this->timeRange = session('timeRange', 'last 6 years');
-        $this->startDate = session('startDate');
-        $this->endDate = session('endDate');
-        $teamId = auth()->user()->teams[0]->id;
+        $status = session('status', 'year');
+        $viewType = session('viewType', 'table');
+        $perPage = session('perPage', 5);
+        $timeRange = session('timeRange', 'last 6 years');
+        $startDate = session('startDate');
+        $endData = session('endDate');
+
+        $this->status = is_string($status) ? $status : 'year';
+        $this->viewType = is_string($viewType) ? $viewType : 'year';
+        $this->perPage = is_int($perPage) ? $perPage : 5;
+        $this->timeRange = is_string($timeRange) ? $timeRange : 'year';
+        $this->startDate = is_string($startDate) ? $startDate : 'year';
+        $this->endDate = is_string($endData) ? $endData : 'year';
+        $teamId = auth()->user()?->teams[0]?->id;
         $getValues = ['tags', 'categories', 'accounts', 'recurring', 'payee'];
 
         foreach ($getValues as $name) {
