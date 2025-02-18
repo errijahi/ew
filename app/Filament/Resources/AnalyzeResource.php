@@ -49,17 +49,17 @@ class AnalyzeResource extends Resource
             $selectedModel = Payee::get();
         }
 
-        $perPage = session('perPage') ?? 5;
-        $selectedPeriod = session('status') ?? 'year';
-        $timeRange = session('timeRange') ?? 'last 7 days';
+        $perPage = is_numeric(session('perPage')) ? (int) session('perPage') : 5;
+        $selectedPeriod = is_string(session('status')) ? session('status') : 'year';
+        $timeRange = is_string(session('timeRange')) ? session('timeRange') : 'last 7 days';
         $currentYear = Carbon::now()->year;
-        $startDateRange = session('startDate');
-        $endDateRange = session('endDate');
+        $startDateRange = is_string(session('startDate')) ? (string) session('startDate') : null;
+        $endDateRange = is_string(session('endDate')) ? (string) session('endDate') : null;
         $startYear = $currentYear - 5;
-        $viewType = session('viewType') ?? 'table';
+        $viewType = is_string(session('viewType')) ? session('viewType') : 'table';
 
         $transactionDataByPeriod = [];
-        $transactionValues = Transaction::get();
+        $transactionValues = Transaction::get()->all();
         $tableValues = '';
 
         if ($selectedPeriod === 'year') {
@@ -98,7 +98,7 @@ class AnalyzeResource extends Resource
                 $endDate = Carbon::createFromFormat('Y-m-d', $endDateRange)?->endOfMonth();
             }
 
-            while ($startDate <= $endDate) {
+            while (! is_null($startDate) && $startDate <= $endDate) {
                 $monthName = $startDate->format('F');
 
                 $aggregatedTransactionValues = Transaction::aggregateTransactionValues($transactionValues, $selectedModel,
