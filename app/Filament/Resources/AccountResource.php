@@ -35,7 +35,7 @@ class AccountResource extends Resource
                 TextInput::make('balance')->numeric()->required()->maxLength(255),
                 Toggle::make('status')->required(),
                 Select::make('category_id')
-                    ->options(Category::where('team_id', $teamId)->pluck('name', 'id')->toArray())
+                    ->options(Category::where('team_id', $teamId)->pluck('name', 'id'))
                     ->native(false),
             ]);
     }

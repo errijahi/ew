@@ -8,6 +8,7 @@ use App\Models\Team;
 use App\Models\TeamUser;
 use Filament\Forms\Form;
 use Filament\Pages\Tenancy\RegisterTenant;
+use Illuminate\Http\RedirectResponse;
 
 class RegisterTeam extends RegisterTenant
 {
@@ -47,7 +48,7 @@ class RegisterTeam extends RegisterTenant
         return $team;
     }
 
-    protected function redirectToTeamAccounts(int $teamId)
+    protected function redirectToTeamAccounts(int $teamId): RedirectResponse
     {
         return redirect()->to("/admin/{$teamId}/accounts");
     }

@@ -56,10 +56,15 @@ class Category extends Model
         return Transaction::get();
     }
 
-    /** @return array<int,int> */
+    /** @return array<int, mixed> */
     public static function getTableValues(): array
     {
-        return self::get()->keyBy('id')->toArray();
+        $values = self::get()->keyBy('id')->toArray();
+        $result = [];
+        foreach ($values as $key => $value) {
+            $result[(int) $key] = $value;
+        }
+        return $result;
     }
 
     /** @return HasMany<Transaction, $this> */
